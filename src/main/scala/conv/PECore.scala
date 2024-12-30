@@ -1,5 +1,6 @@
 package conv
 
+import spinal.lib._
 import spinal.core._
 import spinal.lib._
 
