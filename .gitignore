@@ -1,0 +1,54 @@
+# ------------- IDE 相关 -------------
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# VSCode (如果有使用 VS Code，可以加上下面几行)
+.vscode/
+.history/
+*.code-workspace
+
+# ------------- 系统文件 -------------
+.DS_Store
+Thumbs.db
+
+# ------------- SBT 相关 -------------
+# 生成文件目录
+target/
+project/target/
+project/boot/
+project/metals.sbt
+project/project/
+
+# SBT 锁
+*.lock
+
+# Ivy 缓存
+.ivy2/
+# Coursier 缓存
+.coursier/
+
+# ------------- Scala/Java 相关 -------------
+# 编译产物
+*.class
+*.log
+*.cache
+*.tmp
+*.out
+*.jar
+*.war
+*.ear
+
+# ------------- Mac OS 相关 -------------
+*.DS_Store
+
+# ------------- Windows 相关 -------------
+*.exe
+*.dll
+*.pdb
+*.com
+*.bat
+*.cmd
+*.msi
