@@ -12,11 +12,12 @@ object ConvCfg {
 
     // Create a default PWMConfig instance
     val config = new ConvCfg(
-      peCols = 8,
-      peRows = 8,
+      kAutomic = 128,
+      cAutomic = 128,
       inputWidth = 8,
       accWidth = 32,
-      lwbDepth = 2048
+      lwbDepth = 2048,
+      maxSpLen = 64
     )
 
     // Return the default configuration
@@ -25,11 +26,12 @@ object ConvCfg {
 }
 
 case class ConvCfg(
-                    peCols: Int,
-                    peRows: Int,
+                    kAutomic: Int,
+                    cAutomic: Int,
                     inputWidth: Int,
                     accWidth: Int,
-                    lwbDepth: Int
+                    lwbDepth: Int,
+                    maxSpLen: Int
 
                   ) {
   val lwbWidth = inputWidth
