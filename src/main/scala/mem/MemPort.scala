@@ -4,18 +4,19 @@ import spinal.core._
 import spinal.lib._
 
 
-case class Memport(aW: Int, dW: Int, useWe: Boolean = false) extends Bundle with IMasterSlave {
-  val addr = UInt(aW bits)
-  val wData = Bits(dW bits)
-  val rData = Bits(dW bits)
+case class Memport(width: Int, depth: Int, useWe: Boolean = false) extends Bundle with IMasterSlave {
+  val addr = UInt(log2Up(depth) bits)
+  val wData = Bits(width bits)
+  val rData = Bits(width bits)
   val wr = Bool()
   val en = Bool()
-  val we = if (useWe) Bits(dW / 8 bits) else null
+  val we = if (useWe) Bits(width / 8 bits) else null
 
   override def asMaster(): Unit = {
     out(addr, wData, wr, en, we)
     in(rData)
   }
+
 
   override def asSlave(): Unit = {
     in(addr, wData, wr, en, we)
@@ -40,6 +41,17 @@ case class RdPort(width: Int, depth: Int, useWe: Boolean = false) extends Bundle
     out(rData)
   }
 
+  def asMemport(): Memport = {
+    val memport = Memport(width, depth, useWe)
+    memport.addr := this.addr
+    memport.rData := this.rData
+    memport.we := this.we
+    memport.en := this.en
+    memport.wr := False
+    memport.wData := 0
+    memport
+  }
+
 }
 
 case class WrPort(width: Int, depth: Int, useWe: Boolean = false) extends Bundle with IMasterSlave {
@@ -56,5 +68,13 @@ case class WrPort(width: Int, depth: Int, useWe: Boolean = false) extends Bundle
     in(addr, we, en, wData)
   }
 
-
+  def asMemport(): Memport = {
+    val memport = Memport(width, depth, useWe)
+    memport.addr := this.addr
+    memport.wData := this.wData
+    memport.we := this.we
+    memport.en := this.en
+    memport.wr := True
+    memport
+  }
 }
