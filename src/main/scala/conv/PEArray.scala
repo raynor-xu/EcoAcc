@@ -9,7 +9,7 @@ case class PEArray(cfg: ConvCfg) extends Component {
 
   val io = new Bundle {
     val mode = in Bits (2 bits)
-    val spLen = in UInt (log2Up(maxSpLen) bits)
+    val spLen = in UInt (log2Up(spLenMax) bits)
     val featureIn = slave Flow Vec(SInt(inputWidth bits), kAutomic)
     val weightIn = slave Flow Vec(SInt(inputWidth bits), cAutomic)
     val weightSel = in Bits (log2Up(kAutomic) bits)

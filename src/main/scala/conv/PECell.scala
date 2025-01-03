@@ -9,7 +9,7 @@ case class PECell(cfg: ConvCfg) extends Component {
 
   val io = new Bundle {
 
-    val spLen = in UInt (log2Up(maxSpLen) bits)
+    val spLen = in UInt (log2Up(spLenMax) bits)
     val featureIn = slave Flow SInt(inputWidth bits)
     val weightIn = slave Flow Vec(SInt(inputWidth bits), cAutomic)
     val mulOut = master Flow Vec(SInt(inputWidth * 2 bits), cAutomic)
@@ -24,7 +24,7 @@ case class PECell(cfg: ConvCfg) extends Component {
 
   val weightRp = Reg(UInt(1 bits)) init 0
 
-  val spCounter = Counter(maxSpLen) init (0)
+  val spCounter = Counter(spLenMax) init (0)
 
   when(io.weightIn.valid) {
     weight(weightWp) := io.weightIn.payload

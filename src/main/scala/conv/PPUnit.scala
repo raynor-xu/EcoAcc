@@ -9,7 +9,7 @@ case class PPUnit(cfg: ConvCfg) extends Component {
 
   val io = new Bundle {
     val mode = in Bits (2 bits)
-    val spLen = in UInt (log2Up(maxSpLen) bits)
+    val spLen = in UInt (log2Up(spLenMax) bits)
     val mulIn = slave Flow Vec(SInt(inputWidth * 2 bits), cAutomic)
     val sumOut = master Flow SInt(inputWidth * 2 + log2Up(cAutomic) bits)
   }
@@ -20,9 +20,9 @@ case class PPUnit(cfg: ConvCfg) extends Component {
 
   val adderTree = AdderTree(inputWidth * 2, cAutomic)
 
-  val spCounter = Counter(maxSpLen) init (0)
+  val spCounter = Counter(spLenMax) init (0)
 
-  val pSumBuffer = Vec(Reg(SInt(inputWidth * 2 + log2Up(cAutomic) bits)) init (0), maxSpLen)
+  val pSumBuffer = Vec(Reg(SInt(inputWidth * 2 + log2Up(cAutomic) bits)) init (0), spLenMax)
 
   adderTree.io.dataIn := io.mulIn.payload
 
