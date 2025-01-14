@@ -8,12 +8,11 @@ case class PEArray(cfg: ConvCfg) extends Component {
   import cfg._
 
   val io = new Bundle {
-    val mode = in Bits (2 bits)
-    val spLen = in UInt (log2Up(spLenMax) bits)
-    val featureIn = slave Flow Vec(SInt(inputWidth bits), kAutomic)
-    val weightIn = slave Flow Vec(SInt(inputWidth bits), cAutomic)
-    val weightSel = in Bits (log2Up(kAutomic) bits)
-    val sumOut = master Flow Vec(SInt(inputWidth * 2 + log2Up(cAutomic) bits), kAutomic)
+    val en = in Vec(Bool(), kAutomic)
+    val mode = in Vec(Bits(2 bits), kAutomic)
+    val featureIn = in Vec(SInt(inputWidth bits), kAutomic)
+    val weightIn = in Vec(SInt(inputWidth bits), cAutomic)
+    val sumOut = out Vec(SInt(inputWidth * 2 + log2Up(cAutomic) bits), kAutomic)
   }
 
   noIoPrefix()
@@ -22,7 +21,6 @@ case class PEArray(cfg: ConvCfg) extends Component {
 
   for (k <- 0 until kAutomic) {
     ppUnits(k).io.mode := io.mode
-    ppUnits(k).io.spLen := io.spLen
     ppUnits(k).io.mulIn := peCells(k).io.mulOut
     peCells(k).io.spLen := io.spLen
     peCells(k).io.featureIn.payload := io.featureIn.payload(k)

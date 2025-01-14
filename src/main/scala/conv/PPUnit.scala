@@ -8,10 +8,11 @@ case class PPUnit(cfg: ConvCfg) extends Component {
   import cfg._
 
   val io = new Bundle {
+    val en = in Bool()
     val mode = in Bits (2 bits)
     val spLen = in UInt (log2Up(spLenMax) bits)
-    val mulIn = slave Flow Vec(SInt(inputWidth * 2 bits), cAutomic)
-    val sumOut = master Flow SInt(inputWidth * 2 + log2Up(cAutomic) bits)
+    val mulIn = in Vec(SInt(inputWidth * 2 bits), cAutomic)
+    val sumOut = out SInt (inputWidth * 2 + log2Up(cAutomic) bits)
   }
 
   noIoPrefix()
