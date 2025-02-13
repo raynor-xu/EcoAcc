@@ -8,7 +8,7 @@ case class AddrGen(cfg: ConvCfg) extends Component {
   import cfg._
 
   val io = new Bundle {
-    val convParm = slave(Stream(ConvParm(cfg)))
+    val convParm = slave(Flow(ConvParm(cfg)))
     val wAddr = master(Stream(UInt(ramAW bits)))
     val finAddr = master(Stream(UInt(ramAW bits)))
     val foutAddr = master(Stream(UInt(ramAW bits)))
@@ -19,132 +19,140 @@ case class AddrGen(cfg: ConvCfg) extends Component {
 
   val convParm = RegNextWhen(io.convParm.payload, io.convParm.fire)
   val busy = Reg(Bool()) init False
-  val wAddrGenArea = new Area {
-    val wBaseAddr = RegNextWhen(io.convParm.wBaseAddr, io.convParm.fire)
-    val wAddrDone = Reg(Bool()) init (False)
-    val baseCounter = Reg(UInt(ramAW bits)) init 0
-    val valid = Reg(Bool()) init (False)
 
-    val baseCounterReload = RegNextWhen(
-      io.convParm.kSize * io.convParm.kSize
-        * io.convParm.chIn * io.convParm.chOut / cAutomic
-      , io.convParm.fire)
+  val chInBlock = CeilDiv(convParm.chIn, kAutomic)
+  val chOutBlock = CeilDiv(convParm.chOut, kAutomic)
+  val kerChDim = convParm.kSize * convParm.kSize
+  val kerDim = convParm.kSize * convParm.kSize * chInBlock
+  val foutHeight = (convParm.fHeight - convParm.kSize + 2 * convParm.pad) / convParm.stride + 1
+  val foutWidth = (convParm.fWidth - convParm.kSize + 2 * convParm.pad) / convParm.stride + 1
+
+  val wAddrGenArea = new Area {
+    val wBaseAddr = convParm.wBaseAddr
+    val wAddrDone = Reg(Bool()) init (False)
+
+    val nCounter = Reg(UInt(log2Up(fMaxCh / kAutomic) bits)) init 0
+    val cCounter = Reg(UInt(log2Up(fMaxCh / kAutomic) bits)) init 0
+    val kaCounter = Reg(UInt(log2Up(kAutomic) bits)) init 0
+    val rsCounter = Reg(UInt(kMaxSizeW * kMaxSizeW bits)) init 0
+
+    val nCounterReload = chOutBlock
+    val cCounterReload = chInBlock
+    val kaCounterReload = kAutomic
+    val rsCounterReload = convParm.kSize * convParm.kSize
+
+    val valid = Reg(Bool()) init (False)
 
     io.wAddr.valid := valid
 
-    io.wAddr.payload := wBaseAddr + baseCounter
+    io.wAddr.payload := (wBaseAddr + cCounter +
+      rsCounter * cCounterReload +
+      (nCounter * kAutomic + kaCounter) * rsCounterReload * cCounterReload).resized
 
     when(io.convParm.fire) {
-      baseCounter := 0
+      nCounter := 0
+      cCounter := 0
+      kaCounter := 0
+      rsCounter := 0
       valid := True
     } otherwise {
       when(io.wAddr.fire) {
-        when(baseCounter < baseCounterReload - 1) {
-          baseCounter := baseCounter + 1
+        when(rsCounter < rsCounterReload - 1) {
+          rsCounter := rsCounter + 1
         } otherwise {
-          baseCounter := 0
-          wAddrDone := True
-          valid := False
+          rsCounter := 0
+          when(kaCounter < kaCounterReload - 1) {
+            kaCounter := kaCounter + 1
+          } otherwise {
+            kaCounter := 0
+            when(cCounter < cCounterReload - 1) {
+              cCounter := cCounter + 1
+            } otherwise {
+              cCounter := 0
+              when(nCounter < nCounterReload - 1) {
+                nCounter := nCounter + 1
+              } otherwise {
+                nCounter := 0
+                wAddrDone := True
+                valid := False
+              }
+            }
+          }
         }
       }
     }
-
   }
+
+
   val finAddrArea = new Area {
     val finBaseAddr = RegNextWhen(io.convParm.finBaseAddr, io.convParm.fire)
     val finAddrDone = Reg(Bool()) init (False)
 
 
-    val kCounter = Reg(UInt(log2Up(fMaxSize / kAutomic) bits)) init 0
-    val wCounter = Reg(UInt(fMaxSizeW bits)) init 0
+    val nCounter = Reg(UInt(log2Up(fMaxCh / kAutomic) bits)) init 0
     val hCounter = Reg(UInt(fMaxSizeW bits)) init 0
+    val wCounter = Reg(UInt(fMaxSizeW bits)) init 0
     val cCounter = Reg(UInt(fMaxChW bits)) init 0
-    val rCounter = Reg(UInt(kMaxSizeW bits)) init 0
     val sCounter = Reg(UInt(kMaxSizeW bits)) init 0
-    val spLenCounter = Reg(UInt(log2Up(spLenMax) bits)) init 0
+    val rCounter = Reg(UInt(kMaxSizeW bits)) init 0
 
-    val kCounterReload = CeilDiv(convParm.chOut, kAutomic)
-    val wCounterReload = (convParm.fWidth - convParm.kSize + 2 * convParm.pad) / convParm.stride + 1
-    val hCounterReload = (convParm.fHeight - convParm.kSize + 2 * convParm.pad) / convParm.stride + 1
-    val cCounterReload = CeilDiv(convParm.chIn, cAutomic)
+    val nCounterReload = chOutBlock
+    val hCounterReload = foutHeight
+    val wCounterReload = foutWidth
+    val cCounterReload = chInBlock
     val rCounterReload = convParm.kSize
     val sCounterReload = convParm.kSize
 
-    val spLenCounterReload = UInt(spLenCounter.getBitsWidth bits)
-
-    when(wCounterReload - wCounter >= convParm.spLen) {
-      spLenCounterReload := convParm.spLen
-    } otherwise {
-      spLenCounterReload := (wCounterReload - wCounter).resized
-    }
-
     val valid = Reg(Bool()) init (False)
 
-    val wBias = (spLenCounter + wCounter) * convParm.stride + sCounter
-
-    val hBias = hCounter * convParm.stride + rCounter
-
-    val wMap = wBias - convParm.pad
-
-    val hMap = hBias - convParm.pad
-
-    val wPadFlag = wBias < convParm.pad | wBias >= convParm.pad + convParm.fWidth
-    val hPadFlag = hBias < convParm.pad | hBias >= convParm.pad + convParm.fHeight
-
-    val padFlag = wPadFlag | hPadFlag
+    val padFlag = False
 
     io.finAddr.valid := valid
 
     when(padFlag) {
       io.finAddr.payload := 0
     } otherwise {
-      io.finAddr.payload := (finBaseAddr + wMap +
-        convParm.fWidth * hMap +
-        convParm.fWidth * convParm.fHeight * kCounterReload).resized
+      io.finAddr.payload := (finBaseAddr + cCounter +
+        (wCounter * convParm.stride + rCounter) * cCounterReload +
+        (hCounter * convParm.stride + sCounter) * cCounterReload * wCounterReload).resized
     }
 
     when(io.convParm.fire) {
-      kCounter := 0
-      wCounter := 0
+      nCounter := 0
       hCounter := 0
+      wCounter := 0
       cCounter := 0
-      rCounter := 0
       sCounter := 0
-      spLenCounter := 0
+      rCounter := 0
       valid := True
     } otherwise {
       when(io.finAddr.fire) {
-        when(spLenCounter < spLenCounterReload - 1) {
-          spLenCounter := spLenCounter + 1
+        when(rCounter < rCounterReload - 1) {
+          rCounter := rCounter + 1
         } otherwise {
-          spLenCounter := 0
+          rCounter := 0
           when(sCounter < sCounterReload - 1) {
             sCounter := sCounter + 1
           } otherwise {
             sCounter := 0
-            when(rCounter < rCounterReload - 1) {
-              rCounter := rCounter + 1
+            when(cCounter < cCounterReload - 1) {
+              cCounter := cCounter + 1
             } otherwise {
-              rCounter := 0
-              when(cCounter < cCounterReload - 1) {
-                cCounter := cCounter + 1
+              cCounter := 0
+              when(wCounter < wCounterReload - 1) {
+                wCounter := wCounter + 1
               } otherwise {
-                cCounter := 0
+                wCounter := 0
                 when(hCounter < hCounterReload - 1) {
                   hCounter := hCounter + convParm.stride
                 } otherwise {
                   hCounter := 0
-                  when(wCounter < wCounterReload - 1) {
-                    wCounter := wCounter + convParm.stride * convParm.spLen
+                  when(nCounter < nCounterReload - 1) {
+                    nCounter := nCounter + 1
                   } otherwise {
-                    wCounter := 0
-                    when(kCounter < kCounterReload - 1) {
-                      kCounter := kCounter + 1
-                    } otherwise {
-                      kCounter := 0
-                      finAddrDone := True
-                      valid := False
-                    }
+                    nCounter := 0
+                    finAddrDone := True
+                    valid := False
                   }
                 }
               }
@@ -153,65 +161,42 @@ case class AddrGen(cfg: ConvCfg) extends Component {
         }
       }
     }
-
   }
+
+
   val foutAddrArea = new Area {
     val foutBaseAddr = RegNextWhen(io.convParm.foutBaseAddr, io.convParm.fire)
 
     val foutAddrDone = Reg(Bool()) init (False)
 
 
-    val wCounter = Reg(UInt(fMaxSizeW bits)) init 0
-    val hCounter = Reg(UInt(fMaxSizeW bits)) init 0
-    val chOCounter = Reg(UInt(fMaxChW bits)) init 0
+    val hwcCounter = Reg(UInt(log2Up(fMaxSize * fMaxSize * fMaxCh) bits)) init 0
 
-    val wCounterReload = (convParm.fWidth - convParm.kSize + 2 * convParm.pad) / convParm.stride + 1
-    val hCounterReload = (convParm.fHeight - convParm.kSize + 2 * convParm.pad) / convParm.stride + 1
-    val chOCounterReload = CeilDiv(convParm.chOut, kAutomic)
+    val hwcCounterReload = convParm.fHeight * convParm.fWidth * chOutBlock
 
     val valid = Reg(Bool()) init (False)
 
 
     io.foutAddr.valid := valid
-    io.foutAddr.payload :=
-      (foutBaseAddr + wCounter +
-        (hCounter * wCounterReload).resize(ramAW) +
-        (wCounterReload * hCounterReload * chOCounterReload).resize(ramAW)).resize(ramAW)
+    io.foutAddr.payload := (foutBaseAddr + hwcCounter).resized
 
     when(io.convParm.fire) {
-      wCounter := 0
-      hCounter := 0
-      chOCounter := 0
+      hwcCounter := 0
       valid := True
       foutAddrDone := False
     } otherwise {
       when(io.foutAddr.ready & io.foutAddr.valid) {
-        when(wCounter < wCounterReload - 1) {
-          wCounter := wCounter + 1
+        when(hwcCounter < hwcCounterReload - 1) {
+          hwcCounter := hwcCounter + 1
         } otherwise {
-          wCounter := 0
-          when(hCounter < hCounterReload - 1) {
-            hCounter := hCounter + 1
-          } otherwise {
-            hCounter := 0
-            when(chOCounter < chOCounterReload - 1) {
-              chOCounter := chOCounter + 1
-            } otherwise {
-              chOCounter := 0
-              foutAddrDone := True
-              valid := False
-            }
-          }
+          hwcCounter := 0
+          foutAddrDone := True
+          valid := False
         }
       }
     }
   }
 
-  def CeilDiv(x: UInt, y: Int): UInt = {
-    (x + y - 1) >> log2Up(y)
-  }
-
-  io.convParm.ready := ~busy
 
   when(io.convParm.fire) {
     busy := True

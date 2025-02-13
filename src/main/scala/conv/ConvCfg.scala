@@ -14,16 +14,17 @@ object ConvCfg {
     val config = new ConvCfg(
       ramDepth = 32768,
       ramNum = 16,
-      fMaxSize = 8192,
-      fMaxCh = 512,
-      kMaxSize = 9,
+      fMaxSize = 256,
+      fMaxCh = 64,
+      kMaxSize = 7,
       pMax = 5,
       sMax = 9,
       kAutomic = 8,
       cAutomic = 8,
       inputWidth = 8,
       accWidth = 32,
-      spLenMax = 64
+      spLenMax = 64,
+      lwbDepth = 64
     )
     // Return the default configuration
     config
@@ -42,9 +43,10 @@ case class ConvCfg(
                     cAutomic: Int,
                     inputWidth: Int,
                     accWidth: Int,
-                    spLenMax: Int
+                    spLenMax: Int,
+                    lwbDepth: Int
                   ) {
-  val ramDW = inputWidth * cAutomic;
+  val ramWidth = inputWidth * cAutomic;
   val ramAW = log2Up(ramDepth)
   val fMaxSizeW = log2Up(fMaxSize);
   val fMaxChW = log2Up(fMaxCh);

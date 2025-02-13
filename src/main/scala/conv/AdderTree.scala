@@ -48,6 +48,7 @@ case class AdderTree(bitWidth: Int, inputSize: Int) extends Component {
   io.dataOut := adderTreeRecursive(io.dataIn)
 }
 
+
 object AdderTree extends App {
 
   SpinalConfig(
