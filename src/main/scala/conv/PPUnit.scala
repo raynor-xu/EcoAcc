@@ -2,6 +2,7 @@ package conv
 
 import spinal.core._
 import spinal.lib._
+import cfg.ConvCfg
 
 case class PPUnit(cfg: ConvCfg) extends Component {
 
@@ -12,7 +13,7 @@ case class PPUnit(cfg: ConvCfg) extends Component {
     val relu = in Bool()
     val mode = in Bits (2 bits)
     val spLen = in UInt (spLenMaxW bits)
-    val loopLen = in UInt (log2Up(fMaxCh / kAutomic) bits)
+    val loopLen = in UInt (fMaxChW - log2Up(kAutomic) bits)
     //val biasIn = slave Stream SInt(accWidth bits)
     val macIn = Vec(slave Flow SInt(accWidth bits), cAutomic)
     val featureOut = master Flow SInt(inputWidth bits)
@@ -52,7 +53,7 @@ case class PPUnit(cfg: ConvCfg) extends Component {
 
     val spLenCnt = Reg(UInt(spLenMaxW bits)) init (0)
 
-    val loopCnt = Reg(UInt(log2Up(fMaxCh / kAutomic) bits)) init (0)
+    val loopCnt = Reg(UInt(fMaxChW - log2Up(kAutomic) bits)) init (0)
 
     val last = loopCnt === io.loopLen - 1
 
@@ -146,5 +147,5 @@ object PPUnit extends App {
     enumPrefixEnable = false, // 不在枚举类型前面添加前缀
     headerWithDate = false, // 不在头文件中添加日期信息
     anonymSignalPrefix = "tmp" // 移除匿名信号的前缀
-  ).generateVerilog(new PPUnit(ConvCfg.default))
+  ).generateVerilog(new PPUnit(ConvCfg()))
 }

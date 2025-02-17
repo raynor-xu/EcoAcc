@@ -3,6 +3,7 @@ package conv
 import spinal.core._
 import spinal.lib._
 import mem._
+import cfg.ConvCfg
 
 case class PETop(cfg: ConvCfg) extends Component {
 
@@ -21,7 +22,7 @@ case class PETop(cfg: ConvCfg) extends Component {
   }
 
   noIoPrefix()
-  
+
   val peArray = PEArray(cfg)
 
   val peCtrl = PECtrl(cfg)
@@ -61,5 +62,5 @@ object PETop extends App {
     enumPrefixEnable = false, // 不在枚举类型前面添加前缀
     headerWithDate = false, // 不在头文件中添加日期信息
     anonymSignalPrefix = "tmp" // 移除匿名信号的前缀
-  ).generateVerilog(new PETop(ConvCfg.default))
+  ).generateVerilog(new PETop(ConvCfg()))
 }

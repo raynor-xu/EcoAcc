@@ -2,6 +2,7 @@ package conv
 
 import spinal.core._
 import spinal.lib._
+import cfg.ConvCfg
 
 case class PEArray(cfg: ConvCfg) extends Component {
 
@@ -13,8 +14,8 @@ case class PEArray(cfg: ConvCfg) extends Component {
     val peMode = in Bits (3 bits)
     val ppuMode = in Bits (2 bits)
     val spLen = in UInt (spLenMaxW bits)
-    val loopLen = in UInt (log2Up(fMaxCh / kAutomic) bits)
-    val kChDim = in UInt (log2Up(kMaxSize * kMaxSize) bits)
+    val loopLen = in UInt (fMaxChW - log2Up(kAutomic) bits)
+    val kChDim = in UInt (kMaxSizeW + kMaxSizeW bits)
     val featureIn = Vec(slave Stream SInt(inputWidth bits), cAutomic)
     val weight = Vec(Vec(slave Stream SInt(inputWidth bits), cAutomic), kAutomic)
     val featureOut = Vec(master Flow SInt(inputWidth bits), kAutomic)
@@ -64,5 +65,5 @@ object PEArray extends App {
     enumPrefixEnable = false, // 不在枚举类型前面添加前缀
     headerWithDate = false, // 不在头文件中添加日期信息
     anonymSignalPrefix = "tmp" // 移除匿名信号的前缀
-  ).generateVerilog(new PEArray(ConvCfg.default))
+  ).generateVerilog(new PEArray(ConvCfg()))
 }

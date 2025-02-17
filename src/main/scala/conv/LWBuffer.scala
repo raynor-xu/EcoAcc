@@ -2,7 +2,7 @@ package conv
 
 import spinal.core._
 import spinal.lib._
-
+import cfg.ConvCfg
 
 case class LWBuffer(cfg: ConvCfg) extends Component {
 
@@ -11,7 +11,7 @@ case class LWBuffer(cfg: ConvCfg) extends Component {
   val io = new Bundle {
     val clear = in Bool()
     val spLen = in UInt (spLenMaxW bits)
-    val kChDim = in UInt (log2Up(kMaxSize * kMaxSize) bits)
+    val kChDim = in UInt (kMaxSizeW + kMaxSizeW bits)
     val weightIn = slave Stream SInt(inputWidth bits)
     val weightOut = master Stream SInt(inputWidth bits)
   }
@@ -27,7 +27,7 @@ case class LWBuffer(cfg: ConvCfg) extends Component {
 
   val spLenCnt = Reg(UInt(spLenMaxW bits)) init (0)
 
-  val kChDimCnt = Reg(UInt(log2Up(kMaxSize * kMaxSize) bits)) init (0)
+  val kChDimCnt = Reg(UInt(kMaxSizeW + kMaxSizeW bits)) init (0)
 
   val spLenValid = spLenCnt === io.spLen - 1
 
@@ -110,5 +110,5 @@ object LWBuffer extends App {
     enumPrefixEnable = false, // 不在枚举类型前面添加前缀
     headerWithDate = false, // 不在头文件中添加日期信息
     anonymSignalPrefix = "tmp" // 移除匿名信号的前缀
-  ).generateVerilog(new LWBuffer(ConvCfg.default))
+  ).generateVerilog(new LWBuffer(ConvCfg()))
 }

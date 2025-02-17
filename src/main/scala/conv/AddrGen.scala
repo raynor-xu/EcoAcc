@@ -2,6 +2,7 @@ package conv
 
 import spinal.core._
 import spinal.lib._
+import cfg.ConvCfg
 
 case class AddrGen(cfg: ConvCfg) extends Component {
 
@@ -31,8 +32,8 @@ case class AddrGen(cfg: ConvCfg) extends Component {
     val wBaseAddr = convParm.wBaseAddr
     val wAddrDone = Reg(Bool()) init (False)
 
-    val nCounter = Reg(UInt(log2Up(fMaxCh / kAutomic) bits)) init 0
-    val cCounter = Reg(UInt(log2Up(fMaxCh / kAutomic) bits)) init 0
+    val nCounter = Reg(UInt(fMaxChW - log2Up(kAutomic) bits)) init 0
+    val cCounter = Reg(UInt(fMaxChW - log2Up(cAutomic) bits)) init 0
     val kaCounter = Reg(UInt(log2Up(kAutomic) bits)) init 0
     val rsCounter = Reg(UInt(kMaxSizeW * kMaxSizeW bits)) init 0
 
@@ -89,7 +90,7 @@ case class AddrGen(cfg: ConvCfg) extends Component {
     val finAddrDone = Reg(Bool()) init (False)
 
 
-    val nCounter = Reg(UInt(log2Up(fMaxCh / kAutomic) bits)) init 0
+    val nCounter = Reg(UInt(fMaxChW - log2Up(kAutomic) bits)) init 0
     val hCounter = Reg(UInt(fMaxSizeW bits)) init 0
     val wCounter = Reg(UInt(fMaxSizeW bits)) init 0
     val cCounter = Reg(UInt(fMaxChW bits)) init 0
@@ -170,7 +171,7 @@ case class AddrGen(cfg: ConvCfg) extends Component {
     val foutAddrDone = Reg(Bool()) init (False)
 
 
-    val hwcCounter = Reg(UInt(log2Up(fMaxSize * fMaxSize * fMaxCh) bits)) init 0
+    val hwcCounter = Reg(UInt(fMaxSizeW + fMaxSizeW + fMaxChW bits)) init 0
 
     val hwcCounterReload = convParm.fHeight * convParm.fWidth * chOutBlock
 
@@ -217,5 +218,5 @@ object AddrGen extends App {
     enumPrefixEnable = false, // 不在枚举类型前面添加前缀
     headerWithDate = false, // 不在头文件中添加日期信息
     anonymSignalPrefix = "" // 移除匿名信号的前缀
-  ).generateVerilog(new AddrGen(ConvCfg.default))
+  ).generateVerilog(new AddrGen(ConvCfg()))
 }

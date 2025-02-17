@@ -15,6 +15,7 @@ package conv
 
 import spinal.core._
 import spinal.lib._
+import cfg.ConvCfg
 
 case class PECore(cfg: ConvCfg) extends Component {
 
@@ -84,5 +85,5 @@ object PECore extends App {
     enumPrefixEnable = false, // 不在枚举类型前面添加前缀
     headerWithDate = false, // 不在头文件中添加日期信息
     anonymSignalPrefix = "tmp" // 移除匿名信号的前缀
-  ).generateVerilog(new PECore(ConvCfg.default))
+  ).generateVerilog(new PECore(ConvCfg()))
 }

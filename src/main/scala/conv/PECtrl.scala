@@ -3,7 +3,7 @@ package conv
 import spinal.core._
 import spinal.lib._
 import mem._
-
+import cfg.ConvCfg
 
 case class PECtrl(cfg: ConvCfg) extends Component {
 
@@ -20,8 +20,8 @@ case class PECtrl(cfg: ConvCfg) extends Component {
     val peMode = out Bits (3 bits)
     val ppuMode = out Bits (2 bits)
     val spLen = out UInt (spLenMaxW bits)
-    val loopLen = out UInt (log2Up(fMaxCh / kAutomic) bits)
-    val kChDim = out UInt (log2Up(kMaxSize * kMaxSize) bits)
+    val loopLen = out UInt (fMaxChW - log2Up(kAutomic) bits)
+    val kChDim = out UInt (kMaxSizeW + kMaxSizeW bits)
     val featureIn = Vec(master Stream SInt(inputWidth bits), cAutomic)
     val weight = Vec(Vec(master Stream SInt(inputWidth bits), cAutomic), kAutomic)
     val featureOut = Vec(slave Flow SInt(inputWidth bits), kAutomic)
@@ -32,9 +32,9 @@ case class PECtrl(cfg: ConvCfg) extends Component {
     val foutAddr = slave(Stream(UInt(ramAW bits)))
 
     // MemArray Signal
-    val wPort0 = master(RdPort(ramWidth, ramDepth))
-    val fPort0 = master(RdPort(ramWidth, ramDepth))
-    val fPort1 = master(WrPort(ramWidth, ramDepth))
+    val wPort0 = master(RdPort(ramDW, ramDepth))
+    val fPort0 = master(RdPort(ramDW, ramDepth))
+    val fPort1 = master(WrPort(ramDW, ramDepth))
 
   }
 
@@ -42,7 +42,7 @@ case class PECtrl(cfg: ConvCfg) extends Component {
 
   val convParm = RegNextWhen(io.convParm.payload, io.convParm.fire)
 
-  io.spLen := convParm.kSize * convParm.kSize
+  io.spLen := convParm.fWidth * convParm.fHeight
   io.loopLen := CeilDiv(convParm.chIn, cAutomic)
   io.kChDim := convParm.kSize * convParm.kSize
 
@@ -163,5 +163,5 @@ object PECtrl extends App {
     enumPrefixEnable = false, // 不在枚举类型前面添加前缀
     headerWithDate = false, // 不在头文件中添加日期信息
     anonymSignalPrefix = "tmp" // 移除匿名信号的前缀
-  ).generateVerilog(new PECtrl(ConvCfg.default))
+  ).generateVerilog(new PECtrl(ConvCfg()))
 }
