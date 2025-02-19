@@ -5,7 +5,7 @@ import spinal.lib._
 import cfg.CtrlCfg
 
 
-class CtrlDecoder(cfg: CtrlCfg) extends Component {
+case class CtrlDecoder(cfg: CtrlCfg) extends Component {
 
   import cfg._
 
@@ -20,19 +20,13 @@ class CtrlDecoder(cfg: CtrlCfg) extends Component {
     val dmaInstr = master Stream DmaInstr(cfg) // 访存类指令（DMA_TRANS）
   }
 
-  //1. FIFO 暂存指令
-  val instrQueen = StreamFifo(
-    dataType = Bits(instrWidth bits),
-    depth = instrQueenDepth
-  )
 
-  instrQueen.io.push << io.instr
-  val QueenData = instrQueen.io.pop.payload
-  val QueenValid = instrQueen.io.pop.valid
+  val InstrData = io.instr.payload
+  val InstrValid = io.instr.valid
 
-  // 2. 解码 opcode 字段
+  // 1. 解码 opcode 字段
   val opcodeDecoded = Opcode() // 默认实例
-  val opcodeField = instrQueen.io.pop.payload(opcodeDecoded.getBitsWidth - 1 downto 0)
+  val opcodeField = io.instr.payload(opcodeDecoded.getBitsWidth - 1 downto 0)
   opcodeDecoded.assignFromBits(opcodeField)
 
   // 2. 判断指令类型
@@ -50,7 +44,7 @@ class CtrlDecoder(cfg: CtrlCfg) extends Component {
   // 3. 指令路由与流控  instrQueen.io.pop.ready := (isConv && io.convInstr.ready) ||
 
   // FIFO 数据仅在对应的输出端 ready 时消费
-  instrQueen.io.pop.ready := (isConv && io.convInstr.ready) ||
+  io.instr.ready := (isConv && io.convInstr.ready) ||
     (isCfg && io.cfgInstr.ready) ||
     (isMv && io.mvInstr.ready) ||
     (isDma && io.dmaInstr.ready)
@@ -59,26 +53,26 @@ class CtrlDecoder(cfg: CtrlCfg) extends Component {
 
   // 运算类指令
   val convInstrDecoded = ConvInstr(cfg)
-  convInstrDecoded.assignFromBits(QueenData)
+  convInstrDecoded.assignFromBits(InstrData)
   io.convInstr.payload := convInstrDecoded
-  io.convInstr.valid := QueenValid && isConv
+  io.convInstr.valid := InstrValid && isConv
 
   // 配置类指令
   val cfgInstrDecoded = CfgInstr(cfg)
-  cfgInstrDecoded.assignFromBits(QueenData)
+  cfgInstrDecoded.assignFromBits(InstrData)
   io.cfgInstr.payload := cfgInstrDecoded
-  io.cfgInstr.valid := QueenValid && isCfg
+  io.cfgInstr.valid := InstrValid && isCfg
 
   // 数据搬移指令
   val mvInstrDecoded = MvInstr(cfg)
-  mvInstrDecoded.assignFromBits(QueenData)
+  mvInstrDecoded.assignFromBits(InstrData)
   io.mvInstr.payload := mvInstrDecoded
-  io.mvInstr.valid := QueenValid && isMv
+  io.mvInstr.valid := InstrValid && isMv
 
   // 访存类指令
   val dmaInstrDecoded = DmaInstr(cfg)
-  dmaInstrDecoded.assignFromBits(QueenData)
+  dmaInstrDecoded.assignFromBits(InstrData)
   io.dmaInstr.payload := dmaInstrDecoded
-  io.dmaInstr.valid := QueenValid && isDma
+  io.dmaInstr.valid := InstrValid && isDma
 }
 

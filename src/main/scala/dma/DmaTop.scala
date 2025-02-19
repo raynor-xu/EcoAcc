@@ -15,19 +15,29 @@ case class DmaTop(cfg: DmaCfg) extends Component {
     // 接收外部下发的 DMA 任务
     val dmaTask = slave(Stream(DmaTask(cfg)))
     // AXI4 总线接口（例如连接外部外设）
-    val axi4 = master(Axi4(busConfig))
+    val axi4 = Vec(master(Axi4(busConfig)), chNum)
     // RAM 接口（连接内部 RAM 模块）
-    val ramPort = master(Memport(ramWidth, ramDepth))
+    val ramPort = Vec(master(Memport(ramWidth, ramDepth)), chNum)
+    // Dma 是否空闲
+    val dmaBusy = out Bits (chNum bits)
   }
   noIoPrefix()
 
   // 实例化 DMA 控制器
   val dmaCtrl = DmaCtrl(cfg)
 
-  // 直接连接各个接口
-  dmaCtrl.io.dmaTask <> io.dmaTask
-  dmaCtrl.io.axi4Port <> io.axi4
+  val dma = Array.fill(chNum)(Dma(cfg))
+
   dmaCtrl.io.ramPort <> io.ramPort
+  dmaCtrl.io.dmaTask <> io.dmaTask
+  io.dmaBusy := dmaCtrl.io.dmaBusy
+
+  for (i <- 0 until chNum) {
+    dma(i).io.axi4 <> io.axi4(i)
+    dma(i).io.dmaPort <> dmaCtrl.io.dmaPort(i)
+  }
+
+
 }
 
 object DmaTop {

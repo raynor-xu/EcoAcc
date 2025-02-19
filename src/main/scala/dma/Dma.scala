@@ -41,14 +41,14 @@ case class Dma(cfg: DmaCfg) extends Component {
     aw.len := (wBurstLen - 1).resized
     aw.size := log2Up(busConfig.bytePerWord)
     aw.burst := burst.INCR
-    aw.lock := lock.NORMAL
-    aw.cache := awcache.MODIFIABLE
-    aw.prot := prot.NON_SECURE
-    aw.qos := B"0000"
     aw.valid := axi4AwValid
+    //    aw.lock := lock.NORMAL
+    //    aw.cache := awcache.MODIFIABLE
+    //    aw.prot := prot.NON_SECURE
+    //    aw.qos := B"0000"
 
     w.data := axi4WData
-    w.strb.setAllTo(True)
+    //    w.strb.setAllTo(True)
     w.last := axi4WLast
     w.valid := axi4WValid
 
@@ -125,7 +125,7 @@ case class Dma(cfg: DmaCfg) extends Component {
     // 记录还剩余多少数据需要DMA写传输
     when(dmaWStart) {
       wDmaCounter.clear()
-      dmaWLeftCounter := dmaWTask.len
+      dmaWLeftCounter := dmaWTask.len.resized
     }.otherwise {
       when(wNext) {
         wDmaCounter.increment()
@@ -171,10 +171,10 @@ case class Dma(cfg: DmaCfg) extends Component {
     ar.len := (rBurstLen - 1).resized
     ar.size := log2Up(busConfig.bytePerWord)
     ar.burst := burst.INCR
-    ar.lock := lock.NORMAL
-    ar.cache := awcache.MODIFIABLE
-    ar.prot := prot.NON_SECURE
-    ar.qos := B"0000"
+    //    ar.lock := lock.NORMAL
+    //    ar.cache := awcache.MODIFIABLE
+    //    ar.prot := prot.NON_SECURE
+    //    ar.qos := B"0000"
     ar.valid := axi4ArValid
 
     r.ready := axi4RReady
@@ -245,7 +245,7 @@ case class Dma(cfg: DmaCfg) extends Component {
     // 记录还剩余多少数据需要DMA读传输
     when(dmaRStart) {
       rDmaCounter.clear()
-      dmaRLeftCounter := dmaRTask.len
+      dmaRLeftCounter := dmaRTask.len.resized
     }.otherwise {
       when(rNext) {
         rDmaCounter.increment()
@@ -278,3 +278,4 @@ object Dma extends App {
     anonymSignalPrefix = "tmp" // 移除匿名信号的前缀
   ).generateVerilog(new Dma(DmaCfg()))
 }
+
