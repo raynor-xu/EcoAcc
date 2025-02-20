@@ -33,6 +33,12 @@ package object cfg {
       useStrb = false,
       useAllStrb = false
     )
+    val apb3Cfg = Apb3Config(
+      addressWidth = 16,
+      dataWidth = 32,
+      selWidth = 1,
+      useSlaveError = true
+    )
   }
 
 
@@ -47,12 +53,7 @@ package object cfg {
   }
 
   case class CtrlCfg() extends Config {
-    val apb3Cfg = Apb3Config(
-      addressWidth = 16,
-      dataWidth = 32,
-      selWidth = 1,
-      useSlaveError = true
-    )
+
     val instrWidth = 128
     val instrQueenDepth = 16
   }
@@ -62,24 +63,30 @@ package object cfg {
 
     val periAddrWidth = ramAW
     val axi4Id = 0
-    //val taskQueenDepth = 16
     val chNum = 2
   }
 
 
   case class MemCfg() extends Config {
 
-    // 非 DMA 端口可访问的 bank 数
-    val numWeightBanks = 2
-    val numIfmapBanks = 3
-    val numOfmapBanks = 3
-
     // 总 bank 数
-    val numBanks = numWeightBanks + numIfmapBanks + numOfmapBanks
+    val numBanks = 8
     val bankDepth = ramDepth / numBanks
     val totalDepth = ramDepth // 131072
     val dataWidth = 64
-    val addrWidth = log2Up(totalDepth) // 17
+    val rdPortsNum = 2
+    val wrPortsNum = 1
+    val rwPortsNum = 2
+
+  }
+
+  case class EcoAccCfg() extends Config {
+
+    // 总 bank 数
+    val convCfg = ConvCfg()
+    val memCfg = MemCfg()
+    val dmaCfg = DmaCfg()
+    val ctrlCfg = CtrlCfg()
 
   }
 

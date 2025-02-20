@@ -1,4 +1,4 @@
-package bus
+package mux
 
 import spinal.core._
 import spinal.lib._

@@ -10,20 +10,14 @@ case class DmaCtrl(cfg: DmaCfg) extends Component {
   import cfg._
 
   val io = new Bundle {
-    val dmaTask = slave(Stream(DmaTask(cfg)))
+    val dmaParm = slave(Stream(DmaParm(cfg)))
     val ramPort = Vec(master(Memport(ramWidth, ramDepth)), chNum)
     val dmaPort = Vec(master(DmaPort(cfg)), chNum)
     val dmaBusy = out Bits (chNum bits)
   }
   noIoPrefix()
-  val dmaTaskPorts = Vec(Stream(DmaTask(cfg)), chNum)
+  val dmaParmPorts = Vec(Stream(DmaParm(cfg)), chNum)
 
-  import State._
-
-  //  val dmaTaskQueens = Array.fill(chNum)(StreamFifo(
-  //    dataType = DmaTask(cfg),
-  //    depth = taskQueenDepth
-  //  ))
 
   object State extends SpinalEnum {
     val idle,
@@ -31,18 +25,20 @@ case class DmaCtrl(cfg: DmaCfg) extends Component {
     glb2memAddr, glb2memData = newElement()
   }
 
-  dmaTaskPorts <> StreamDemux(io.dmaTask, io.dmaTask.payload.sel.asUInt, chNum)
+  import State._
+
+  dmaParmPorts <> StreamDemux(io.dmaParm, io.dmaParm.payload.sel.asUInt, chNum)
 
 
   for (i <- 0 until chNum) yield {
 
     // 用于保存任务参数的寄存器
 
-    val dmaTaskReg = Reg(DmaTask(cfg))
+    val dmaParmReg = Reg(DmaParm(cfg))
 
     val state = RegInit(idle)
 
-    val dmaTaskPort = dmaTaskPorts(i)
+    val dmaParmPort = dmaParmPorts(i)
 
     val dmaPort = io.dmaPort(i)
 
@@ -61,7 +57,7 @@ case class DmaCtrl(cfg: DmaCfg) extends Component {
     ramPort.wData := 0
 
 
-    dmaTaskPort.ready := False
+    dmaParmPort.ready := False
     dmaPort.dmaRTask.valid := False
     dmaPort.dmaRTask.payload.len := 0
     dmaPort.dmaRTask.payload.addr := 0
@@ -72,19 +68,19 @@ case class DmaCtrl(cfg: DmaCfg) extends Component {
     dmaPort.dmaWDate.valid := False
     dmaPort.dmaWDate.payload := 0
 
-    io.dmaBusy(i) := ~(state === idle && (dmaTaskPort.valid && False))
+    io.dmaBusy(i) := ~(state === idle && (dmaParmPort.valid && False))
 
     // 状态机实现
     switch(state) {
       is(idle) {
-        dmaTaskPort.ready := True
-        // 空闲状态：等待接收 dmaTask 任务
-        when(dmaTaskPort.fire) {
+        dmaParmPort.ready := True
+        // 空闲状态：等待接收 dmaParm 任务
+        when(dmaParmPort.fire) {
           // 任务到来时，锁存任务参数
-          dmaTaskReg := dmaTaskPort.payload
+          dmaParmReg := dmaParmPort.payload
           ramAddr := 0
           // 根据传输方向进入不同状态
-          switch(dmaTaskPort.mode) {
+          switch(dmaParmPort.mode) {
             is(DmaTaskMode.mem2glb) {
               state := mem2glbAddr
             }
@@ -100,10 +96,10 @@ case class DmaCtrl(cfg: DmaCfg) extends Component {
       // ===== mem2glb: 内存到外设 =====
       is(mem2glbAddr) {
         dmaPort.dmaRTask.valid := True
-        dmaPort.dmaRTask.len := dmaTaskReg.len
-        dmaPort.dmaRTask.addr := dmaTaskReg.busAddr
-        taskLen := dmaTaskReg.len
-        ramAddr := dmaTaskReg.periAddr
+        dmaPort.dmaRTask.len := dmaParmReg.len
+        dmaPort.dmaRTask.addr := dmaParmReg.busAddr
+        taskLen := dmaParmReg.len
+        ramAddr := dmaParmReg.periAddr
         when(dmaPort.dmaRTask.fire) {
           state := mem2glbData
         }
@@ -125,10 +121,10 @@ case class DmaCtrl(cfg: DmaCfg) extends Component {
       // ===== glb2mem: 内存到外设 =====
       is(glb2memAddr) {
         dmaPort.dmaWTask.valid := True
-        dmaPort.dmaWTask.len := dmaTaskReg.len
-        dmaPort.dmaWTask.addr := dmaTaskReg.busAddr
-        taskLen := dmaTaskReg.len
-        ramAddr := dmaTaskReg.periAddr
+        dmaPort.dmaWTask.len := dmaParmReg.len
+        dmaPort.dmaWTask.addr := dmaParmReg.busAddr
+        taskLen := dmaParmReg.len
+        ramAddr := dmaParmReg.periAddr
         when(dmaPort.dmaWTask.fire) {
           state := glb2memData
         }

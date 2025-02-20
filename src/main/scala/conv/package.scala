@@ -28,4 +28,28 @@ package object conv {
 
   }
 
+
+  object ConvParm {
+    def default: ConvParm = {
+
+      // Create a default PWMConfig instance
+      val convParm = new ConvParm(ConvCfg())
+      convParm.mode := 0
+      convParm.finBaseAddr := 0
+      convParm.foutBaseAddr := 0
+      convParm.wBaseAddr := 0
+      convParm.fHeight := 0
+      convParm.fWidth := 0
+      convParm.kSize := 0
+      convParm.chIn := 0
+      convParm.chOut := 0
+      convParm.pad := 0
+      convParm.stride := 0
+      convParm.spLen := 0
+      // Return the default configuration
+      convParm
+    }
+  }
+
+
 }

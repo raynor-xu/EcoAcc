@@ -13,7 +13,7 @@ case class DmaTop(cfg: DmaCfg) extends Component {
   // 顶层 IO 定义：将 DMA 控制器的接口暴露为顶层端口
   val io = new Bundle {
     // 接收外部下发的 DMA 任务
-    val dmaTask = slave(Stream(DmaTask(cfg)))
+    val dmaParm = slave(Stream(DmaParm(cfg)))
     // AXI4 总线接口（例如连接外部外设）
     val axi4 = Vec(master(Axi4(busConfig)), chNum)
     // RAM 接口（连接内部 RAM 模块）
@@ -29,7 +29,7 @@ case class DmaTop(cfg: DmaCfg) extends Component {
   val dma = Array.fill(chNum)(Dma(cfg))
 
   dmaCtrl.io.ramPort <> io.ramPort
-  dmaCtrl.io.dmaTask <> io.dmaTask
+  dmaCtrl.io.dmaParm <> io.dmaParm
   io.dmaBusy := dmaCtrl.io.dmaBusy
 
   for (i <- 0 until chNum) {

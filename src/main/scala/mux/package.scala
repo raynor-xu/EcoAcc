@@ -2,7 +2,7 @@
 import spinal.core._
 import spinal.lib._
 
-package object bus {
+package object mux {
 
 
   // 优先编码器函数，返回第一个高电平的索引

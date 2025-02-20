@@ -14,10 +14,10 @@ case class CtrlDecoder(cfg: CtrlCfg) extends Component {
     val instr = slave Stream Bits(instrWidth bits)
 
     // 解码后的各种指令（在同一周期内只有一种类型有效）
-    val convInstr = master Stream ConvInstr(cfg) // 运算类指令（CONV, FC, AVERPOOL, MAXPOOL）
-    val cfgInstr = master Stream CfgInstr(cfg) // 配置类指令（CONFIG_BIAS, CONFIG_SCALE）
-    val mvInstr = master Stream MvInstr(cfg) // 数据搬移指令（MOVE）
-    val dmaInstr = master Stream DmaInstr(cfg) // 访存类指令（DMA_TRANS）
+    val convInstr = master Stream ConvInstr(cfg) // 运算类指令CONV, FC, AVERPOOL, MAXPOOL
+    val cfgInstr = master Stream CfgInstr(cfg) // 配置类指令 CONFIG_BIAS, CONFIG_SCALE
+    val mvInstr = master Stream MvInstr(cfg) // 数据搬移指令 MOVE
+    val dmaInstr = master Stream DmaInstr(cfg) // 访存类指令 DMA_TRANS
   }
 
 

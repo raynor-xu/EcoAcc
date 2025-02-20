@@ -2,132 +2,129 @@ package mem
 
 import spinal.core._
 import spinal.lib._
+
 import cfg.MemCfg
 
-/** GLB 本地缓存阵列（简化版）
- *
- * 内部 RAM 划分为 numBanks 个 bank（每个 bank 为双口 RAM）：
- *   - 非 DMA 接口（wPort0、fPort0、fPort1）各自只能访问预先分配的 bank 区域，
- *     分别对应权重、输入 ifmap、输出 ofmap，有效地址由外部总地址经过偏移得到。
- *   - DMA 接口可访问全部 bank，其低位直接解码为 bank 号。
- *
- * 注：各接口地址宽度均为 totalDepth（= numBanks × bankDepth），
- * 当外部地址不落在各自有效区域时，本设计使能信号为 False（即不访问）。
- */
 case class GLBuffer(cfg: MemCfg) extends Component {
 
   import cfg._
 
-  // 各区域外部地址偏移（单位：地址数）
-  val weightOffset = 0
-  val ifmapOffset = numWeightBanks * bankDepth
-  val ofmapOffset = (numWeightBanks + numIfmapBanks) * bankDepth
-
-  // IO 定义：所有端口地址宽度均为 log2Up(totalDepth)
+  // IO 定义：2 读、1 写、2 读写
   val io = new Bundle {
-    val wPort0 = slave(RdPort(dataWidth, totalDepth)) // 权重读取（只读）
-    val fPort0 = slave(RdPort(dataWidth, totalDepth)) // ifmap 读取（只读）
-    val fPort1 = slave(WrPort(dataWidth, totalDepth)) // ofmap 写入（只写）
-    val dmaPort = slave(Memport(dataWidth, totalDepth)) // DMA 端口（读/写）
+    val rdPorts = Vec(slave(RdPort(dataWidth, totalDepth)), rdPortsNum)
+    val wrPorts = Vec(slave(WrPort(dataWidth, totalDepth)), wrPortsNum)
+    val rwPorts = Vec(slave(Memport(dataWidth, totalDepth)), rwPortsNum)
   }
+
   noIoPrefix()
 
-  // 地址位宽定义
-  val addrWidth = log2Up(totalDepth)
-  val bankWidth = log2Up(numBanks) // 高位 bank 选择宽度
-  val localAddrWidth = addrWidth - bankWidth // 低位为块内地址
-
-  // 计算各接口“有效地址”
-  val weightEffAddr = io.wPort0.addr - U(weightOffset, addrWidth bits)
-  val ifmapEffAddr = io.fPort0.addr - U(ifmapOffset, addrWidth bits)
-  val ofmapEffAddr = io.fPort1.addr - U(ofmapOffset, addrWidth bits)
-  val dmaEffAddr = io.dmaPort.addr
-
-  // 按要求：高 bankWidth 位为 bank 选择，低位为块内地址
-  val weightBank = weightEffAddr(addrWidth - 1 downto localAddrWidth)
-  val weightLocal = weightEffAddr(localAddrWidth - 1 downto 0)
-  val ifmapBank = ifmapEffAddr(addrWidth - 1 downto localAddrWidth)
-  val ifmapLocal = ifmapEffAddr(localAddrWidth - 1 downto 0)
-  val ofmapBank = ofmapEffAddr(addrWidth - 1 downto localAddrWidth)
-  val ofmapLocal = ofmapEffAddr(localAddrWidth - 1 downto 0)
-  val dmaBank = dmaEffAddr(addrWidth - 1 downto localAddrWidth)
-  val dmaLocal = dmaEffAddr(localAddrWidth - 1 downto 0)
-
-  // 用 Vec 保存所有 bank 的 DualPortRam 实例
-  val banks = for (bank <- 0 until numBanks) yield {
-    val ram = DualPortRam(dataWidth, bankDepth)
-
-    // 非 DMA 端口（port0）直接使用对应接口信号
-    if (bank < numWeightBanks) {
-      // 权重区域：有效当 weightBank 与当前 bank 匹配
-      ram.io.port0.addr := weightLocal
-      ram.io.port0.wData := B(0, dataWidth bits)
-      ram.io.port0.en := io.wPort0.en && (weightBank === U(bank, bankWidth bits))
-      ram.io.port0.wr := False
-    } else if (bank < numWeightBanks + numIfmapBanks) {
-      // ifmap 区域：比较时减去区域偏移（物理 bank 对应相对编号）
-      ram.io.port0.addr := ifmapLocal
-      ram.io.port0.wData := B(0, dataWidth bits)
-      ram.io.port0.en := io.fPort0.en && (ifmapBank === U(bank - numWeightBanks, bankWidth bits))
-      ram.io.port0.wr := False
-    } else {
-      // ofmap 区域
-      ram.io.port0.addr := ofmapLocal
-      ram.io.port0.wData := io.fPort1.wData
-      ram.io.port0.en := io.fPort1.en && (ofmapBank === U(bank - (numWeightBanks + numIfmapBanks), bankWidth bits))
-      ram.io.port0.wr := True
-    }
-
-    // DMA 端口（port1）：直接连接 DMA 信号，当 dmaBank 与当前 bank 匹配时使能
-    ram.io.port1.addr := dmaLocal
-    ram.io.port1.wData := io.dmaPort.wData
-    ram.io.port1.en := io.dmaPort.en && (dmaBank === U(bank, bankWidth bits))
-    ram.io.port1.wr := io.dmaPort.wr
-
-    ram
+  // 创建每个 Bank 的存储单元
+  // 这里用单口同步 RAM（Mem），写时组合写使能，读在下个周期输出
+  // 实际也可换成 multi-port RAM（取决于 FPGA/ASIC 资源）
+  val memBanks = Array.fill(numBanks) {
+    Mem(Bits(dataWidth bits), wordCount = bankDepth)
   }
 
-  // 读数据解复用：对各 bank 的 DualPortRam 进行条件选择
-  val weightOut = Bits(dataWidth bits)
-  val ifmapOut = Bits(dataWidth bits)
-  val dmaOut = Bits(dataWidth bits)
+  // bankSelWidth & bankAddrWidth
+  val bankSelWidth = log2Up(numBanks)
+  val bankAddrWidth = log2Up(bankDepth)
 
-  weightOut := 0
-  ifmapOut := 0
-  dmaOut := 0
+  // ---------------------
+  // 统一把所有端口转成 Memport 形式，便于处理
+  // ---------------------
+  val ports = Seq() ++
+    io.rdPorts.map(_.asMemport()) ++
+    io.wrPorts.map(_.asMemport()) ++
+    io.rwPorts
 
-
-  for (bank <- 0 until numBanks) {
-    if (bank < numWeightBanks) { // Scala 静态判断
-      when(weightBank === U(bank, bankWidth bits)) {
-        weightOut := banks(bank).io.port0.rData
-      }
+  // 每个 Bank 的访问请求信息
+  // requestsPerBank(i) 存放所有端口对 bank i 的访问请求
+  val requestsPerBank = for (i <- 0 until numBanks) yield new Area {
+    // 找出所有访问 bank i 的端口
+    // 并把它们的一些控制信号暂存
+    case class RequestInfo() extends Bundle {
+      val en = Bool()
+      val wr = Bool()
+      val wData = Bits(dataWidth bits)
+      val rData = Bits(dataWidth bits)
+      val portIdx = UInt(log2Up(ports.length) bits)
+      val bankSel = UInt(bankSelWidth bits)
+      val bankAddr = UInt(bankAddrWidth bits)
     }
-    if (bank >= numWeightBanks && bank < numWeightBanks + numIfmapBanks) { // 静态判断
-      when(ifmapBank === U(bank - numWeightBanks, bankWidth bits)) {
-        ifmapOut := banks(bank).io.port0.rData
-      }
+
+    val reqVec = for ((p, idx) <- ports.zipWithIndex) yield {
+      val req = RequestInfo()
+      req.bankSel := p.addr(bankAddrWidth + bankSelWidth - 1 downto bankAddrWidth)
+      req.bankAddr := p.addr(bankAddrWidth - 1 downto 0)
+      req.en := p.en && (req.bankSel === i)
+      req.wr := p.wr
+      req.wData := p.wData
+      req.rData := 0
+      req.portIdx := U(idx, log2Up(ports.size) bits)
+      req
     }
-    // DMA 部分没有静态条件，直接使用硬件条件
-    when((dmaBank === U(bank, bankWidth bits)) && (!io.dmaPort.wr)) {
-      dmaOut := banks(bank).io.port1.rData
+
+    // 后续在本 bank 里仲裁：只有一个请求可以命中
+    // 这里示例做一个简单优先级仲裁 (index小的端口优先)
+    val hitVec = reqVec.map(_.en)
+    val grantIndex = UInt(log2Up(ports.size) bits)
+
+    // 生成一个优先级编码
+    // 若你想要 round-robin、平滑仲裁等，需要自行扩展
+    grantIndex := PriorityMux(hitVec, (0 until reqVec.size).map(U(_)))
+
+    // 是否有任意一个端口访问这个 bank
+    val bankHit = hitVec.orR
+
+    // 输出: 根据 grantIndex 选择要访问的端口
+    val chosen = reqVec(grantIndex)
+
+    // 使用 Spinal 提供的 readWriteSync (单口 RAM 的“伪双口”方法)
+    // 读在下个周期得到
+    val memReadData = memBanks(i).readWriteSync(
+      enable = bankHit, // 只要有访问就使能
+      address = chosen.bankAddr, // 写和读用同一个地址
+      write = chosen.wr && chosen.en, // 写信号
+      data = chosen.wData
+    )
+
+
+    // 将读到的数据回传给被选中的端口
+    // 注意是下周期才能得到有效读数据
+    val rDataReg = RegNext(memReadData)
+
+    // 然后要把这个结果真正送到端口的 rData 上
+    // 这里做法：在此 Area 仅保存在 chosen.rData 里
+    // 之后在外部再统一写回端口
+    for (r <- reqVec) {
+      when(r.en && (grantIndex === r.portIdx) && !r.wr) {
+        // 当前周期申请且被仲裁到，而且是读操作 -> 下周期得到读数据
+        r.rData := rDataReg
+      }
     }
   }
 
-
-  // 输出结果
-  io.wPort0.rData := weightOut
-  io.fPort0.rData := ifmapOut
-  io.dmaPort.rData := dmaOut
+  for ((port, idx) <- ports.zipWithIndex) {
+    // 先置默认值
+    port.rData := 0
+    // 在所有 bank 中找到满足 (r.portIdx == idx) 的 r.rData
+    for (bank <- requestsPerBank) {
+      val r = bank.reqVec(idx)
+      when(r.en && !r.wr) {
+        port.rData := r.rData
+      }
+    }
+  }
 }
 
-object GLBuffer extends App {
 
+object GLBuffer extends App {
   SpinalConfig(
     targetDirectory = "rtl", // 指定生成代码的目标目录
     oneFilePerComponent = false, // 每个组件单独生成一个文件
     enumPrefixEnable = false, // 不在枚举类型前面添加前缀
     headerWithDate = false, // 不在头文件中添加日期信息
-    anonymSignalPrefix = "tmp" // 移除匿名信号的前缀
+    anonymSignalPrefix = "" // 移除匿名信号的前缀
   ).generateVerilog(GLBuffer(MemCfg()))
+
 }

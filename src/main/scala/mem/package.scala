@@ -4,6 +4,7 @@ import spinal.lib._
 
 package object mem {
 
+
   case class Memport(width: Int, depth: Int, useWe: Boolean = false) extends Bundle with IMasterSlave {
     val addr = UInt(log2Up(depth) bits)
     val wData = Bits(width bits)
@@ -43,10 +44,9 @@ package object mem {
 
     def asMemport(): Memport = {
       val memport = Memport(width, depth, useWe)
-      memport.addr := this.addr
-      memport.rData := this.rData
-      memport.we := this.we
-      memport.en := this.en
+      memport.addr <> addr
+      memport.rData <> rData
+      memport.en <> en
       memport.wr := False
       memport.wData := 0
       memport
@@ -70,10 +70,9 @@ package object mem {
 
     def asMemport(): Memport = {
       val memport = Memport(width, depth, useWe)
-      memport.addr := this.addr
-      memport.wData := this.wData
-      memport.we := this.we
-      memport.en := this.en
+      memport.addr <> addr
+      memport.en <> en
+      memport.wData <> wData
       memport.wr := True
       memport
     }

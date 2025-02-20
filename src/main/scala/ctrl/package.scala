@@ -1,8 +1,9 @@
 
 
 import spinal.core._
-import cfg.CtrlCfg
-
+import cfg._
+import conv._
+import dma._
 
 package object ctrl {
   /** 1. 运算类指令（适用于 CONV / FC / AVERPOOL / MAXPOOL）
@@ -34,16 +35,17 @@ package object ctrl {
     val opcode = Opcode()
 
     // 参数字段
-    val finBaseAddr = UInt(ramAW bits)
-    val foutBaseAddr = UInt(ramAW bits)
-    val wBaseAddr = UInt(ramAW bits)
-    val fHeight = UInt(fMaxSizeW bits)
-    val fWidth = UInt(fMaxSizeW bits)
-    val kSize = UInt(kMaxSizeW bits)
-    val chIn = UInt(fMaxChW bits)
-    val chOut = UInt(fMaxChW bits)
-    val pad = UInt(pMaxW bits)
-    val stride = UInt(sMaxW bits)
+    val convPram = ConvParm(ConvCfg())
+    //    val finBaseAddr = UInt(ramAW bits)
+    //    val foutBaseAddr = UInt(ramAW bits)
+    //    val wBaseAddr = UInt(ramAW bits)
+    //    val fHeight = UInt(fMaxSizeW bits)
+    //    val fWidth = UInt(fMaxSizeW bits)
+    //    val kSize = UInt(kMaxSizeW bits)
+    //    val chIn = UInt(fMaxChW bits)
+    //    val chOut = UInt(fMaxChW bits)
+    //    val pad = UInt(pMaxW bits)
+    //    val stride = UInt(sMaxW bits)
 
     // 控制字段
     val computeMode = UInt(3 bits) // 计算模式
@@ -51,9 +53,7 @@ package object ctrl {
 
     // 保留字段
     val usedWdith = opcode.getBitsWidth +
-      finBaseAddr.getBitsWidth + foutBaseAddr.getBitsWidth + wBaseAddr.getBitsWidth +
-      fHeight.getBitsWidth + fWidth.getBitsWidth + kSize.getBitsWidth +
-      chIn.getBitsWidth + chOut.getBitsWidth + pad.getBitsWidth + stride.getBitsWidth +
+      convPram.getBitsWidth +
       computeMode.getBitsWidth + convFunc.getBitsWidth
 
     val reserved = UInt(instrWidth - usedWdith bits)
@@ -152,21 +152,31 @@ package object ctrl {
 
 
     // Header
-    val opcode = Opcode() // 3 bit（DMA_TRANS）
-    val mode = Bits(1 bits) // 1 bit  //load:0 store:1
+    val opcode = Opcode()
 
     // 地址字段
-    val dataLen = UInt(ramAW bits)
-    val accAddr = UInt(ramAW bits)
-    val memAddr = UInt(32 bits)
+    val dmaPram = DmaParm(DmaCfg())
 
     // 保留字段（43 bit）
 
-    val usedWdith = opcode.getBitsWidth + mode.getBitsWidth +
-      dataLen.getBitsWidth + accAddr.getBitsWidth + memAddr.getBitsWidth
+    val usedWdith = opcode.getBitsWidth + dmaPram.getBitsWidth
 
     val reserved = UInt(instrWidth - usedWdith bits)
 
+  }
+
+
+  object DmaInstr {
+    def default(): DmaInstr = {
+      val dmaInstr = new DmaInstr(CtrlCfg())
+      // 给 opcode 赋默认值，例如 DMA_TRANS（假设这是默认的操作码）
+      dmaInstr.opcode := Opcode.DMA_TRANS
+      // 给 dmaPram 字段赋默认值，注意这里传入的 DmaCfg 应该与设计一致
+      dmaInstr.dmaPram := DmaParm.default
+      // 保留字段一般设为0
+      dmaInstr.reserved := 0
+      dmaInstr
+    }
   }
 
 
