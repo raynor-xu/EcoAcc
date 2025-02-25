@@ -10,12 +10,13 @@ case class PEArray(cfg: ConvCfg) extends Component {
 
   val io = new Bundle {
     val clear = in Bool()
-    val relu = in Bool()
-    val peMode = in Bits (3 bits)
-    val ppuMode = in Bits (2 bits)
-    val spLen = in UInt (spLenMaxW bits)
-    val loopLen = in UInt (fMaxChW - log2Up(kAutomic) bits)
+
+
+    val peMode = in(PEMode())
+    val ppuParm = in(PPUParm(cfg))
+    val spLen = in UInt (log2Up(lfbDepth) bits)
     val kChDim = in UInt (kMaxSizeW + kMaxSizeW bits)
+
     val featureIn = Vec(slave Stream SInt(inputWidth bits), cAutomic)
     val weight = Vec(Vec(slave Stream SInt(inputWidth bits), cAutomic), kAutomic)
     val featureOut = Vec(master Flow SInt(inputWidth bits), kAutomic)
@@ -30,11 +31,7 @@ case class PEArray(cfg: ConvCfg) extends Component {
 
   for (k <- 0 until kAutomic) {
     ppUnit(k).io.clear := io.clear
-    ppUnit(k).io.relu := io.relu
-    ppUnit(k).io.mode := io.ppuMode
-    ppUnit(k).io.spLen := io.spLen
-    ppUnit(k).io.loopLen := io.loopLen
-    //ppUnit(k).io.biasIn <> io.biasIn(k)
+    ppUnit(k).io.parm := io.ppuParm
     ppUnit(k).io.featureOut <> io.featureOut(k)
 
     for (c <- 0 until cAutomic) {

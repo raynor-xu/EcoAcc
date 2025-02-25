@@ -10,18 +10,18 @@ case class PPUnit(cfg: ConvCfg) extends Component {
 
   val io = new Bundle {
     val clear = in Bool()
-    val relu = in Bool()
-    val mode = in Bits (2 bits)
-    val spLen = in UInt (spLenMaxW bits)
-    val loopLen = in UInt (fMaxChW - log2Up(kAutomic) bits)
-    //val biasIn = slave Stream SInt(accWidth bits)
+    val parm = in(PPUParm(cfg))
+
     val macIn = Vec(slave Flow SInt(accWidth bits), cAutomic)
     val featureOut = master Flow SInt(inputWidth bits)
   }
 
   noIoPrefix()
 
-  val lfBuffer = Reg(Vec(SInt(accWidth bits), spLenMax))
+  import io.parm._
+  import ConvMode._
+
+  val lfBuffer = Reg(Vec(SInt(accWidth bits), lwbDepth))
 
   val macSumArea = new Area {
 
@@ -29,17 +29,22 @@ case class PPUnit(cfg: ConvCfg) extends Component {
 
     val adderTree = AdderTree(accWidth, cAutomic)
 
-    val macSumEn = io.macIn.map(_.valid).reduce(_ || _) && ~io.clear
+    val macSumEn = io.macIn.map(_.valid).reduce(_ || _) && ~io.clear && mode === CONV2D
 
     val macSumValid = RegNext(macSumEn) init (False)
 
-    adderTree.io.dataIn := Vec(io.macIn.map(_.payload))
+
+    adderTree.io.dataIn := Vec(S(0, accWidth bits), cAutomic)
+
 
     when(macSumEn) {
+      adderTree.io.dataIn := Vec(io.macIn.map(_.payload))
       macSumReg := adderTree.io.dataOut.resized
+
     }
 
   }
+
 
   val pSumArea = new Area {
 
@@ -51,11 +56,11 @@ case class PPUnit(cfg: ConvCfg) extends Component {
 
     val pSumValid = RegNext(pSumEn) init (False)
 
-    val spLenCnt = Reg(UInt(spLenMaxW bits)) init (0)
+    val spLenCnt = Reg(UInt(log2Up(lwbDepth) bits)) init (0)
 
     val loopCnt = Reg(UInt(fMaxChW - log2Up(kAutomic) bits)) init (0)
 
-    val last = loopCnt === io.loopLen - 1
+    val last = loopCnt === loopLen - 1
 
     pAddData := 0
     // io.biasIn.ready := False
@@ -67,33 +72,28 @@ case class PPUnit(cfg: ConvCfg) extends Component {
     } otherwise {
       when(pSumEn) {
         // spLen increase
-        when(spLenCnt < io.spLen - 1) {
+        when(spLenCnt < spLen - 1) {
           spLenCnt := spLenCnt + 1
         } otherwise {
           spLenCnt := 0
-          when(loopCnt < io.loopLen - 1) {
+          when(loopCnt < loopLen - 1) {
             loopCnt := loopCnt + 1
           } otherwise {
             loopCnt := 0
           }
         }
         // pAddData switch
-        switch(io.mode) {
-          is(B"2'b00") {
+        switch(mode) {
+          is(FC) {
             pAddData := 0
             //io.biasIn.ready := False
           }
-          is(B"2'b01") {
+          is(CONV2D) {
             pAddData := lfBuffer(spLenCnt)
             //io.biasIn.ready := False
           }
-          is(B"2'b10") {
-            //pAddData := io.biasIn.payload
-            //io.biasIn.ready := True
-          }
-          is(B"2'b11") {
-            //pAddData := lfBuffer(spLenCnt) + io.biasIn.payload
-            //io.biasIn.ready := True
+          default {
+            pAddData := 0
           }
         }
         pSumReg := macSumArea.macSumReg + pAddData
@@ -102,17 +102,81 @@ case class PPUnit(cfg: ConvCfg) extends Component {
     }
   }
 
+  val bufArea = new Area {
+
+    val bufEn = mode =/= CONV2D && io.macIn.map(_.valid).reduce(_ || _) && ~io.clear
+
+
+    val macInReg = RegNextWhen(Vec(io.macIn.map(_.payload)), bufEn)
+
+    val cnt = Reg(UInt(log2Up(cAutomic) bits)) init (cAutomic - 1)
+
+    val bufReg = macInReg(cnt)
+
+    val bufValid = cnt =/= cAutomic - 1
+
+
+    when(bufEn) {
+      cnt := 0
+    } otherwise {
+      when(cnt =/= cAutomic - 1) {
+        cnt := cnt + 1
+      }
+    }
+
+
+  }
+
 
   val quantArea = new Area {
 
     val quantReg = Reg(SInt(inputWidth bits)) init (0)
 
-    val quantEn = pSumArea.pSumValid && pSumArea.last && ~io.clear
+    val quantEn = Bool()
+
+    val rawData = SInt(accWidth bits)
+
+    switch(mode) {
+      is(CONV2D) {
+        quantEn := pSumArea.pSumValid && pSumArea.last && ~io.clear
+        rawData := pSumArea.pSumReg
+      }
+      default {
+        quantEn := bufArea.bufValid && ~io.clear
+        rawData := bufArea.bufReg
+      }
+    }
+
 
     val quantValid = RegNext(quantEn) init (False)
 
     when(quantEn) {
-      quantReg := (pSumArea.pSumReg >> inputWidth).resized
+      // 1. 乘法
+      val multResult = rawData * multiplier
+      // 2. 舍入偏置
+      val offset = Mux(shift === 0, S(0, multResult.getWidth bits),
+        S(1, multResult.getWidth bits) << (shift - 1))
+      // 3. 加上舍入偏置
+      val adjusted = multResult + offset
+      // 4. 右移：执行算术右移
+      val shifted = adjusted >> shift
+      // 5. 加上零点
+      val withZero = shifted + zeroPoint.resize(shifted.getWidth)
+      // 6. 饱和截断到 int8 范围 [-128, 127]
+      val minVal = io.featureOut.payload.maxValue
+      val maxVal = io.featureOut.payload.minValue
+
+      val saturated = SInt(inputWidth bits)
+      when(withZero > maxVal) {
+        saturated := maxVal
+      } elsewhen (withZero < minVal) {
+        saturated := minVal
+      } otherwise {
+        saturated := withZero.resized
+      }
+
+
+      quantReg := saturated
     }
   }
 
@@ -126,7 +190,7 @@ case class PPUnit(cfg: ConvCfg) extends Component {
 
 
     when(reluEn) {
-      when(quantArea.quantReg < 0 && io.relu) {
+      when(quantArea.quantReg < 0 && reluEn) {
         reluReg := 0
       } otherwise {
         reluReg := quantArea.quantReg

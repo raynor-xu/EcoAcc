@@ -1,6 +1,6 @@
 // Generator : SpinalHDL v1.10.2a    git head : a348a60b7e8b6a455c72e1536ec3d74a2ea16935
 // Component : PETop
-// Git hash  : 0b0872149023716abb874c9b16502c6e19bc1f13
+// Git hash  : 02491fef150ddb695e806a8318f17cf1104f38a0
 
 `timescale 1ns/1ps
 
@@ -19,6 +19,10 @@ module PETop (
   input  wire [2:0]    convParm_payload_pad,
   input  wire [2:0]    convParm_payload_stride,
   input  wire [9:0]    convParm_payload_spLen,
+  input  wire          ppuParm_valid,
+  input  wire [9:0]    ppuParm_payload_multiplier,
+  input  wire [3:0]    ppuParm_payload_shift,
+  input  wire [7:0]    ppuParm_payload_zeroPoint,
   output wire [14:0]   wPort0_addr,
   input  wire [63:0]   wPort0_rData,
   output wire          wPort0_en,
@@ -127,6 +131,9 @@ module PETop (
   wire       [1:0]    peCtrl_1_ppuMode;
   wire       [9:0]    peCtrl_1_spLen;
   wire       [6:0]    peCtrl_1_loopLen;
+  wire       [9:0]    peCtrl_1_multiplier;
+  wire       [3:0]    peCtrl_1_shift;
+  wire       [7:0]    peCtrl_1_zeroPoint;
   wire       [5:0]    peCtrl_1_kChDim;
   wire                peCtrl_1_featureIn_0_valid;
   wire       [7:0]    peCtrl_1_featureIn_0_payload;
@@ -297,6 +304,9 @@ module PETop (
     .spLen                (peCtrl_1_spLen[9:0]                ), //i
     .loopLen              (peCtrl_1_loopLen[6:0]              ), //i
     .kChDim               (peCtrl_1_kChDim[5:0]               ), //i
+    .multiplier           (peCtrl_1_multiplier[9:0]           ), //i
+    .shift                (peCtrl_1_shift[3:0]                ), //i
+    .zeroPoint            (peCtrl_1_zeroPoint[7:0]            ), //i
     .featureIn_0_valid    (peCtrl_1_featureIn_0_valid         ), //i
     .featureIn_0_ready    (peArray_1_featureIn_0_ready        ), //o
     .featureIn_0_payload  (peCtrl_1_featureIn_0_payload[7:0]  ), //i
@@ -547,12 +557,19 @@ module PETop (
     .convParm_payload_pad          (convParm_payload_pad[2:0]          ), //i
     .convParm_payload_stride       (convParm_payload_stride[2:0]       ), //i
     .convParm_payload_spLen        (convParm_payload_spLen[9:0]        ), //i
+    .ppuParm_valid                 (ppuParm_valid                      ), //i
+    .ppuParm_payload_multiplier    (ppuParm_payload_multiplier[9:0]    ), //i
+    .ppuParm_payload_shift         (ppuParm_payload_shift[3:0]         ), //i
+    .ppuParm_payload_zeroPoint     (ppuParm_payload_zeroPoint[7:0]     ), //i
     .clear                         (peCtrl_1_clear                     ), //o
     .relu                          (peCtrl_1_relu                      ), //o
     .peMode                        (peCtrl_1_peMode[2:0]               ), //o
     .ppuMode                       (peCtrl_1_ppuMode[1:0]              ), //o
     .spLen                         (peCtrl_1_spLen[9:0]                ), //o
     .loopLen                       (peCtrl_1_loopLen[6:0]              ), //o
+    .multiplier                    (peCtrl_1_multiplier[9:0]           ), //o
+    .shift                         (peCtrl_1_shift[3:0]                ), //o
+    .zeroPoint                     (peCtrl_1_zeroPoint[7:0]            ), //o
     .kChDim                        (peCtrl_1_kChDim[5:0]               ), //o
     .featureIn_0_valid             (peCtrl_1_featureIn_0_valid         ), //o
     .featureIn_0_ready             (peArray_1_featureIn_0_ready        ), //i
@@ -1244,12 +1261,19 @@ module PECtrl (
   input  wire [2:0]    convParm_payload_pad,
   input  wire [2:0]    convParm_payload_stride,
   input  wire [9:0]    convParm_payload_spLen,
+  input  wire          ppuParm_valid,
+  input  wire [9:0]    ppuParm_payload_multiplier,
+  input  wire [3:0]    ppuParm_payload_shift,
+  input  wire [7:0]    ppuParm_payload_zeroPoint,
   output wire          clear,
   output wire          relu,
   output wire [2:0]    peMode,
   output wire [1:0]    ppuMode,
   output wire [9:0]    spLen,
   output wire [6:0]    loopLen,
+  output wire [9:0]    multiplier,
+  output wire [3:0]    shift,
+  output wire [7:0]    zeroPoint,
   output wire [5:0]    kChDim,
   output wire          featureIn_0_valid,
   input  wire          featureIn_0_ready,
@@ -1515,7 +1539,7 @@ module PECtrl (
   reg                 tmp_wCtrl_lwbReady_5;
   reg                 tmp_wCtrl_lwbReady_6;
   reg                 tmp_wCtrl_lwbReady_7;
-  wire       [2:0]    tmp_when_PECtrl_l85;
+  wire       [2:0]    tmp_when_PECtrl_l94;
   wire                convParm_fire;
   reg        [1:0]    convParm_mode;
   reg        [14:0]   convParm_finBaseAddr;
@@ -1529,15 +1553,18 @@ module PECtrl (
   reg        [2:0]    convParm_pad;
   reg        [2:0]    convParm_stride;
   reg        [9:0]    convParm_spLen;
+  reg        [9:0]    ppuParm_multiplier;
+  reg        [3:0]    ppuParm_shift;
+  reg        [7:0]    ppuParm_zeroPoint;
   reg                 wCtrl_wCtrlState;
   reg        [2:0]    wCtrl_kAutomicCnt;
   wire                wCtrl_lwbReady;
   wire                wAddr_fire;
   reg                 wCtrl_lwbValid;
   wire                wCtrl_lwbFire;
-  wire                when_PECtrl_l71;
-  wire                when_PECtrl_l85;
-  wire                when_PECtrl_l91;
+  wire                when_PECtrl_l80;
+  wire                when_PECtrl_l94;
+  wire                when_PECtrl_l100;
   reg                 finCtrl_finCtrlState;
   wire                finAddr_fire;
   reg                 finCtrl_finValid;
@@ -1550,16 +1577,16 @@ module PECtrl (
   wire       [7:0]    finCtrl_feature_5;
   wire       [7:0]    finCtrl_feature_6;
   wire       [7:0]    finCtrl_feature_7;
-  wire                when_PECtrl_l111;
-  wire                when_PECtrl_l122;
+  wire                when_PECtrl_l120;
+  wire                when_PECtrl_l131;
   reg                 foutCtrl_foutCtrlState;
   wire                foutCtrl_foutValid;
-  wire                when_PECtrl_l136;
-  wire                when_PECtrl_l149;
+  wire                when_PECtrl_l145;
+  wire                when_PECtrl_l158;
 
   assign tmp_loopLen = (tmp_loopLen_1 - 10'h001);
   assign tmp_loopLen_1 = (convParm_chIn + 10'h008);
-  assign tmp_when_PECtrl_l85 = (wCtrl_kAutomicCnt - 3'b001);
+  assign tmp_when_PECtrl_l94 = (wCtrl_kAutomicCnt - 3'b001);
   always @(*) begin
     case(wCtrl_kAutomicCnt)
       3'b000 : begin
@@ -1649,6 +1676,9 @@ module PECtrl (
   assign spLen = (convParm_fWidth * convParm_fHeight);
   assign loopLen = (tmp_loopLen >>> 2'd3);
   assign kChDim = (convParm_kSize * convParm_kSize);
+  assign multiplier = ppuParm_multiplier;
+  assign shift = ppuParm_shift;
+  assign zeroPoint = ppuParm_zeroPoint;
   assign relu = 1'b0;
   assign peMode = 3'b000;
   assign ppuMode = 2'b00;
@@ -1784,9 +1814,9 @@ module PECtrl (
   assign weight_7_6_valid = (wCtrl_lwbValid && (3'b111 == wCtrl_kAutomicCnt));
   assign weight_7_7_payload = wPort0_rData[63 : 56];
   assign weight_7_7_valid = (wCtrl_lwbValid && (3'b111 == wCtrl_kAutomicCnt));
-  assign when_PECtrl_l71 = (! wCtrl_wCtrlState);
+  assign when_PECtrl_l80 = (! wCtrl_wCtrlState);
   always @(*) begin
-    if(when_PECtrl_l71) begin
+    if(when_PECtrl_l80) begin
       wPort0_en = 1'b0;
     end else begin
       wPort0_en = wAddr_fire;
@@ -1794,7 +1824,7 @@ module PECtrl (
   end
 
   always @(*) begin
-    if(when_PECtrl_l71) begin
+    if(when_PECtrl_l80) begin
       wAddr_ready = 1'b0;
     end else begin
       wAddr_ready = wCtrl_lwbReady;
@@ -1802,15 +1832,15 @@ module PECtrl (
   end
 
   always @(*) begin
-    if(when_PECtrl_l71) begin
+    if(when_PECtrl_l80) begin
       wPort0_addr = 15'h0;
     end else begin
       wPort0_addr = wAddr_payload;
     end
   end
 
-  assign when_PECtrl_l85 = (wCtrl_kAutomicCnt < tmp_when_PECtrl_l85);
-  assign when_PECtrl_l91 = (! wAddr_valid);
+  assign when_PECtrl_l94 = (wCtrl_kAutomicCnt < tmp_when_PECtrl_l94);
+  assign when_PECtrl_l100 = (! wAddr_valid);
   assign finAddr_fire = (finAddr_valid && finAddr_ready);
   assign finCtrl_finReady = (((((((featureIn_0_ready && featureIn_1_ready) && featureIn_2_ready) && featureIn_3_ready) && featureIn_4_ready) && featureIn_5_ready) && featureIn_6_ready) && featureIn_7_ready);
   assign finCtrl_feature_0 = fPort0_rData[7 : 0];
@@ -1837,9 +1867,9 @@ module PECtrl (
   assign featureIn_6_valid = finCtrl_finValid;
   assign featureIn_7_payload = finCtrl_feature_7;
   assign featureIn_7_valid = finCtrl_finValid;
-  assign when_PECtrl_l111 = (! finCtrl_finCtrlState);
+  assign when_PECtrl_l120 = (! finCtrl_finCtrlState);
   always @(*) begin
-    if(when_PECtrl_l111) begin
+    if(when_PECtrl_l120) begin
       fPort0_en = 1'b0;
     end else begin
       fPort0_en = finAddr_fire;
@@ -1847,7 +1877,7 @@ module PECtrl (
   end
 
   always @(*) begin
-    if(when_PECtrl_l111) begin
+    if(when_PECtrl_l120) begin
       finAddr_ready = 1'b0;
     end else begin
       finAddr_ready = finCtrl_finReady;
@@ -1855,19 +1885,19 @@ module PECtrl (
   end
 
   always @(*) begin
-    if(when_PECtrl_l111) begin
+    if(when_PECtrl_l120) begin
       fPort0_addr = 15'h0;
     end else begin
       fPort0_addr = finAddr_payload;
     end
   end
 
-  assign when_PECtrl_l122 = (! wAddr_valid);
+  assign when_PECtrl_l131 = (! wAddr_valid);
   assign foutCtrl_foutValid = (((((((featureOut_0_valid || featureOut_1_valid) || featureOut_2_valid) || featureOut_3_valid) || featureOut_4_valid) || featureOut_5_valid) || featureOut_6_valid) || featureOut_7_valid);
   assign fPort1_wData = {featureOut_0_payload,{featureOut_1_payload,{featureOut_2_payload,{featureOut_3_payload,{featureOut_4_payload,{featureOut_5_payload,{featureOut_6_payload,featureOut_7_payload}}}}}}};
-  assign when_PECtrl_l136 = (! foutCtrl_foutCtrlState);
+  assign when_PECtrl_l145 = (! foutCtrl_foutCtrlState);
   always @(*) begin
-    if(when_PECtrl_l136) begin
+    if(when_PECtrl_l145) begin
       fPort1_en = 1'b0;
     end else begin
       fPort1_en = foutCtrl_foutValid;
@@ -1875,7 +1905,7 @@ module PECtrl (
   end
 
   always @(*) begin
-    if(when_PECtrl_l136) begin
+    if(when_PECtrl_l145) begin
       foutAddr_ready = 1'b0;
     end else begin
       foutAddr_ready = foutCtrl_foutValid;
@@ -1883,7 +1913,7 @@ module PECtrl (
   end
 
   always @(*) begin
-    if(when_PECtrl_l136) begin
+    if(when_PECtrl_l145) begin
       fPort1_addr = 15'h0;
     end else begin
       fPort1_addr = foutAddr_payload;
@@ -1891,14 +1921,14 @@ module PECtrl (
   end
 
   always @(*) begin
-    if(when_PECtrl_l136) begin
+    if(when_PECtrl_l145) begin
       convParm_ready = 1'b1;
     end else begin
       convParm_ready = 1'b0;
     end
   end
 
-  assign when_PECtrl_l149 = (! wAddr_valid);
+  assign when_PECtrl_l158 = (! wAddr_valid);
   always @(posedge clk) begin
     if(convParm_fire) begin
       convParm_mode <= convParm_payload_mode;
@@ -1914,6 +1944,11 @@ module PECtrl (
       convParm_stride <= convParm_payload_stride;
       convParm_spLen <= convParm_payload_spLen;
     end
+    if(ppuParm_valid) begin
+      ppuParm_multiplier <= ppuParm_payload_multiplier;
+      ppuParm_shift <= ppuParm_payload_shift;
+      ppuParm_zeroPoint <= ppuParm_payload_zeroPoint;
+    end
   end
 
   always @(posedge clk or posedge reset) begin
@@ -1926,39 +1961,39 @@ module PECtrl (
       foutCtrl_foutCtrlState <= 1'b0;
     end else begin
       wCtrl_lwbValid <= wAddr_fire;
-      if(when_PECtrl_l71) begin
+      if(when_PECtrl_l80) begin
         if(convParm_fire) begin
           wCtrl_wCtrlState <= 1'b1;
           wCtrl_kAutomicCnt <= 3'b000;
         end
       end else begin
         if(wCtrl_lwbFire) begin
-          if(when_PECtrl_l85) begin
+          if(when_PECtrl_l94) begin
             wCtrl_kAutomicCnt <= (wCtrl_kAutomicCnt + 3'b001);
           end else begin
             wCtrl_kAutomicCnt <= 3'b000;
           end
         end
-        if(when_PECtrl_l91) begin
+        if(when_PECtrl_l100) begin
           wCtrl_wCtrlState <= 1'b0;
         end
       end
       finCtrl_finValid <= finAddr_fire;
-      if(when_PECtrl_l111) begin
+      if(when_PECtrl_l120) begin
         if(convParm_fire) begin
           finCtrl_finCtrlState <= 1'b1;
         end
       end else begin
-        if(when_PECtrl_l122) begin
+        if(when_PECtrl_l131) begin
           finCtrl_finCtrlState <= 1'b0;
         end
       end
-      if(when_PECtrl_l136) begin
+      if(when_PECtrl_l145) begin
         if(convParm_fire) begin
           foutCtrl_foutCtrlState <= 1'b1;
         end
       end else begin
-        if(when_PECtrl_l149) begin
+        if(when_PECtrl_l158) begin
           foutCtrl_foutCtrlState <= 1'b0;
         end
       end
@@ -1976,6 +2011,9 @@ module PEArray (
   input  wire [9:0]    spLen,
   input  wire [6:0]    loopLen,
   input  wire [5:0]    kChDim,
+  input  wire [9:0]    multiplier,
+  input  wire [3:0]    shift,
+  input  wire [7:0]    zeroPoint,
   input  wire          featureIn_0_valid,
   output wire          featureIn_0_ready,
   input  wire [7:0]    featureIn_0_payload,
@@ -3579,6 +3617,9 @@ module PEArray (
     .mode               (ppuMode[1:0]                    ), //i
     .spLen              (spLen[9:0]                      ), //i
     .loopLen            (loopLen[6:0]                    ), //i
+    .multiplier         (multiplier[9:0]                 ), //i
+    .shift              (shift[3:0]                      ), //i
+    .zeroPoint          (zeroPoint[7:0]                  ), //i
     .macIn_0_valid      (peCores_0_0_macOut_valid        ), //i
     .macIn_0_payload    (peCores_0_0_macOut_payload[31:0]), //i
     .macIn_1_valid      (peCores_0_1_macOut_valid        ), //i
@@ -3606,6 +3647,9 @@ module PEArray (
     .mode               (ppuMode[1:0]                      ), //i
     .spLen              (spLen[9:0]                        ), //i
     .loopLen            (loopLen[6:0]                      ), //i
+    .multiplier         (multiplier[9:0]                   ), //i
+    .shift              (shift[3:0]                        ), //i
+    .zeroPoint          (zeroPoint[7:0]                    ), //i
     .macIn_0_valid      (peCores_1_0_macOut_valid          ), //i
     .macIn_0_payload    (peCores_1_0_macOut_payload[31:0]  ), //i
     .macIn_1_valid      (peCores_1_1_macOut_valid          ), //i
@@ -3633,6 +3677,9 @@ module PEArray (
     .mode               (ppuMode[1:0]                      ), //i
     .spLen              (spLen[9:0]                        ), //i
     .loopLen            (loopLen[6:0]                      ), //i
+    .multiplier         (multiplier[9:0]                   ), //i
+    .shift              (shift[3:0]                        ), //i
+    .zeroPoint          (zeroPoint[7:0]                    ), //i
     .macIn_0_valid      (peCores_2_0_macOut_valid          ), //i
     .macIn_0_payload    (peCores_2_0_macOut_payload[31:0]  ), //i
     .macIn_1_valid      (peCores_2_1_macOut_valid          ), //i
@@ -3660,6 +3707,9 @@ module PEArray (
     .mode               (ppuMode[1:0]                      ), //i
     .spLen              (spLen[9:0]                        ), //i
     .loopLen            (loopLen[6:0]                      ), //i
+    .multiplier         (multiplier[9:0]                   ), //i
+    .shift              (shift[3:0]                        ), //i
+    .zeroPoint          (zeroPoint[7:0]                    ), //i
     .macIn_0_valid      (peCores_3_0_macOut_valid          ), //i
     .macIn_0_payload    (peCores_3_0_macOut_payload[31:0]  ), //i
     .macIn_1_valid      (peCores_3_1_macOut_valid          ), //i
@@ -3687,6 +3737,9 @@ module PEArray (
     .mode               (ppuMode[1:0]                      ), //i
     .spLen              (spLen[9:0]                        ), //i
     .loopLen            (loopLen[6:0]                      ), //i
+    .multiplier         (multiplier[9:0]                   ), //i
+    .shift              (shift[3:0]                        ), //i
+    .zeroPoint          (zeroPoint[7:0]                    ), //i
     .macIn_0_valid      (peCores_4_0_macOut_valid          ), //i
     .macIn_0_payload    (peCores_4_0_macOut_payload[31:0]  ), //i
     .macIn_1_valid      (peCores_4_1_macOut_valid          ), //i
@@ -3714,6 +3767,9 @@ module PEArray (
     .mode               (ppuMode[1:0]                      ), //i
     .spLen              (spLen[9:0]                        ), //i
     .loopLen            (loopLen[6:0]                      ), //i
+    .multiplier         (multiplier[9:0]                   ), //i
+    .shift              (shift[3:0]                        ), //i
+    .zeroPoint          (zeroPoint[7:0]                    ), //i
     .macIn_0_valid      (peCores_5_0_macOut_valid          ), //i
     .macIn_0_payload    (peCores_5_0_macOut_payload[31:0]  ), //i
     .macIn_1_valid      (peCores_5_1_macOut_valid          ), //i
@@ -3741,6 +3797,9 @@ module PEArray (
     .mode               (ppuMode[1:0]                      ), //i
     .spLen              (spLen[9:0]                        ), //i
     .loopLen            (loopLen[6:0]                      ), //i
+    .multiplier         (multiplier[9:0]                   ), //i
+    .shift              (shift[3:0]                        ), //i
+    .zeroPoint          (zeroPoint[7:0]                    ), //i
     .macIn_0_valid      (peCores_6_0_macOut_valid          ), //i
     .macIn_0_payload    (peCores_6_0_macOut_payload[31:0]  ), //i
     .macIn_1_valid      (peCores_6_1_macOut_valid          ), //i
@@ -3768,6 +3827,9 @@ module PEArray (
     .mode               (ppuMode[1:0]                      ), //i
     .spLen              (spLen[9:0]                        ), //i
     .loopLen            (loopLen[6:0]                      ), //i
+    .multiplier         (multiplier[9:0]                   ), //i
+    .shift              (shift[3:0]                        ), //i
+    .zeroPoint          (zeroPoint[7:0]                    ), //i
     .macIn_0_valid      (peCores_7_0_macOut_valid          ), //i
     .macIn_0_payload    (peCores_7_0_macOut_payload[31:0]  ), //i
     .macIn_1_valid      (peCores_7_1_macOut_valid          ), //i
@@ -5273,6 +5335,9 @@ module PPUnit (
   input  wire [1:0]    mode,
   input  wire [9:0]    spLen,
   input  wire [6:0]    loopLen,
+  input  wire [9:0]    multiplier,
+  input  wire [3:0]    shift,
+  input  wire [7:0]    zeroPoint,
   input  wire          macIn_0_valid,
   input  wire [31:0]   macIn_0_payload,
   input  wire          macIn_1_valid,
@@ -5297,10 +5362,19 @@ module PPUnit (
 
   wire       [34:0]   macSumArea_adderTree_dataOut;
   wire       [6:0]    tmp_pSumArea_last;
-  wire       [9:0]    tmp_when_PPUnit_l70;
-  wire       [6:0]    tmp_when_PPUnit_l74;
+  wire       [9:0]    tmp_when_PPUnit_l73;
+  wire       [6:0]    tmp_when_PPUnit_l77;
   reg        [31:0]   tmp_pSumArea_pAddData;
-  wire       [23:0]   tmp_quantArea_quantReg;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l134;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l134_1;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l134_2;
+  wire       [41:0]   tmp_tmp_when_PPUnit_l134_3;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l134_4;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l134_5;
+  wire       [41:0]   tmp_tmp_when_PPUnit_l134_6;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l134_7;
+  wire       [3:0]    tmp_tmp_when_PPUnit_l134_8;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l134_9;
   reg        [31:0]   lfBuffer_0;
   reg        [31:0]   lfBuffer_1;
   reg        [31:0]   lfBuffer_2;
@@ -6335,20 +6409,33 @@ module PPUnit (
   reg        [9:0]    pSumArea_spLenCnt;
   reg        [6:0]    pSumArea_loopCnt;
   wire                pSumArea_last;
-  wire                when_PPUnit_l70;
-  wire                when_PPUnit_l74;
+  wire                when_PPUnit_l73;
+  wire                when_PPUnit_l77;
   reg        [7:0]    quantArea_quantReg;
   wire                quantArea_quantEn;
   reg                 quantArea_quantValid;
+  wire       [56:0]   tmp_when_PPUnit_l134;
+  reg        [7:0]    tmp_quantArea_quantReg;
+  wire                when_PPUnit_l134;
+  wire                when_PPUnit_l136;
   reg        [7:0]    reluArea_reluReg;
   wire                reluArea_reluEn;
   reg                 reluArea_reluValid;
-  wire                when_PPUnit_l129;
+  wire                when_PPUnit_l157;
 
   assign tmp_pSumArea_last = (loopLen - 7'h01);
-  assign tmp_when_PPUnit_l70 = (spLen - 10'h001);
-  assign tmp_when_PPUnit_l74 = (loopLen - 7'h01);
-  assign tmp_quantArea_quantReg = (pSumArea_pSumReg >>> 4'd8);
+  assign tmp_when_PPUnit_l73 = (spLen - 10'h001);
+  assign tmp_when_PPUnit_l77 = (loopLen - 7'h01);
+  assign tmp_tmp_when_PPUnit_l134 = ($signed(tmp_tmp_when_PPUnit_l134_1) >>> shift);
+  assign tmp_tmp_when_PPUnit_l134_1 = ($signed(tmp_tmp_when_PPUnit_l134_2) + $signed(tmp_tmp_when_PPUnit_l134_4));
+  assign tmp_tmp_when_PPUnit_l134_3 = ($signed(pSumArea_pSumReg) * $signed(multiplier));
+  assign tmp_tmp_when_PPUnit_l134_2 = {{15{tmp_tmp_when_PPUnit_l134_3[41]}}, tmp_tmp_when_PPUnit_l134_3};
+  assign tmp_tmp_when_PPUnit_l134_4 = ((shift == 4'b0000) ? tmp_tmp_when_PPUnit_l134_5 : tmp_tmp_when_PPUnit_l134_7);
+  assign tmp_tmp_when_PPUnit_l134_6 = 42'h0;
+  assign tmp_tmp_when_PPUnit_l134_5 = {{15{tmp_tmp_when_PPUnit_l134_6[41]}}, tmp_tmp_when_PPUnit_l134_6};
+  assign tmp_tmp_when_PPUnit_l134_7 = ({{15{42'h00000000001[41]}},42'h00000000001} <<< tmp_tmp_when_PPUnit_l134_8);
+  assign tmp_tmp_when_PPUnit_l134_8 = (shift - 4'b0001);
+  assign tmp_tmp_when_PPUnit_l134_9 = {{49{zeroPoint[7]}}, zeroPoint};
   AdderTree_7 macSumArea_adderTree (
     .dataIn_0 (macIn_0_payload[31:0]             ), //i
     .dataIn_1 (macIn_1_payload[31:0]             ), //i
@@ -7412,11 +7499,26 @@ module PPUnit (
     end
   end
 
-  assign when_PPUnit_l70 = (pSumArea_spLenCnt < tmp_when_PPUnit_l70);
-  assign when_PPUnit_l74 = (pSumArea_loopCnt < tmp_when_PPUnit_l74);
+  assign when_PPUnit_l73 = (pSumArea_spLenCnt < tmp_when_PPUnit_l73);
+  assign when_PPUnit_l77 = (pSumArea_loopCnt < tmp_when_PPUnit_l77);
   assign quantArea_quantEn = ((pSumArea_pSumValid && pSumArea_last) && (! clear));
+  assign tmp_when_PPUnit_l134 = ($signed(tmp_tmp_when_PPUnit_l134) + $signed(tmp_tmp_when_PPUnit_l134_9));
+  assign when_PPUnit_l134 = ($signed(57'h1ffffffffffff80) < $signed(tmp_when_PPUnit_l134));
+  always @(*) begin
+    if(when_PPUnit_l134) begin
+      tmp_quantArea_quantReg = 8'h80;
+    end else begin
+      if(when_PPUnit_l136) begin
+        tmp_quantArea_quantReg = 8'h7f;
+      end else begin
+        tmp_quantArea_quantReg = tmp_when_PPUnit_l134[7:0];
+      end
+    end
+  end
+
+  assign when_PPUnit_l136 = ($signed(tmp_when_PPUnit_l134) < $signed(57'h00000000000007f));
   assign reluArea_reluEn = (quantArea_quantValid && (! clear));
-  assign when_PPUnit_l129 = (($signed(quantArea_quantReg) < $signed(8'h0)) && relu);
+  assign when_PPUnit_l157 = (($signed(quantArea_quantReg) < $signed(8'h0)) && relu);
   assign featureOut_payload = reluArea_reluReg;
   assign featureOut_valid = reluArea_reluValid;
   always @(posedge clk or posedge reset) begin
@@ -7442,11 +7544,11 @@ module PPUnit (
         pSumArea_loopCnt <= 7'h0;
       end else begin
         if(pSumArea_pSumEn) begin
-          if(when_PPUnit_l70) begin
+          if(when_PPUnit_l73) begin
             pSumArea_spLenCnt <= (pSumArea_spLenCnt + 10'h001);
           end else begin
             pSumArea_spLenCnt <= 10'h0;
-            if(when_PPUnit_l74) begin
+            if(when_PPUnit_l77) begin
               pSumArea_loopCnt <= (pSumArea_loopCnt + 7'h01);
             end else begin
               pSumArea_loopCnt <= 7'h0;
@@ -7457,11 +7559,11 @@ module PPUnit (
       end
       quantArea_quantValid <= quantArea_quantEn;
       if(quantArea_quantEn) begin
-        quantArea_quantReg <= tmp_quantArea_quantReg[7:0];
+        quantArea_quantReg <= tmp_quantArea_quantReg;
       end
       reluArea_reluValid <= reluArea_reluEn;
       if(reluArea_reluEn) begin
-        if(when_PPUnit_l129) begin
+        if(when_PPUnit_l157) begin
           reluArea_reluReg <= 8'h0;
         end else begin
           reluArea_reluReg <= quantArea_quantReg;
@@ -8651,9 +8753,9 @@ module PECore (
   wire                featureIn_fire;
   wire                macEn;
   reg                 macEn_regNext;
-  wire                when_PECore_l59;
-  wire                when_PECore_l64;
-  wire                when_PECore_l69;
+  wire                when_PECore_l58;
+  wire                when_PECore_l63;
+  wire                when_PECore_l68;
 
   assign tmp_macReg = {{16{macData[15]}}, macData};
   assign weight_fire = (weight_valid && weight_ready);
@@ -8663,7 +8765,7 @@ module PECore (
     mulData = 16'h0;
     if(!clear) begin
       if(macEn) begin
-        if(when_PECore_l59) begin
+        if(when_PECore_l58) begin
           mulData = ($signed(featureIn_payload) * $signed(weight_payload));
         end else begin
           mulData = 16'h0;
@@ -8676,7 +8778,7 @@ module PECore (
     macData = 16'h0;
     if(!clear) begin
       if(macEn) begin
-        if(when_PECore_l64) begin
+        if(when_PECore_l63) begin
           macData = {{8{featureIn_payload[7]}}, featureIn_payload};
         end else begin
           macData = mulData;
@@ -8697,9 +8799,9 @@ module PECore (
   assign weight_ready = featureIn_valid;
   assign featureIn_ready = weight_valid;
   assign macOut_valid = macEn_regNext;
-  assign when_PECore_l59 = mode[0];
-  assign when_PECore_l64 = mode[1];
-  assign when_PECore_l69 = mode[2];
+  assign when_PECore_l58 = mode[0];
+  assign when_PECore_l63 = mode[1];
+  assign when_PECore_l68 = mode[2];
   always @(posedge clk or posedge reset) begin
     if(reset) begin
       macReg <= 32'h0;
@@ -8710,7 +8812,7 @@ module PECore (
         macReg <= 32'h0;
       end else begin
         if(macEn) begin
-          if(when_PECore_l69) begin
+          if(when_PECore_l68) begin
             macReg <= ($signed(tmp_macReg) + $signed(macReg));
           end else begin
             macReg <= {{16{macData[15]}}, macData};

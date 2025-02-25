@@ -10,7 +10,7 @@ case class LWBuffer(cfg: ConvCfg) extends Component {
 
   val io = new Bundle {
     val clear = in Bool()
-    val spLen = in UInt (spLenMaxW bits)
+    val spLen = in UInt (log2Up(lfbDepth) bits)
     val kChDim = in UInt (kMaxSizeW + kMaxSizeW bits)
     val weightIn = slave Stream SInt(inputWidth bits)
     val weightOut = master Stream SInt(inputWidth bits)
@@ -25,7 +25,7 @@ case class LWBuffer(cfg: ConvCfg) extends Component {
 
   val wrPointer = Reg(UInt(log2Up(lwbDepth) bits)) init (0)
 
-  val spLenCnt = Reg(UInt(spLenMaxW bits)) init (0)
+  val spLenCnt = Reg(UInt(log2Up(lfbDepth) bits)) init (0)
 
   val kChDimCnt = Reg(UInt(kMaxSizeW + kMaxSizeW bits)) init (0)
 

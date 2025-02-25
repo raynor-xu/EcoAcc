@@ -1,485 +1,538 @@
 // Generator : SpinalHDL v1.10.2a    git head : a348a60b7e8b6a455c72e1536ec3d74a2ea16935
 // Component : PEArray
-// Git hash  : 714dcda6b904f204a16646e9976a526cf6062bfd
+// Git hash  : 02491fef150ddb695e806a8318f17cf1104f38a0
 
 `timescale 1ns/1ps
 
 module PEArray (
   input  wire          clear,
-  input  wire          relu,
-  input  wire [2:0]    peMode,
-  input  wire [1:0]    ppuMode,
-  input  wire [5:0]    spLen,
-  input  wire [5:0]    wLen,
-  input  wire [5:0]    loopLen,
-  input  wire          biasIn_0_valid,
-  output wire          biasIn_0_ready,
-  input  wire [31:0]   biasIn_0_payload,
-  input  wire          biasIn_1_valid,
-  output wire          biasIn_1_ready,
-  input  wire [31:0]   biasIn_1_payload,
-  input  wire          biasIn_2_valid,
-  output wire          biasIn_2_ready,
-  input  wire [31:0]   biasIn_2_payload,
-  input  wire          biasIn_3_valid,
-  output wire          biasIn_3_ready,
-  input  wire [31:0]   biasIn_3_payload,
-  input  wire          biasIn_4_valid,
-  output wire          biasIn_4_ready,
-  input  wire [31:0]   biasIn_4_payload,
-  input  wire          biasIn_5_valid,
-  output wire          biasIn_5_ready,
-  input  wire [31:0]   biasIn_5_payload,
-  input  wire          biasIn_6_valid,
-  output wire          biasIn_6_ready,
-  input  wire [31:0]   biasIn_6_payload,
-  input  wire          biasIn_7_valid,
-  output wire          biasIn_7_ready,
-  input  wire [31:0]   biasIn_7_payload,
+  input  wire [1:0]    peMode_1,
+  input  wire [2:0]    ppuParm_mode,
+  input  wire          ppuParm_reluEn,
+  input  wire [5:0]    ppuParm_spLen,
+  input  wire [4:0]    ppuParm_loopLen,
+  input  wire [9:0]    ppuParm_multiplier,
+  input  wire [3:0]    ppuParm_shift,
+  input  wire [7:0]    ppuParm_zeroPoint,
+  input  wire [9:0]    spLen,
+  input  wire [5:0]    kChDim,
   input  wire          featureIn_0_valid,
+  output wire          featureIn_0_ready,
   input  wire [7:0]    featureIn_0_payload,
   input  wire          featureIn_1_valid,
+  output wire          featureIn_1_ready,
   input  wire [7:0]    featureIn_1_payload,
   input  wire          featureIn_2_valid,
+  output wire          featureIn_2_ready,
   input  wire [7:0]    featureIn_2_payload,
   input  wire          featureIn_3_valid,
+  output wire          featureIn_3_ready,
   input  wire [7:0]    featureIn_3_payload,
   input  wire          featureIn_4_valid,
+  output wire          featureIn_4_ready,
   input  wire [7:0]    featureIn_4_payload,
   input  wire          featureIn_5_valid,
+  output wire          featureIn_5_ready,
   input  wire [7:0]    featureIn_5_payload,
   input  wire          featureIn_6_valid,
+  output wire          featureIn_6_ready,
   input  wire [7:0]    featureIn_6_payload,
   input  wire          featureIn_7_valid,
+  output wire          featureIn_7_ready,
   input  wire [7:0]    featureIn_7_payload,
-  input  wire          weightIn_0_0_valid,
-  output wire          weightIn_0_0_ready,
-  input  wire [7:0]    weightIn_0_0_payload,
-  input  wire          weightIn_0_1_valid,
-  output wire          weightIn_0_1_ready,
-  input  wire [7:0]    weightIn_0_1_payload,
-  input  wire          weightIn_0_2_valid,
-  output wire          weightIn_0_2_ready,
-  input  wire [7:0]    weightIn_0_2_payload,
-  input  wire          weightIn_0_3_valid,
-  output wire          weightIn_0_3_ready,
-  input  wire [7:0]    weightIn_0_3_payload,
-  input  wire          weightIn_0_4_valid,
-  output wire          weightIn_0_4_ready,
-  input  wire [7:0]    weightIn_0_4_payload,
-  input  wire          weightIn_0_5_valid,
-  output wire          weightIn_0_5_ready,
-  input  wire [7:0]    weightIn_0_5_payload,
-  input  wire          weightIn_0_6_valid,
-  output wire          weightIn_0_6_ready,
-  input  wire [7:0]    weightIn_0_6_payload,
-  input  wire          weightIn_0_7_valid,
-  output wire          weightIn_0_7_ready,
-  input  wire [7:0]    weightIn_0_7_payload,
-  input  wire          weightIn_1_0_valid,
-  output wire          weightIn_1_0_ready,
-  input  wire [7:0]    weightIn_1_0_payload,
-  input  wire          weightIn_1_1_valid,
-  output wire          weightIn_1_1_ready,
-  input  wire [7:0]    weightIn_1_1_payload,
-  input  wire          weightIn_1_2_valid,
-  output wire          weightIn_1_2_ready,
-  input  wire [7:0]    weightIn_1_2_payload,
-  input  wire          weightIn_1_3_valid,
-  output wire          weightIn_1_3_ready,
-  input  wire [7:0]    weightIn_1_3_payload,
-  input  wire          weightIn_1_4_valid,
-  output wire          weightIn_1_4_ready,
-  input  wire [7:0]    weightIn_1_4_payload,
-  input  wire          weightIn_1_5_valid,
-  output wire          weightIn_1_5_ready,
-  input  wire [7:0]    weightIn_1_5_payload,
-  input  wire          weightIn_1_6_valid,
-  output wire          weightIn_1_6_ready,
-  input  wire [7:0]    weightIn_1_6_payload,
-  input  wire          weightIn_1_7_valid,
-  output wire          weightIn_1_7_ready,
-  input  wire [7:0]    weightIn_1_7_payload,
-  input  wire          weightIn_2_0_valid,
-  output wire          weightIn_2_0_ready,
-  input  wire [7:0]    weightIn_2_0_payload,
-  input  wire          weightIn_2_1_valid,
-  output wire          weightIn_2_1_ready,
-  input  wire [7:0]    weightIn_2_1_payload,
-  input  wire          weightIn_2_2_valid,
-  output wire          weightIn_2_2_ready,
-  input  wire [7:0]    weightIn_2_2_payload,
-  input  wire          weightIn_2_3_valid,
-  output wire          weightIn_2_3_ready,
-  input  wire [7:0]    weightIn_2_3_payload,
-  input  wire          weightIn_2_4_valid,
-  output wire          weightIn_2_4_ready,
-  input  wire [7:0]    weightIn_2_4_payload,
-  input  wire          weightIn_2_5_valid,
-  output wire          weightIn_2_5_ready,
-  input  wire [7:0]    weightIn_2_5_payload,
-  input  wire          weightIn_2_6_valid,
-  output wire          weightIn_2_6_ready,
-  input  wire [7:0]    weightIn_2_6_payload,
-  input  wire          weightIn_2_7_valid,
-  output wire          weightIn_2_7_ready,
-  input  wire [7:0]    weightIn_2_7_payload,
-  input  wire          weightIn_3_0_valid,
-  output wire          weightIn_3_0_ready,
-  input  wire [7:0]    weightIn_3_0_payload,
-  input  wire          weightIn_3_1_valid,
-  output wire          weightIn_3_1_ready,
-  input  wire [7:0]    weightIn_3_1_payload,
-  input  wire          weightIn_3_2_valid,
-  output wire          weightIn_3_2_ready,
-  input  wire [7:0]    weightIn_3_2_payload,
-  input  wire          weightIn_3_3_valid,
-  output wire          weightIn_3_3_ready,
-  input  wire [7:0]    weightIn_3_3_payload,
-  input  wire          weightIn_3_4_valid,
-  output wire          weightIn_3_4_ready,
-  input  wire [7:0]    weightIn_3_4_payload,
-  input  wire          weightIn_3_5_valid,
-  output wire          weightIn_3_5_ready,
-  input  wire [7:0]    weightIn_3_5_payload,
-  input  wire          weightIn_3_6_valid,
-  output wire          weightIn_3_6_ready,
-  input  wire [7:0]    weightIn_3_6_payload,
-  input  wire          weightIn_3_7_valid,
-  output wire          weightIn_3_7_ready,
-  input  wire [7:0]    weightIn_3_7_payload,
-  input  wire          weightIn_4_0_valid,
-  output wire          weightIn_4_0_ready,
-  input  wire [7:0]    weightIn_4_0_payload,
-  input  wire          weightIn_4_1_valid,
-  output wire          weightIn_4_1_ready,
-  input  wire [7:0]    weightIn_4_1_payload,
-  input  wire          weightIn_4_2_valid,
-  output wire          weightIn_4_2_ready,
-  input  wire [7:0]    weightIn_4_2_payload,
-  input  wire          weightIn_4_3_valid,
-  output wire          weightIn_4_3_ready,
-  input  wire [7:0]    weightIn_4_3_payload,
-  input  wire          weightIn_4_4_valid,
-  output wire          weightIn_4_4_ready,
-  input  wire [7:0]    weightIn_4_4_payload,
-  input  wire          weightIn_4_5_valid,
-  output wire          weightIn_4_5_ready,
-  input  wire [7:0]    weightIn_4_5_payload,
-  input  wire          weightIn_4_6_valid,
-  output wire          weightIn_4_6_ready,
-  input  wire [7:0]    weightIn_4_6_payload,
-  input  wire          weightIn_4_7_valid,
-  output wire          weightIn_4_7_ready,
-  input  wire [7:0]    weightIn_4_7_payload,
-  input  wire          weightIn_5_0_valid,
-  output wire          weightIn_5_0_ready,
-  input  wire [7:0]    weightIn_5_0_payload,
-  input  wire          weightIn_5_1_valid,
-  output wire          weightIn_5_1_ready,
-  input  wire [7:0]    weightIn_5_1_payload,
-  input  wire          weightIn_5_2_valid,
-  output wire          weightIn_5_2_ready,
-  input  wire [7:0]    weightIn_5_2_payload,
-  input  wire          weightIn_5_3_valid,
-  output wire          weightIn_5_3_ready,
-  input  wire [7:0]    weightIn_5_3_payload,
-  input  wire          weightIn_5_4_valid,
-  output wire          weightIn_5_4_ready,
-  input  wire [7:0]    weightIn_5_4_payload,
-  input  wire          weightIn_5_5_valid,
-  output wire          weightIn_5_5_ready,
-  input  wire [7:0]    weightIn_5_5_payload,
-  input  wire          weightIn_5_6_valid,
-  output wire          weightIn_5_6_ready,
-  input  wire [7:0]    weightIn_5_6_payload,
-  input  wire          weightIn_5_7_valid,
-  output wire          weightIn_5_7_ready,
-  input  wire [7:0]    weightIn_5_7_payload,
-  input  wire          weightIn_6_0_valid,
-  output wire          weightIn_6_0_ready,
-  input  wire [7:0]    weightIn_6_0_payload,
-  input  wire          weightIn_6_1_valid,
-  output wire          weightIn_6_1_ready,
-  input  wire [7:0]    weightIn_6_1_payload,
-  input  wire          weightIn_6_2_valid,
-  output wire          weightIn_6_2_ready,
-  input  wire [7:0]    weightIn_6_2_payload,
-  input  wire          weightIn_6_3_valid,
-  output wire          weightIn_6_3_ready,
-  input  wire [7:0]    weightIn_6_3_payload,
-  input  wire          weightIn_6_4_valid,
-  output wire          weightIn_6_4_ready,
-  input  wire [7:0]    weightIn_6_4_payload,
-  input  wire          weightIn_6_5_valid,
-  output wire          weightIn_6_5_ready,
-  input  wire [7:0]    weightIn_6_5_payload,
-  input  wire          weightIn_6_6_valid,
-  output wire          weightIn_6_6_ready,
-  input  wire [7:0]    weightIn_6_6_payload,
-  input  wire          weightIn_6_7_valid,
-  output wire          weightIn_6_7_ready,
-  input  wire [7:0]    weightIn_6_7_payload,
-  input  wire          weightIn_7_0_valid,
-  output wire          weightIn_7_0_ready,
-  input  wire [7:0]    weightIn_7_0_payload,
-  input  wire          weightIn_7_1_valid,
-  output wire          weightIn_7_1_ready,
-  input  wire [7:0]    weightIn_7_1_payload,
-  input  wire          weightIn_7_2_valid,
-  output wire          weightIn_7_2_ready,
-  input  wire [7:0]    weightIn_7_2_payload,
-  input  wire          weightIn_7_3_valid,
-  output wire          weightIn_7_3_ready,
-  input  wire [7:0]    weightIn_7_3_payload,
-  input  wire          weightIn_7_4_valid,
-  output wire          weightIn_7_4_ready,
-  input  wire [7:0]    weightIn_7_4_payload,
-  input  wire          weightIn_7_5_valid,
-  output wire          weightIn_7_5_ready,
-  input  wire [7:0]    weightIn_7_5_payload,
-  input  wire          weightIn_7_6_valid,
-  output wire          weightIn_7_6_ready,
-  input  wire [7:0]    weightIn_7_6_payload,
-  input  wire          weightIn_7_7_valid,
-  output wire          weightIn_7_7_ready,
-  input  wire [7:0]    weightIn_7_7_payload,
-  output wire          resultOut_0_valid,
-  output wire [7:0]    resultOut_0_payload,
-  output wire          resultOut_1_valid,
-  output wire [7:0]    resultOut_1_payload,
-  output wire          resultOut_2_valid,
-  output wire [7:0]    resultOut_2_payload,
-  output wire          resultOut_3_valid,
-  output wire [7:0]    resultOut_3_payload,
-  output wire          resultOut_4_valid,
-  output wire [7:0]    resultOut_4_payload,
-  output wire          resultOut_5_valid,
-  output wire [7:0]    resultOut_5_payload,
-  output wire          resultOut_6_valid,
-  output wire [7:0]    resultOut_6_payload,
-  output wire          resultOut_7_valid,
-  output wire [7:0]    resultOut_7_payload,
+  input  wire          weight_0_0_valid,
+  output wire          weight_0_0_ready,
+  input  wire [7:0]    weight_0_0_payload,
+  input  wire          weight_0_1_valid,
+  output wire          weight_0_1_ready,
+  input  wire [7:0]    weight_0_1_payload,
+  input  wire          weight_0_2_valid,
+  output wire          weight_0_2_ready,
+  input  wire [7:0]    weight_0_2_payload,
+  input  wire          weight_0_3_valid,
+  output wire          weight_0_3_ready,
+  input  wire [7:0]    weight_0_3_payload,
+  input  wire          weight_0_4_valid,
+  output wire          weight_0_4_ready,
+  input  wire [7:0]    weight_0_4_payload,
+  input  wire          weight_0_5_valid,
+  output wire          weight_0_5_ready,
+  input  wire [7:0]    weight_0_5_payload,
+  input  wire          weight_0_6_valid,
+  output wire          weight_0_6_ready,
+  input  wire [7:0]    weight_0_6_payload,
+  input  wire          weight_0_7_valid,
+  output wire          weight_0_7_ready,
+  input  wire [7:0]    weight_0_7_payload,
+  input  wire          weight_1_0_valid,
+  output wire          weight_1_0_ready,
+  input  wire [7:0]    weight_1_0_payload,
+  input  wire          weight_1_1_valid,
+  output wire          weight_1_1_ready,
+  input  wire [7:0]    weight_1_1_payload,
+  input  wire          weight_1_2_valid,
+  output wire          weight_1_2_ready,
+  input  wire [7:0]    weight_1_2_payload,
+  input  wire          weight_1_3_valid,
+  output wire          weight_1_3_ready,
+  input  wire [7:0]    weight_1_3_payload,
+  input  wire          weight_1_4_valid,
+  output wire          weight_1_4_ready,
+  input  wire [7:0]    weight_1_4_payload,
+  input  wire          weight_1_5_valid,
+  output wire          weight_1_5_ready,
+  input  wire [7:0]    weight_1_5_payload,
+  input  wire          weight_1_6_valid,
+  output wire          weight_1_6_ready,
+  input  wire [7:0]    weight_1_6_payload,
+  input  wire          weight_1_7_valid,
+  output wire          weight_1_7_ready,
+  input  wire [7:0]    weight_1_7_payload,
+  input  wire          weight_2_0_valid,
+  output wire          weight_2_0_ready,
+  input  wire [7:0]    weight_2_0_payload,
+  input  wire          weight_2_1_valid,
+  output wire          weight_2_1_ready,
+  input  wire [7:0]    weight_2_1_payload,
+  input  wire          weight_2_2_valid,
+  output wire          weight_2_2_ready,
+  input  wire [7:0]    weight_2_2_payload,
+  input  wire          weight_2_3_valid,
+  output wire          weight_2_3_ready,
+  input  wire [7:0]    weight_2_3_payload,
+  input  wire          weight_2_4_valid,
+  output wire          weight_2_4_ready,
+  input  wire [7:0]    weight_2_4_payload,
+  input  wire          weight_2_5_valid,
+  output wire          weight_2_5_ready,
+  input  wire [7:0]    weight_2_5_payload,
+  input  wire          weight_2_6_valid,
+  output wire          weight_2_6_ready,
+  input  wire [7:0]    weight_2_6_payload,
+  input  wire          weight_2_7_valid,
+  output wire          weight_2_7_ready,
+  input  wire [7:0]    weight_2_7_payload,
+  input  wire          weight_3_0_valid,
+  output wire          weight_3_0_ready,
+  input  wire [7:0]    weight_3_0_payload,
+  input  wire          weight_3_1_valid,
+  output wire          weight_3_1_ready,
+  input  wire [7:0]    weight_3_1_payload,
+  input  wire          weight_3_2_valid,
+  output wire          weight_3_2_ready,
+  input  wire [7:0]    weight_3_2_payload,
+  input  wire          weight_3_3_valid,
+  output wire          weight_3_3_ready,
+  input  wire [7:0]    weight_3_3_payload,
+  input  wire          weight_3_4_valid,
+  output wire          weight_3_4_ready,
+  input  wire [7:0]    weight_3_4_payload,
+  input  wire          weight_3_5_valid,
+  output wire          weight_3_5_ready,
+  input  wire [7:0]    weight_3_5_payload,
+  input  wire          weight_3_6_valid,
+  output wire          weight_3_6_ready,
+  input  wire [7:0]    weight_3_6_payload,
+  input  wire          weight_3_7_valid,
+  output wire          weight_3_7_ready,
+  input  wire [7:0]    weight_3_7_payload,
+  input  wire          weight_4_0_valid,
+  output wire          weight_4_0_ready,
+  input  wire [7:0]    weight_4_0_payload,
+  input  wire          weight_4_1_valid,
+  output wire          weight_4_1_ready,
+  input  wire [7:0]    weight_4_1_payload,
+  input  wire          weight_4_2_valid,
+  output wire          weight_4_2_ready,
+  input  wire [7:0]    weight_4_2_payload,
+  input  wire          weight_4_3_valid,
+  output wire          weight_4_3_ready,
+  input  wire [7:0]    weight_4_3_payload,
+  input  wire          weight_4_4_valid,
+  output wire          weight_4_4_ready,
+  input  wire [7:0]    weight_4_4_payload,
+  input  wire          weight_4_5_valid,
+  output wire          weight_4_5_ready,
+  input  wire [7:0]    weight_4_5_payload,
+  input  wire          weight_4_6_valid,
+  output wire          weight_4_6_ready,
+  input  wire [7:0]    weight_4_6_payload,
+  input  wire          weight_4_7_valid,
+  output wire          weight_4_7_ready,
+  input  wire [7:0]    weight_4_7_payload,
+  input  wire          weight_5_0_valid,
+  output wire          weight_5_0_ready,
+  input  wire [7:0]    weight_5_0_payload,
+  input  wire          weight_5_1_valid,
+  output wire          weight_5_1_ready,
+  input  wire [7:0]    weight_5_1_payload,
+  input  wire          weight_5_2_valid,
+  output wire          weight_5_2_ready,
+  input  wire [7:0]    weight_5_2_payload,
+  input  wire          weight_5_3_valid,
+  output wire          weight_5_3_ready,
+  input  wire [7:0]    weight_5_3_payload,
+  input  wire          weight_5_4_valid,
+  output wire          weight_5_4_ready,
+  input  wire [7:0]    weight_5_4_payload,
+  input  wire          weight_5_5_valid,
+  output wire          weight_5_5_ready,
+  input  wire [7:0]    weight_5_5_payload,
+  input  wire          weight_5_6_valid,
+  output wire          weight_5_6_ready,
+  input  wire [7:0]    weight_5_6_payload,
+  input  wire          weight_5_7_valid,
+  output wire          weight_5_7_ready,
+  input  wire [7:0]    weight_5_7_payload,
+  input  wire          weight_6_0_valid,
+  output wire          weight_6_0_ready,
+  input  wire [7:0]    weight_6_0_payload,
+  input  wire          weight_6_1_valid,
+  output wire          weight_6_1_ready,
+  input  wire [7:0]    weight_6_1_payload,
+  input  wire          weight_6_2_valid,
+  output wire          weight_6_2_ready,
+  input  wire [7:0]    weight_6_2_payload,
+  input  wire          weight_6_3_valid,
+  output wire          weight_6_3_ready,
+  input  wire [7:0]    weight_6_3_payload,
+  input  wire          weight_6_4_valid,
+  output wire          weight_6_4_ready,
+  input  wire [7:0]    weight_6_4_payload,
+  input  wire          weight_6_5_valid,
+  output wire          weight_6_5_ready,
+  input  wire [7:0]    weight_6_5_payload,
+  input  wire          weight_6_6_valid,
+  output wire          weight_6_6_ready,
+  input  wire [7:0]    weight_6_6_payload,
+  input  wire          weight_6_7_valid,
+  output wire          weight_6_7_ready,
+  input  wire [7:0]    weight_6_7_payload,
+  input  wire          weight_7_0_valid,
+  output wire          weight_7_0_ready,
+  input  wire [7:0]    weight_7_0_payload,
+  input  wire          weight_7_1_valid,
+  output wire          weight_7_1_ready,
+  input  wire [7:0]    weight_7_1_payload,
+  input  wire          weight_7_2_valid,
+  output wire          weight_7_2_ready,
+  input  wire [7:0]    weight_7_2_payload,
+  input  wire          weight_7_3_valid,
+  output wire          weight_7_3_ready,
+  input  wire [7:0]    weight_7_3_payload,
+  input  wire          weight_7_4_valid,
+  output wire          weight_7_4_ready,
+  input  wire [7:0]    weight_7_4_payload,
+  input  wire          weight_7_5_valid,
+  output wire          weight_7_5_ready,
+  input  wire [7:0]    weight_7_5_payload,
+  input  wire          weight_7_6_valid,
+  output wire          weight_7_6_ready,
+  input  wire [7:0]    weight_7_6_payload,
+  input  wire          weight_7_7_valid,
+  output wire          weight_7_7_ready,
+  input  wire [7:0]    weight_7_7_payload,
+  output wire          featureOut_0_valid,
+  output wire [7:0]    featureOut_0_payload,
+  output wire          featureOut_1_valid,
+  output wire [7:0]    featureOut_1_payload,
+  output wire          featureOut_2_valid,
+  output wire [7:0]    featureOut_2_payload,
+  output wire          featureOut_3_valid,
+  output wire [7:0]    featureOut_3_payload,
+  output wire          featureOut_4_valid,
+  output wire [7:0]    featureOut_4_payload,
+  output wire          featureOut_5_valid,
+  output wire [7:0]    featureOut_5_payload,
+  output wire          featureOut_6_valid,
+  output wire [7:0]    featureOut_6_payload,
+  output wire          featureOut_7_valid,
+  output wire [7:0]    featureOut_7_payload,
   input  wire          clk,
   input  wire          reset
 );
+  localparam MAC = 2'd0;
+  localparam MUL = 2'd1;
+  localparam BYPASS = 2'd2;
+  localparam CONV2D = 3'd0;
+  localparam DEEPCONV = 3'd1;
+  localparam POINTCONV = 3'd2;
+  localparam FC = 3'd3;
+  localparam MAXPOOL = 3'd4;
+  localparam AVERAGPOOL = 3'd5;
 
-  wire                peCores_0_0_weightIn_ready;
+  wire                peCores_0_0_featureIn_ready;
+  wire                peCores_0_0_weight_ready;
   wire                peCores_0_0_macOut_valid;
   wire       [31:0]   peCores_0_0_macOut_payload;
-  wire                peCores_0_1_weightIn_ready;
+  wire                peCores_0_1_featureIn_ready;
+  wire                peCores_0_1_weight_ready;
   wire                peCores_0_1_macOut_valid;
   wire       [31:0]   peCores_0_1_macOut_payload;
-  wire                peCores_0_2_weightIn_ready;
+  wire                peCores_0_2_featureIn_ready;
+  wire                peCores_0_2_weight_ready;
   wire                peCores_0_2_macOut_valid;
   wire       [31:0]   peCores_0_2_macOut_payload;
-  wire                peCores_0_3_weightIn_ready;
+  wire                peCores_0_3_featureIn_ready;
+  wire                peCores_0_3_weight_ready;
   wire                peCores_0_3_macOut_valid;
   wire       [31:0]   peCores_0_3_macOut_payload;
-  wire                peCores_0_4_weightIn_ready;
+  wire                peCores_0_4_featureIn_ready;
+  wire                peCores_0_4_weight_ready;
   wire                peCores_0_4_macOut_valid;
   wire       [31:0]   peCores_0_4_macOut_payload;
-  wire                peCores_0_5_weightIn_ready;
+  wire                peCores_0_5_featureIn_ready;
+  wire                peCores_0_5_weight_ready;
   wire                peCores_0_5_macOut_valid;
   wire       [31:0]   peCores_0_5_macOut_payload;
-  wire                peCores_0_6_weightIn_ready;
+  wire                peCores_0_6_featureIn_ready;
+  wire                peCores_0_6_weight_ready;
   wire                peCores_0_6_macOut_valid;
   wire       [31:0]   peCores_0_6_macOut_payload;
-  wire                peCores_0_7_weightIn_ready;
+  wire                peCores_0_7_featureIn_ready;
+  wire                peCores_0_7_weight_ready;
   wire                peCores_0_7_macOut_valid;
   wire       [31:0]   peCores_0_7_macOut_payload;
-  wire                peCores_1_0_weightIn_ready;
+  wire                peCores_1_0_featureIn_ready;
+  wire                peCores_1_0_weight_ready;
   wire                peCores_1_0_macOut_valid;
   wire       [31:0]   peCores_1_0_macOut_payload;
-  wire                peCores_1_1_weightIn_ready;
+  wire                peCores_1_1_featureIn_ready;
+  wire                peCores_1_1_weight_ready;
   wire                peCores_1_1_macOut_valid;
   wire       [31:0]   peCores_1_1_macOut_payload;
-  wire                peCores_1_2_weightIn_ready;
+  wire                peCores_1_2_featureIn_ready;
+  wire                peCores_1_2_weight_ready;
   wire                peCores_1_2_macOut_valid;
   wire       [31:0]   peCores_1_2_macOut_payload;
-  wire                peCores_1_3_weightIn_ready;
+  wire                peCores_1_3_featureIn_ready;
+  wire                peCores_1_3_weight_ready;
   wire                peCores_1_3_macOut_valid;
   wire       [31:0]   peCores_1_3_macOut_payload;
-  wire                peCores_1_4_weightIn_ready;
+  wire                peCores_1_4_featureIn_ready;
+  wire                peCores_1_4_weight_ready;
   wire                peCores_1_4_macOut_valid;
   wire       [31:0]   peCores_1_4_macOut_payload;
-  wire                peCores_1_5_weightIn_ready;
+  wire                peCores_1_5_featureIn_ready;
+  wire                peCores_1_5_weight_ready;
   wire                peCores_1_5_macOut_valid;
   wire       [31:0]   peCores_1_5_macOut_payload;
-  wire                peCores_1_6_weightIn_ready;
+  wire                peCores_1_6_featureIn_ready;
+  wire                peCores_1_6_weight_ready;
   wire                peCores_1_6_macOut_valid;
   wire       [31:0]   peCores_1_6_macOut_payload;
-  wire                peCores_1_7_weightIn_ready;
+  wire                peCores_1_7_featureIn_ready;
+  wire                peCores_1_7_weight_ready;
   wire                peCores_1_7_macOut_valid;
   wire       [31:0]   peCores_1_7_macOut_payload;
-  wire                peCores_2_0_weightIn_ready;
+  wire                peCores_2_0_featureIn_ready;
+  wire                peCores_2_0_weight_ready;
   wire                peCores_2_0_macOut_valid;
   wire       [31:0]   peCores_2_0_macOut_payload;
-  wire                peCores_2_1_weightIn_ready;
+  wire                peCores_2_1_featureIn_ready;
+  wire                peCores_2_1_weight_ready;
   wire                peCores_2_1_macOut_valid;
   wire       [31:0]   peCores_2_1_macOut_payload;
-  wire                peCores_2_2_weightIn_ready;
+  wire                peCores_2_2_featureIn_ready;
+  wire                peCores_2_2_weight_ready;
   wire                peCores_2_2_macOut_valid;
   wire       [31:0]   peCores_2_2_macOut_payload;
-  wire                peCores_2_3_weightIn_ready;
+  wire                peCores_2_3_featureIn_ready;
+  wire                peCores_2_3_weight_ready;
   wire                peCores_2_3_macOut_valid;
   wire       [31:0]   peCores_2_3_macOut_payload;
-  wire                peCores_2_4_weightIn_ready;
+  wire                peCores_2_4_featureIn_ready;
+  wire                peCores_2_4_weight_ready;
   wire                peCores_2_4_macOut_valid;
   wire       [31:0]   peCores_2_4_macOut_payload;
-  wire                peCores_2_5_weightIn_ready;
+  wire                peCores_2_5_featureIn_ready;
+  wire                peCores_2_5_weight_ready;
   wire                peCores_2_5_macOut_valid;
   wire       [31:0]   peCores_2_5_macOut_payload;
-  wire                peCores_2_6_weightIn_ready;
+  wire                peCores_2_6_featureIn_ready;
+  wire                peCores_2_6_weight_ready;
   wire                peCores_2_6_macOut_valid;
   wire       [31:0]   peCores_2_6_macOut_payload;
-  wire                peCores_2_7_weightIn_ready;
+  wire                peCores_2_7_featureIn_ready;
+  wire                peCores_2_7_weight_ready;
   wire                peCores_2_7_macOut_valid;
   wire       [31:0]   peCores_2_7_macOut_payload;
-  wire                peCores_3_0_weightIn_ready;
+  wire                peCores_3_0_featureIn_ready;
+  wire                peCores_3_0_weight_ready;
   wire                peCores_3_0_macOut_valid;
   wire       [31:0]   peCores_3_0_macOut_payload;
-  wire                peCores_3_1_weightIn_ready;
+  wire                peCores_3_1_featureIn_ready;
+  wire                peCores_3_1_weight_ready;
   wire                peCores_3_1_macOut_valid;
   wire       [31:0]   peCores_3_1_macOut_payload;
-  wire                peCores_3_2_weightIn_ready;
+  wire                peCores_3_2_featureIn_ready;
+  wire                peCores_3_2_weight_ready;
   wire                peCores_3_2_macOut_valid;
   wire       [31:0]   peCores_3_2_macOut_payload;
-  wire                peCores_3_3_weightIn_ready;
+  wire                peCores_3_3_featureIn_ready;
+  wire                peCores_3_3_weight_ready;
   wire                peCores_3_3_macOut_valid;
   wire       [31:0]   peCores_3_3_macOut_payload;
-  wire                peCores_3_4_weightIn_ready;
+  wire                peCores_3_4_featureIn_ready;
+  wire                peCores_3_4_weight_ready;
   wire                peCores_3_4_macOut_valid;
   wire       [31:0]   peCores_3_4_macOut_payload;
-  wire                peCores_3_5_weightIn_ready;
+  wire                peCores_3_5_featureIn_ready;
+  wire                peCores_3_5_weight_ready;
   wire                peCores_3_5_macOut_valid;
   wire       [31:0]   peCores_3_5_macOut_payload;
-  wire                peCores_3_6_weightIn_ready;
+  wire                peCores_3_6_featureIn_ready;
+  wire                peCores_3_6_weight_ready;
   wire                peCores_3_6_macOut_valid;
   wire       [31:0]   peCores_3_6_macOut_payload;
-  wire                peCores_3_7_weightIn_ready;
+  wire                peCores_3_7_featureIn_ready;
+  wire                peCores_3_7_weight_ready;
   wire                peCores_3_7_macOut_valid;
   wire       [31:0]   peCores_3_7_macOut_payload;
-  wire                peCores_4_0_weightIn_ready;
+  wire                peCores_4_0_featureIn_ready;
+  wire                peCores_4_0_weight_ready;
   wire                peCores_4_0_macOut_valid;
   wire       [31:0]   peCores_4_0_macOut_payload;
-  wire                peCores_4_1_weightIn_ready;
+  wire                peCores_4_1_featureIn_ready;
+  wire                peCores_4_1_weight_ready;
   wire                peCores_4_1_macOut_valid;
   wire       [31:0]   peCores_4_1_macOut_payload;
-  wire                peCores_4_2_weightIn_ready;
+  wire                peCores_4_2_featureIn_ready;
+  wire                peCores_4_2_weight_ready;
   wire                peCores_4_2_macOut_valid;
   wire       [31:0]   peCores_4_2_macOut_payload;
-  wire                peCores_4_3_weightIn_ready;
+  wire                peCores_4_3_featureIn_ready;
+  wire                peCores_4_3_weight_ready;
   wire                peCores_4_3_macOut_valid;
   wire       [31:0]   peCores_4_3_macOut_payload;
-  wire                peCores_4_4_weightIn_ready;
+  wire                peCores_4_4_featureIn_ready;
+  wire                peCores_4_4_weight_ready;
   wire                peCores_4_4_macOut_valid;
   wire       [31:0]   peCores_4_4_macOut_payload;
-  wire                peCores_4_5_weightIn_ready;
+  wire                peCores_4_5_featureIn_ready;
+  wire                peCores_4_5_weight_ready;
   wire                peCores_4_5_macOut_valid;
   wire       [31:0]   peCores_4_5_macOut_payload;
-  wire                peCores_4_6_weightIn_ready;
+  wire                peCores_4_6_featureIn_ready;
+  wire                peCores_4_6_weight_ready;
   wire                peCores_4_6_macOut_valid;
   wire       [31:0]   peCores_4_6_macOut_payload;
-  wire                peCores_4_7_weightIn_ready;
+  wire                peCores_4_7_featureIn_ready;
+  wire                peCores_4_7_weight_ready;
   wire                peCores_4_7_macOut_valid;
   wire       [31:0]   peCores_4_7_macOut_payload;
-  wire                peCores_5_0_weightIn_ready;
+  wire                peCores_5_0_featureIn_ready;
+  wire                peCores_5_0_weight_ready;
   wire                peCores_5_0_macOut_valid;
   wire       [31:0]   peCores_5_0_macOut_payload;
-  wire                peCores_5_1_weightIn_ready;
+  wire                peCores_5_1_featureIn_ready;
+  wire                peCores_5_1_weight_ready;
   wire                peCores_5_1_macOut_valid;
   wire       [31:0]   peCores_5_1_macOut_payload;
-  wire                peCores_5_2_weightIn_ready;
+  wire                peCores_5_2_featureIn_ready;
+  wire                peCores_5_2_weight_ready;
   wire                peCores_5_2_macOut_valid;
   wire       [31:0]   peCores_5_2_macOut_payload;
-  wire                peCores_5_3_weightIn_ready;
+  wire                peCores_5_3_featureIn_ready;
+  wire                peCores_5_3_weight_ready;
   wire                peCores_5_3_macOut_valid;
   wire       [31:0]   peCores_5_3_macOut_payload;
-  wire                peCores_5_4_weightIn_ready;
+  wire                peCores_5_4_featureIn_ready;
+  wire                peCores_5_4_weight_ready;
   wire                peCores_5_4_macOut_valid;
   wire       [31:0]   peCores_5_4_macOut_payload;
-  wire                peCores_5_5_weightIn_ready;
+  wire                peCores_5_5_featureIn_ready;
+  wire                peCores_5_5_weight_ready;
   wire                peCores_5_5_macOut_valid;
   wire       [31:0]   peCores_5_5_macOut_payload;
-  wire                peCores_5_6_weightIn_ready;
+  wire                peCores_5_6_featureIn_ready;
+  wire                peCores_5_6_weight_ready;
   wire                peCores_5_6_macOut_valid;
   wire       [31:0]   peCores_5_6_macOut_payload;
-  wire                peCores_5_7_weightIn_ready;
+  wire                peCores_5_7_featureIn_ready;
+  wire                peCores_5_7_weight_ready;
   wire                peCores_5_7_macOut_valid;
   wire       [31:0]   peCores_5_7_macOut_payload;
-  wire                peCores_6_0_weightIn_ready;
+  wire                peCores_6_0_featureIn_ready;
+  wire                peCores_6_0_weight_ready;
   wire                peCores_6_0_macOut_valid;
   wire       [31:0]   peCores_6_0_macOut_payload;
-  wire                peCores_6_1_weightIn_ready;
+  wire                peCores_6_1_featureIn_ready;
+  wire                peCores_6_1_weight_ready;
   wire                peCores_6_1_macOut_valid;
   wire       [31:0]   peCores_6_1_macOut_payload;
-  wire                peCores_6_2_weightIn_ready;
+  wire                peCores_6_2_featureIn_ready;
+  wire                peCores_6_2_weight_ready;
   wire                peCores_6_2_macOut_valid;
   wire       [31:0]   peCores_6_2_macOut_payload;
-  wire                peCores_6_3_weightIn_ready;
+  wire                peCores_6_3_featureIn_ready;
+  wire                peCores_6_3_weight_ready;
   wire                peCores_6_3_macOut_valid;
   wire       [31:0]   peCores_6_3_macOut_payload;
-  wire                peCores_6_4_weightIn_ready;
+  wire                peCores_6_4_featureIn_ready;
+  wire                peCores_6_4_weight_ready;
   wire                peCores_6_4_macOut_valid;
   wire       [31:0]   peCores_6_4_macOut_payload;
-  wire                peCores_6_5_weightIn_ready;
+  wire                peCores_6_5_featureIn_ready;
+  wire                peCores_6_5_weight_ready;
   wire                peCores_6_5_macOut_valid;
   wire       [31:0]   peCores_6_5_macOut_payload;
-  wire                peCores_6_6_weightIn_ready;
+  wire                peCores_6_6_featureIn_ready;
+  wire                peCores_6_6_weight_ready;
   wire                peCores_6_6_macOut_valid;
   wire       [31:0]   peCores_6_6_macOut_payload;
-  wire                peCores_6_7_weightIn_ready;
+  wire                peCores_6_7_featureIn_ready;
+  wire                peCores_6_7_weight_ready;
   wire                peCores_6_7_macOut_valid;
   wire       [31:0]   peCores_6_7_macOut_payload;
-  wire                peCores_7_0_weightIn_ready;
+  wire                peCores_7_0_featureIn_ready;
+  wire                peCores_7_0_weight_ready;
   wire                peCores_7_0_macOut_valid;
   wire       [31:0]   peCores_7_0_macOut_payload;
-  wire                peCores_7_1_weightIn_ready;
+  wire                peCores_7_1_featureIn_ready;
+  wire                peCores_7_1_weight_ready;
   wire                peCores_7_1_macOut_valid;
   wire       [31:0]   peCores_7_1_macOut_payload;
-  wire                peCores_7_2_weightIn_ready;
+  wire                peCores_7_2_featureIn_ready;
+  wire                peCores_7_2_weight_ready;
   wire                peCores_7_2_macOut_valid;
   wire       [31:0]   peCores_7_2_macOut_payload;
-  wire                peCores_7_3_weightIn_ready;
+  wire                peCores_7_3_featureIn_ready;
+  wire                peCores_7_3_weight_ready;
   wire                peCores_7_3_macOut_valid;
   wire       [31:0]   peCores_7_3_macOut_payload;
-  wire                peCores_7_4_weightIn_ready;
+  wire                peCores_7_4_featureIn_ready;
+  wire                peCores_7_4_weight_ready;
   wire                peCores_7_4_macOut_valid;
   wire       [31:0]   peCores_7_4_macOut_payload;
-  wire                peCores_7_5_weightIn_ready;
+  wire                peCores_7_5_featureIn_ready;
+  wire                peCores_7_5_weight_ready;
   wire                peCores_7_5_macOut_valid;
   wire       [31:0]   peCores_7_5_macOut_payload;
-  wire                peCores_7_6_weightIn_ready;
+  wire                peCores_7_6_featureIn_ready;
+  wire                peCores_7_6_weight_ready;
   wire                peCores_7_6_macOut_valid;
   wire       [31:0]   peCores_7_6_macOut_payload;
-  wire                peCores_7_7_weightIn_ready;
+  wire                peCores_7_7_featureIn_ready;
+  wire                peCores_7_7_weight_ready;
   wire                peCores_7_7_macOut_valid;
   wire       [31:0]   peCores_7_7_macOut_payload;
-  wire                ppUnit_0_biasIn_ready;
-  wire                ppUnit_0_resultOut_valid;
-  wire       [7:0]    ppUnit_0_resultOut_payload;
-  wire                ppUnit_1_1_biasIn_ready;
-  wire                ppUnit_1_1_resultOut_valid;
-  wire       [7:0]    ppUnit_1_1_resultOut_payload;
-  wire                ppUnit_2_1_biasIn_ready;
-  wire                ppUnit_2_1_resultOut_valid;
-  wire       [7:0]    ppUnit_2_1_resultOut_payload;
-  wire                ppUnit_3_1_biasIn_ready;
-  wire                ppUnit_3_1_resultOut_valid;
-  wire       [7:0]    ppUnit_3_1_resultOut_payload;
-  wire                ppUnit_4_1_biasIn_ready;
-  wire                ppUnit_4_1_resultOut_valid;
-  wire       [7:0]    ppUnit_4_1_resultOut_payload;
-  wire                ppUnit_5_1_biasIn_ready;
-  wire                ppUnit_5_1_resultOut_valid;
-  wire       [7:0]    ppUnit_5_1_resultOut_payload;
-  wire                ppUnit_6_1_biasIn_ready;
-  wire                ppUnit_6_1_resultOut_valid;
-  wire       [7:0]    ppUnit_6_1_resultOut_payload;
-  wire                ppUnit_7_1_biasIn_ready;
-  wire                ppUnit_7_1_resultOut_valid;
-  wire       [7:0]    ppUnit_7_1_resultOut_payload;
+  wire                ppUnit_0_featureOut_valid;
+  wire       [7:0]    ppUnit_0_featureOut_payload;
+  wire                ppUnit_1_1_featureOut_valid;
+  wire       [7:0]    ppUnit_1_1_featureOut_payload;
+  wire                ppUnit_2_1_featureOut_valid;
+  wire       [7:0]    ppUnit_2_1_featureOut_payload;
+  wire                ppUnit_3_1_featureOut_valid;
+  wire       [7:0]    ppUnit_3_1_featureOut_payload;
+  wire                ppUnit_4_1_featureOut_valid;
+  wire       [7:0]    ppUnit_4_1_featureOut_payload;
+  wire                ppUnit_5_1_featureOut_valid;
+  wire       [7:0]    ppUnit_5_1_featureOut_payload;
+  wire                ppUnit_6_1_featureOut_valid;
+  wire       [7:0]    ppUnit_6_1_featureOut_payload;
+  wire                ppUnit_7_1_featureOut_valid;
+  wire       [7:0]    ppUnit_7_1_featureOut_payload;
   wire                lwBuffer_0_0_io_weightIn_ready;
   wire                lwBuffer_0_0_io_weightOut_valid;
   wire       [7:0]    lwBuffer_0_0_io_weightOut_payload;
@@ -672,15 +725,21 @@ module PEArray (
   wire                lwBuffer_7_7_io_weightIn_ready;
   wire                lwBuffer_7_7_io_weightOut_valid;
   wire       [7:0]    lwBuffer_7_7_io_weightOut_payload;
+  `ifndef SYNTHESIS
+  reg [47:0] peMode_1_string;
+  reg [79:0] ppuParm_mode_string;
+  `endif
+
 
   PECore peCores_0_0 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
+    .mode              (peMode_1[1:0]                         ), //i
     .featureIn_valid   (featureIn_0_valid                     ), //i
+    .featureIn_ready   (peCores_0_0_featureIn_ready           ), //o
     .featureIn_payload (featureIn_0_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_0_0_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_0_0_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_0_0_io_weightOut_payload[7:0]), //i
+    .weight_valid      (lwBuffer_0_0_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_0_0_weight_ready              ), //o
+    .weight_payload    (lwBuffer_0_0_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_0_0_macOut_valid              ), //o
     .macOut_payload    (peCores_0_0_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -688,12 +747,13 @@ module PEArray (
   );
   PECore peCores_0_1 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_1_valid                     ), //i
-    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_0_1_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_0_1_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_0_1_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_0_valid                     ), //i
+    .featureIn_ready   (peCores_0_1_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_0_1_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_0_1_weight_ready              ), //o
+    .weight_payload    (lwBuffer_0_1_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_0_1_macOut_valid              ), //o
     .macOut_payload    (peCores_0_1_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -701,12 +761,13 @@ module PEArray (
   );
   PECore peCores_0_2 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_2_valid                     ), //i
-    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_0_2_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_0_2_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_0_2_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_0_valid                     ), //i
+    .featureIn_ready   (peCores_0_2_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_0_2_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_0_2_weight_ready              ), //o
+    .weight_payload    (lwBuffer_0_2_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_0_2_macOut_valid              ), //o
     .macOut_payload    (peCores_0_2_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -714,12 +775,13 @@ module PEArray (
   );
   PECore peCores_0_3 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_3_valid                     ), //i
-    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_0_3_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_0_3_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_0_3_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_0_valid                     ), //i
+    .featureIn_ready   (peCores_0_3_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_0_3_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_0_3_weight_ready              ), //o
+    .weight_payload    (lwBuffer_0_3_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_0_3_macOut_valid              ), //o
     .macOut_payload    (peCores_0_3_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -727,12 +789,13 @@ module PEArray (
   );
   PECore peCores_0_4 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_4_valid                     ), //i
-    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_0_4_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_0_4_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_0_4_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_0_valid                     ), //i
+    .featureIn_ready   (peCores_0_4_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_0_4_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_0_4_weight_ready              ), //o
+    .weight_payload    (lwBuffer_0_4_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_0_4_macOut_valid              ), //o
     .macOut_payload    (peCores_0_4_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -740,12 +803,13 @@ module PEArray (
   );
   PECore peCores_0_5 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_5_valid                     ), //i
-    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_0_5_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_0_5_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_0_5_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_0_valid                     ), //i
+    .featureIn_ready   (peCores_0_5_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_0_5_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_0_5_weight_ready              ), //o
+    .weight_payload    (lwBuffer_0_5_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_0_5_macOut_valid              ), //o
     .macOut_payload    (peCores_0_5_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -753,12 +817,13 @@ module PEArray (
   );
   PECore peCores_0_6 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_6_valid                     ), //i
-    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_0_6_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_0_6_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_0_6_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_0_valid                     ), //i
+    .featureIn_ready   (peCores_0_6_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_0_6_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_0_6_weight_ready              ), //o
+    .weight_payload    (lwBuffer_0_6_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_0_6_macOut_valid              ), //o
     .macOut_payload    (peCores_0_6_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -766,12 +831,13 @@ module PEArray (
   );
   PECore peCores_0_7 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_7_valid                     ), //i
-    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_0_7_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_0_7_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_0_7_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_0_valid                     ), //i
+    .featureIn_ready   (peCores_0_7_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_0_7_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_0_7_weight_ready              ), //o
+    .weight_payload    (lwBuffer_0_7_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_0_7_macOut_valid              ), //o
     .macOut_payload    (peCores_0_7_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -779,12 +845,13 @@ module PEArray (
   );
   PECore peCores_1_0 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_0_valid                     ), //i
-    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_1_0_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_1_0_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_1_0_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_1_valid                     ), //i
+    .featureIn_ready   (peCores_1_0_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_1_0_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_1_0_weight_ready              ), //o
+    .weight_payload    (lwBuffer_1_0_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_1_0_macOut_valid              ), //o
     .macOut_payload    (peCores_1_0_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -792,12 +859,13 @@ module PEArray (
   );
   PECore peCores_1_1 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
+    .mode              (peMode_1[1:0]                         ), //i
     .featureIn_valid   (featureIn_1_valid                     ), //i
+    .featureIn_ready   (peCores_1_1_featureIn_ready           ), //o
     .featureIn_payload (featureIn_1_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_1_1_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_1_1_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_1_1_io_weightOut_payload[7:0]), //i
+    .weight_valid      (lwBuffer_1_1_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_1_1_weight_ready              ), //o
+    .weight_payload    (lwBuffer_1_1_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_1_1_macOut_valid              ), //o
     .macOut_payload    (peCores_1_1_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -805,12 +873,13 @@ module PEArray (
   );
   PECore peCores_1_2 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_2_valid                     ), //i
-    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_1_2_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_1_2_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_1_2_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_1_valid                     ), //i
+    .featureIn_ready   (peCores_1_2_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_1_2_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_1_2_weight_ready              ), //o
+    .weight_payload    (lwBuffer_1_2_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_1_2_macOut_valid              ), //o
     .macOut_payload    (peCores_1_2_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -818,12 +887,13 @@ module PEArray (
   );
   PECore peCores_1_3 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_3_valid                     ), //i
-    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_1_3_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_1_3_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_1_3_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_1_valid                     ), //i
+    .featureIn_ready   (peCores_1_3_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_1_3_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_1_3_weight_ready              ), //o
+    .weight_payload    (lwBuffer_1_3_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_1_3_macOut_valid              ), //o
     .macOut_payload    (peCores_1_3_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -831,12 +901,13 @@ module PEArray (
   );
   PECore peCores_1_4 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_4_valid                     ), //i
-    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_1_4_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_1_4_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_1_4_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_1_valid                     ), //i
+    .featureIn_ready   (peCores_1_4_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_1_4_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_1_4_weight_ready              ), //o
+    .weight_payload    (lwBuffer_1_4_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_1_4_macOut_valid              ), //o
     .macOut_payload    (peCores_1_4_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -844,12 +915,13 @@ module PEArray (
   );
   PECore peCores_1_5 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_5_valid                     ), //i
-    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_1_5_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_1_5_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_1_5_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_1_valid                     ), //i
+    .featureIn_ready   (peCores_1_5_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_1_5_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_1_5_weight_ready              ), //o
+    .weight_payload    (lwBuffer_1_5_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_1_5_macOut_valid              ), //o
     .macOut_payload    (peCores_1_5_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -857,12 +929,13 @@ module PEArray (
   );
   PECore peCores_1_6 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_6_valid                     ), //i
-    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_1_6_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_1_6_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_1_6_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_1_valid                     ), //i
+    .featureIn_ready   (peCores_1_6_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_1_6_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_1_6_weight_ready              ), //o
+    .weight_payload    (lwBuffer_1_6_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_1_6_macOut_valid              ), //o
     .macOut_payload    (peCores_1_6_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -870,12 +943,13 @@ module PEArray (
   );
   PECore peCores_1_7 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_7_valid                     ), //i
-    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_1_7_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_1_7_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_1_7_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_1_valid                     ), //i
+    .featureIn_ready   (peCores_1_7_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_1_7_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_1_7_weight_ready              ), //o
+    .weight_payload    (lwBuffer_1_7_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_1_7_macOut_valid              ), //o
     .macOut_payload    (peCores_1_7_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -883,12 +957,13 @@ module PEArray (
   );
   PECore peCores_2_0 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_0_valid                     ), //i
-    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_2_0_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_2_0_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_2_0_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_2_valid                     ), //i
+    .featureIn_ready   (peCores_2_0_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_2_0_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_2_0_weight_ready              ), //o
+    .weight_payload    (lwBuffer_2_0_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_2_0_macOut_valid              ), //o
     .macOut_payload    (peCores_2_0_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -896,12 +971,13 @@ module PEArray (
   );
   PECore peCores_2_1 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_1_valid                     ), //i
-    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_2_1_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_2_1_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_2_1_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_2_valid                     ), //i
+    .featureIn_ready   (peCores_2_1_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_2_1_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_2_1_weight_ready              ), //o
+    .weight_payload    (lwBuffer_2_1_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_2_1_macOut_valid              ), //o
     .macOut_payload    (peCores_2_1_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -909,12 +985,13 @@ module PEArray (
   );
   PECore peCores_2_2 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
+    .mode              (peMode_1[1:0]                         ), //i
     .featureIn_valid   (featureIn_2_valid                     ), //i
+    .featureIn_ready   (peCores_2_2_featureIn_ready           ), //o
     .featureIn_payload (featureIn_2_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_2_2_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_2_2_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_2_2_io_weightOut_payload[7:0]), //i
+    .weight_valid      (lwBuffer_2_2_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_2_2_weight_ready              ), //o
+    .weight_payload    (lwBuffer_2_2_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_2_2_macOut_valid              ), //o
     .macOut_payload    (peCores_2_2_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -922,12 +999,13 @@ module PEArray (
   );
   PECore peCores_2_3 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_3_valid                     ), //i
-    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_2_3_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_2_3_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_2_3_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_2_valid                     ), //i
+    .featureIn_ready   (peCores_2_3_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_2_3_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_2_3_weight_ready              ), //o
+    .weight_payload    (lwBuffer_2_3_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_2_3_macOut_valid              ), //o
     .macOut_payload    (peCores_2_3_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -935,12 +1013,13 @@ module PEArray (
   );
   PECore peCores_2_4 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_4_valid                     ), //i
-    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_2_4_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_2_4_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_2_4_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_2_valid                     ), //i
+    .featureIn_ready   (peCores_2_4_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_2_4_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_2_4_weight_ready              ), //o
+    .weight_payload    (lwBuffer_2_4_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_2_4_macOut_valid              ), //o
     .macOut_payload    (peCores_2_4_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -948,12 +1027,13 @@ module PEArray (
   );
   PECore peCores_2_5 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_5_valid                     ), //i
-    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_2_5_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_2_5_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_2_5_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_2_valid                     ), //i
+    .featureIn_ready   (peCores_2_5_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_2_5_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_2_5_weight_ready              ), //o
+    .weight_payload    (lwBuffer_2_5_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_2_5_macOut_valid              ), //o
     .macOut_payload    (peCores_2_5_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -961,12 +1041,13 @@ module PEArray (
   );
   PECore peCores_2_6 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_6_valid                     ), //i
-    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_2_6_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_2_6_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_2_6_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_2_valid                     ), //i
+    .featureIn_ready   (peCores_2_6_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_2_6_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_2_6_weight_ready              ), //o
+    .weight_payload    (lwBuffer_2_6_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_2_6_macOut_valid              ), //o
     .macOut_payload    (peCores_2_6_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -974,12 +1055,13 @@ module PEArray (
   );
   PECore peCores_2_7 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_7_valid                     ), //i
-    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_2_7_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_2_7_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_2_7_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_2_valid                     ), //i
+    .featureIn_ready   (peCores_2_7_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_2_7_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_2_7_weight_ready              ), //o
+    .weight_payload    (lwBuffer_2_7_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_2_7_macOut_valid              ), //o
     .macOut_payload    (peCores_2_7_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -987,12 +1069,13 @@ module PEArray (
   );
   PECore peCores_3_0 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_0_valid                     ), //i
-    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_3_0_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_3_0_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_3_0_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_3_valid                     ), //i
+    .featureIn_ready   (peCores_3_0_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_3_0_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_3_0_weight_ready              ), //o
+    .weight_payload    (lwBuffer_3_0_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_3_0_macOut_valid              ), //o
     .macOut_payload    (peCores_3_0_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1000,12 +1083,13 @@ module PEArray (
   );
   PECore peCores_3_1 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_1_valid                     ), //i
-    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_3_1_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_3_1_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_3_1_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_3_valid                     ), //i
+    .featureIn_ready   (peCores_3_1_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_3_1_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_3_1_weight_ready              ), //o
+    .weight_payload    (lwBuffer_3_1_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_3_1_macOut_valid              ), //o
     .macOut_payload    (peCores_3_1_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1013,12 +1097,13 @@ module PEArray (
   );
   PECore peCores_3_2 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_2_valid                     ), //i
-    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_3_2_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_3_2_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_3_2_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_3_valid                     ), //i
+    .featureIn_ready   (peCores_3_2_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_3_2_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_3_2_weight_ready              ), //o
+    .weight_payload    (lwBuffer_3_2_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_3_2_macOut_valid              ), //o
     .macOut_payload    (peCores_3_2_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1026,12 +1111,13 @@ module PEArray (
   );
   PECore peCores_3_3 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
+    .mode              (peMode_1[1:0]                         ), //i
     .featureIn_valid   (featureIn_3_valid                     ), //i
+    .featureIn_ready   (peCores_3_3_featureIn_ready           ), //o
     .featureIn_payload (featureIn_3_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_3_3_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_3_3_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_3_3_io_weightOut_payload[7:0]), //i
+    .weight_valid      (lwBuffer_3_3_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_3_3_weight_ready              ), //o
+    .weight_payload    (lwBuffer_3_3_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_3_3_macOut_valid              ), //o
     .macOut_payload    (peCores_3_3_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1039,12 +1125,13 @@ module PEArray (
   );
   PECore peCores_3_4 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_4_valid                     ), //i
-    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_3_4_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_3_4_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_3_4_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_3_valid                     ), //i
+    .featureIn_ready   (peCores_3_4_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_3_4_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_3_4_weight_ready              ), //o
+    .weight_payload    (lwBuffer_3_4_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_3_4_macOut_valid              ), //o
     .macOut_payload    (peCores_3_4_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1052,12 +1139,13 @@ module PEArray (
   );
   PECore peCores_3_5 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_5_valid                     ), //i
-    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_3_5_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_3_5_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_3_5_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_3_valid                     ), //i
+    .featureIn_ready   (peCores_3_5_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_3_5_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_3_5_weight_ready              ), //o
+    .weight_payload    (lwBuffer_3_5_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_3_5_macOut_valid              ), //o
     .macOut_payload    (peCores_3_5_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1065,12 +1153,13 @@ module PEArray (
   );
   PECore peCores_3_6 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_6_valid                     ), //i
-    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_3_6_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_3_6_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_3_6_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_3_valid                     ), //i
+    .featureIn_ready   (peCores_3_6_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_3_6_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_3_6_weight_ready              ), //o
+    .weight_payload    (lwBuffer_3_6_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_3_6_macOut_valid              ), //o
     .macOut_payload    (peCores_3_6_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1078,12 +1167,13 @@ module PEArray (
   );
   PECore peCores_3_7 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_7_valid                     ), //i
-    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_3_7_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_3_7_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_3_7_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_3_valid                     ), //i
+    .featureIn_ready   (peCores_3_7_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_3_7_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_3_7_weight_ready              ), //o
+    .weight_payload    (lwBuffer_3_7_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_3_7_macOut_valid              ), //o
     .macOut_payload    (peCores_3_7_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1091,12 +1181,13 @@ module PEArray (
   );
   PECore peCores_4_0 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_0_valid                     ), //i
-    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_4_0_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_4_0_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_4_0_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_4_valid                     ), //i
+    .featureIn_ready   (peCores_4_0_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_4_0_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_4_0_weight_ready              ), //o
+    .weight_payload    (lwBuffer_4_0_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_4_0_macOut_valid              ), //o
     .macOut_payload    (peCores_4_0_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1104,12 +1195,13 @@ module PEArray (
   );
   PECore peCores_4_1 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_1_valid                     ), //i
-    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_4_1_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_4_1_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_4_1_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_4_valid                     ), //i
+    .featureIn_ready   (peCores_4_1_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_4_1_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_4_1_weight_ready              ), //o
+    .weight_payload    (lwBuffer_4_1_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_4_1_macOut_valid              ), //o
     .macOut_payload    (peCores_4_1_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1117,12 +1209,13 @@ module PEArray (
   );
   PECore peCores_4_2 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_2_valid                     ), //i
-    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_4_2_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_4_2_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_4_2_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_4_valid                     ), //i
+    .featureIn_ready   (peCores_4_2_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_4_2_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_4_2_weight_ready              ), //o
+    .weight_payload    (lwBuffer_4_2_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_4_2_macOut_valid              ), //o
     .macOut_payload    (peCores_4_2_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1130,12 +1223,13 @@ module PEArray (
   );
   PECore peCores_4_3 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_3_valid                     ), //i
-    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_4_3_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_4_3_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_4_3_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_4_valid                     ), //i
+    .featureIn_ready   (peCores_4_3_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_4_3_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_4_3_weight_ready              ), //o
+    .weight_payload    (lwBuffer_4_3_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_4_3_macOut_valid              ), //o
     .macOut_payload    (peCores_4_3_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1143,12 +1237,13 @@ module PEArray (
   );
   PECore peCores_4_4 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
+    .mode              (peMode_1[1:0]                         ), //i
     .featureIn_valid   (featureIn_4_valid                     ), //i
+    .featureIn_ready   (peCores_4_4_featureIn_ready           ), //o
     .featureIn_payload (featureIn_4_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_4_4_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_4_4_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_4_4_io_weightOut_payload[7:0]), //i
+    .weight_valid      (lwBuffer_4_4_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_4_4_weight_ready              ), //o
+    .weight_payload    (lwBuffer_4_4_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_4_4_macOut_valid              ), //o
     .macOut_payload    (peCores_4_4_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1156,12 +1251,13 @@ module PEArray (
   );
   PECore peCores_4_5 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_5_valid                     ), //i
-    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_4_5_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_4_5_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_4_5_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_4_valid                     ), //i
+    .featureIn_ready   (peCores_4_5_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_4_5_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_4_5_weight_ready              ), //o
+    .weight_payload    (lwBuffer_4_5_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_4_5_macOut_valid              ), //o
     .macOut_payload    (peCores_4_5_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1169,12 +1265,13 @@ module PEArray (
   );
   PECore peCores_4_6 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_6_valid                     ), //i
-    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_4_6_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_4_6_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_4_6_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_4_valid                     ), //i
+    .featureIn_ready   (peCores_4_6_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_4_6_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_4_6_weight_ready              ), //o
+    .weight_payload    (lwBuffer_4_6_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_4_6_macOut_valid              ), //o
     .macOut_payload    (peCores_4_6_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1182,12 +1279,13 @@ module PEArray (
   );
   PECore peCores_4_7 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_7_valid                     ), //i
-    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_4_7_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_4_7_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_4_7_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_4_valid                     ), //i
+    .featureIn_ready   (peCores_4_7_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_4_7_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_4_7_weight_ready              ), //o
+    .weight_payload    (lwBuffer_4_7_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_4_7_macOut_valid              ), //o
     .macOut_payload    (peCores_4_7_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1195,12 +1293,13 @@ module PEArray (
   );
   PECore peCores_5_0 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_0_valid                     ), //i
-    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_5_0_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_5_0_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_5_0_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_5_valid                     ), //i
+    .featureIn_ready   (peCores_5_0_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_5_0_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_5_0_weight_ready              ), //o
+    .weight_payload    (lwBuffer_5_0_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_5_0_macOut_valid              ), //o
     .macOut_payload    (peCores_5_0_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1208,12 +1307,13 @@ module PEArray (
   );
   PECore peCores_5_1 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_1_valid                     ), //i
-    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_5_1_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_5_1_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_5_1_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_5_valid                     ), //i
+    .featureIn_ready   (peCores_5_1_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_5_1_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_5_1_weight_ready              ), //o
+    .weight_payload    (lwBuffer_5_1_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_5_1_macOut_valid              ), //o
     .macOut_payload    (peCores_5_1_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1221,12 +1321,13 @@ module PEArray (
   );
   PECore peCores_5_2 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_2_valid                     ), //i
-    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_5_2_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_5_2_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_5_2_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_5_valid                     ), //i
+    .featureIn_ready   (peCores_5_2_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_5_2_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_5_2_weight_ready              ), //o
+    .weight_payload    (lwBuffer_5_2_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_5_2_macOut_valid              ), //o
     .macOut_payload    (peCores_5_2_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1234,12 +1335,13 @@ module PEArray (
   );
   PECore peCores_5_3 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_3_valid                     ), //i
-    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_5_3_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_5_3_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_5_3_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_5_valid                     ), //i
+    .featureIn_ready   (peCores_5_3_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_5_3_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_5_3_weight_ready              ), //o
+    .weight_payload    (lwBuffer_5_3_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_5_3_macOut_valid              ), //o
     .macOut_payload    (peCores_5_3_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1247,12 +1349,13 @@ module PEArray (
   );
   PECore peCores_5_4 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_4_valid                     ), //i
-    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_5_4_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_5_4_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_5_4_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_5_valid                     ), //i
+    .featureIn_ready   (peCores_5_4_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_5_4_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_5_4_weight_ready              ), //o
+    .weight_payload    (lwBuffer_5_4_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_5_4_macOut_valid              ), //o
     .macOut_payload    (peCores_5_4_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1260,12 +1363,13 @@ module PEArray (
   );
   PECore peCores_5_5 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
+    .mode              (peMode_1[1:0]                         ), //i
     .featureIn_valid   (featureIn_5_valid                     ), //i
+    .featureIn_ready   (peCores_5_5_featureIn_ready           ), //o
     .featureIn_payload (featureIn_5_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_5_5_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_5_5_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_5_5_io_weightOut_payload[7:0]), //i
+    .weight_valid      (lwBuffer_5_5_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_5_5_weight_ready              ), //o
+    .weight_payload    (lwBuffer_5_5_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_5_5_macOut_valid              ), //o
     .macOut_payload    (peCores_5_5_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1273,12 +1377,13 @@ module PEArray (
   );
   PECore peCores_5_6 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_6_valid                     ), //i
-    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_5_6_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_5_6_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_5_6_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_5_valid                     ), //i
+    .featureIn_ready   (peCores_5_6_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_5_6_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_5_6_weight_ready              ), //o
+    .weight_payload    (lwBuffer_5_6_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_5_6_macOut_valid              ), //o
     .macOut_payload    (peCores_5_6_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1286,12 +1391,13 @@ module PEArray (
   );
   PECore peCores_5_7 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_7_valid                     ), //i
-    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_5_7_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_5_7_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_5_7_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_5_valid                     ), //i
+    .featureIn_ready   (peCores_5_7_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_5_7_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_5_7_weight_ready              ), //o
+    .weight_payload    (lwBuffer_5_7_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_5_7_macOut_valid              ), //o
     .macOut_payload    (peCores_5_7_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1299,12 +1405,13 @@ module PEArray (
   );
   PECore peCores_6_0 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_0_valid                     ), //i
-    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_6_0_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_6_0_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_6_0_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_6_valid                     ), //i
+    .featureIn_ready   (peCores_6_0_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_6_0_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_6_0_weight_ready              ), //o
+    .weight_payload    (lwBuffer_6_0_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_6_0_macOut_valid              ), //o
     .macOut_payload    (peCores_6_0_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1312,12 +1419,13 @@ module PEArray (
   );
   PECore peCores_6_1 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_1_valid                     ), //i
-    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_6_1_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_6_1_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_6_1_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_6_valid                     ), //i
+    .featureIn_ready   (peCores_6_1_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_6_1_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_6_1_weight_ready              ), //o
+    .weight_payload    (lwBuffer_6_1_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_6_1_macOut_valid              ), //o
     .macOut_payload    (peCores_6_1_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1325,12 +1433,13 @@ module PEArray (
   );
   PECore peCores_6_2 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_2_valid                     ), //i
-    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_6_2_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_6_2_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_6_2_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_6_valid                     ), //i
+    .featureIn_ready   (peCores_6_2_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_6_2_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_6_2_weight_ready              ), //o
+    .weight_payload    (lwBuffer_6_2_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_6_2_macOut_valid              ), //o
     .macOut_payload    (peCores_6_2_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1338,12 +1447,13 @@ module PEArray (
   );
   PECore peCores_6_3 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_3_valid                     ), //i
-    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_6_3_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_6_3_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_6_3_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_6_valid                     ), //i
+    .featureIn_ready   (peCores_6_3_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_6_3_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_6_3_weight_ready              ), //o
+    .weight_payload    (lwBuffer_6_3_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_6_3_macOut_valid              ), //o
     .macOut_payload    (peCores_6_3_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1351,12 +1461,13 @@ module PEArray (
   );
   PECore peCores_6_4 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_4_valid                     ), //i
-    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_6_4_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_6_4_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_6_4_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_6_valid                     ), //i
+    .featureIn_ready   (peCores_6_4_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_6_4_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_6_4_weight_ready              ), //o
+    .weight_payload    (lwBuffer_6_4_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_6_4_macOut_valid              ), //o
     .macOut_payload    (peCores_6_4_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1364,12 +1475,13 @@ module PEArray (
   );
   PECore peCores_6_5 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_5_valid                     ), //i
-    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_6_5_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_6_5_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_6_5_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_6_valid                     ), //i
+    .featureIn_ready   (peCores_6_5_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_6_5_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_6_5_weight_ready              ), //o
+    .weight_payload    (lwBuffer_6_5_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_6_5_macOut_valid              ), //o
     .macOut_payload    (peCores_6_5_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1377,12 +1489,13 @@ module PEArray (
   );
   PECore peCores_6_6 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
+    .mode              (peMode_1[1:0]                         ), //i
     .featureIn_valid   (featureIn_6_valid                     ), //i
+    .featureIn_ready   (peCores_6_6_featureIn_ready           ), //o
     .featureIn_payload (featureIn_6_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_6_6_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_6_6_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_6_6_io_weightOut_payload[7:0]), //i
+    .weight_valid      (lwBuffer_6_6_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_6_6_weight_ready              ), //o
+    .weight_payload    (lwBuffer_6_6_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_6_6_macOut_valid              ), //o
     .macOut_payload    (peCores_6_6_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1390,12 +1503,13 @@ module PEArray (
   );
   PECore peCores_6_7 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_7_valid                     ), //i
-    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_6_7_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_6_7_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_6_7_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_6_valid                     ), //i
+    .featureIn_ready   (peCores_6_7_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_6_7_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_6_7_weight_ready              ), //o
+    .weight_payload    (lwBuffer_6_7_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_6_7_macOut_valid              ), //o
     .macOut_payload    (peCores_6_7_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1403,12 +1517,13 @@ module PEArray (
   );
   PECore peCores_7_0 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_0_valid                     ), //i
-    .featureIn_payload (featureIn_0_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_7_0_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_7_0_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_7_0_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_7_valid                     ), //i
+    .featureIn_ready   (peCores_7_0_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_7_0_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_7_0_weight_ready              ), //o
+    .weight_payload    (lwBuffer_7_0_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_7_0_macOut_valid              ), //o
     .macOut_payload    (peCores_7_0_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1416,12 +1531,13 @@ module PEArray (
   );
   PECore peCores_7_1 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_1_valid                     ), //i
-    .featureIn_payload (featureIn_1_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_7_1_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_7_1_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_7_1_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_7_valid                     ), //i
+    .featureIn_ready   (peCores_7_1_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_7_1_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_7_1_weight_ready              ), //o
+    .weight_payload    (lwBuffer_7_1_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_7_1_macOut_valid              ), //o
     .macOut_payload    (peCores_7_1_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1429,12 +1545,13 @@ module PEArray (
   );
   PECore peCores_7_2 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_2_valid                     ), //i
-    .featureIn_payload (featureIn_2_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_7_2_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_7_2_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_7_2_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_7_valid                     ), //i
+    .featureIn_ready   (peCores_7_2_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_7_2_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_7_2_weight_ready              ), //o
+    .weight_payload    (lwBuffer_7_2_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_7_2_macOut_valid              ), //o
     .macOut_payload    (peCores_7_2_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1442,12 +1559,13 @@ module PEArray (
   );
   PECore peCores_7_3 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_3_valid                     ), //i
-    .featureIn_payload (featureIn_3_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_7_3_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_7_3_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_7_3_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_7_valid                     ), //i
+    .featureIn_ready   (peCores_7_3_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_7_3_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_7_3_weight_ready              ), //o
+    .weight_payload    (lwBuffer_7_3_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_7_3_macOut_valid              ), //o
     .macOut_payload    (peCores_7_3_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1455,12 +1573,13 @@ module PEArray (
   );
   PECore peCores_7_4 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_4_valid                     ), //i
-    .featureIn_payload (featureIn_4_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_7_4_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_7_4_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_7_4_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_7_valid                     ), //i
+    .featureIn_ready   (peCores_7_4_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_7_4_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_7_4_weight_ready              ), //o
+    .weight_payload    (lwBuffer_7_4_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_7_4_macOut_valid              ), //o
     .macOut_payload    (peCores_7_4_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1468,12 +1587,13 @@ module PEArray (
   );
   PECore peCores_7_5 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_5_valid                     ), //i
-    .featureIn_payload (featureIn_5_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_7_5_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_7_5_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_7_5_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_7_valid                     ), //i
+    .featureIn_ready   (peCores_7_5_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_7_5_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_7_5_weight_ready              ), //o
+    .weight_payload    (lwBuffer_7_5_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_7_5_macOut_valid              ), //o
     .macOut_payload    (peCores_7_5_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1481,12 +1601,13 @@ module PEArray (
   );
   PECore peCores_7_6 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
-    .featureIn_valid   (featureIn_6_valid                     ), //i
-    .featureIn_payload (featureIn_6_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_7_6_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_7_6_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_7_6_io_weightOut_payload[7:0]), //i
+    .mode              (peMode_1[1:0]                         ), //i
+    .featureIn_valid   (featureIn_7_valid                     ), //i
+    .featureIn_ready   (peCores_7_6_featureIn_ready           ), //o
+    .featureIn_payload (featureIn_7_payload[7:0]              ), //i
+    .weight_valid      (lwBuffer_7_6_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_7_6_weight_ready              ), //o
+    .weight_payload    (lwBuffer_7_6_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_7_6_macOut_valid              ), //o
     .macOut_payload    (peCores_7_6_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
@@ -1494,1177 +1615,1200 @@ module PEArray (
   );
   PECore peCores_7_7 (
     .clear             (clear                                 ), //i
-    .mode              (peMode[2:0]                           ), //i
+    .mode              (peMode_1[1:0]                         ), //i
     .featureIn_valid   (featureIn_7_valid                     ), //i
+    .featureIn_ready   (peCores_7_7_featureIn_ready           ), //o
     .featureIn_payload (featureIn_7_payload[7:0]              ), //i
-    .weightIn_valid    (lwBuffer_7_7_io_weightOut_valid       ), //i
-    .weightIn_ready    (peCores_7_7_weightIn_ready            ), //o
-    .weightIn_payload  (lwBuffer_7_7_io_weightOut_payload[7:0]), //i
+    .weight_valid      (lwBuffer_7_7_io_weightOut_valid       ), //i
+    .weight_ready      (peCores_7_7_weight_ready              ), //o
+    .weight_payload    (lwBuffer_7_7_io_weightOut_payload[7:0]), //i
     .macOut_valid      (peCores_7_7_macOut_valid              ), //o
     .macOut_payload    (peCores_7_7_macOut_payload[31:0]      ), //o
     .clk               (clk                                   ), //i
     .reset             (reset                                 )  //i
   );
   PPUnit ppUnit_0 (
-    .clear             (clear                           ), //i
-    .relu              (relu                            ), //i
-    .mode              (ppuMode[1:0]                    ), //i
-    .spLen             (spLen[5:0]                      ), //i
-    .loopLen           (loopLen[5:0]                    ), //i
-    .biasIn_valid      (biasIn_0_valid                  ), //i
-    .biasIn_ready      (ppUnit_0_biasIn_ready           ), //o
-    .biasIn_payload    (biasIn_0_payload[31:0]          ), //i
-    .macIn_0_valid     (peCores_0_0_macOut_valid        ), //i
-    .macIn_0_payload   (peCores_0_0_macOut_payload[31:0]), //i
-    .macIn_1_valid     (peCores_0_1_macOut_valid        ), //i
-    .macIn_1_payload   (peCores_0_1_macOut_payload[31:0]), //i
-    .macIn_2_valid     (peCores_0_2_macOut_valid        ), //i
-    .macIn_2_payload   (peCores_0_2_macOut_payload[31:0]), //i
-    .macIn_3_valid     (peCores_0_3_macOut_valid        ), //i
-    .macIn_3_payload   (peCores_0_3_macOut_payload[31:0]), //i
-    .macIn_4_valid     (peCores_0_4_macOut_valid        ), //i
-    .macIn_4_payload   (peCores_0_4_macOut_payload[31:0]), //i
-    .macIn_5_valid     (peCores_0_5_macOut_valid        ), //i
-    .macIn_5_payload   (peCores_0_5_macOut_payload[31:0]), //i
-    .macIn_6_valid     (peCores_0_6_macOut_valid        ), //i
-    .macIn_6_payload   (peCores_0_6_macOut_payload[31:0]), //i
-    .macIn_7_valid     (peCores_0_7_macOut_valid        ), //i
-    .macIn_7_payload   (peCores_0_7_macOut_payload[31:0]), //i
-    .resultOut_valid   (ppUnit_0_resultOut_valid        ), //o
-    .resultOut_payload (ppUnit_0_resultOut_payload[7:0] ), //o
-    .clk               (clk                             ), //i
-    .reset             (reset                           )  //i
+    .clear              (clear                           ), //i
+    .parm_mode          (ppuParm_mode[2:0]               ), //i
+    .parm_reluEn        (ppuParm_reluEn                  ), //i
+    .parm_spLen         (ppuParm_spLen[5:0]              ), //i
+    .parm_loopLen       (ppuParm_loopLen[4:0]            ), //i
+    .parm_multiplier    (ppuParm_multiplier[9:0]         ), //i
+    .parm_shift         (ppuParm_shift[3:0]              ), //i
+    .parm_zeroPoint     (ppuParm_zeroPoint[7:0]          ), //i
+    .macIn_0_valid      (peCores_0_0_macOut_valid        ), //i
+    .macIn_0_payload    (peCores_0_0_macOut_payload[31:0]), //i
+    .macIn_1_valid      (peCores_0_1_macOut_valid        ), //i
+    .macIn_1_payload    (peCores_0_1_macOut_payload[31:0]), //i
+    .macIn_2_valid      (peCores_0_2_macOut_valid        ), //i
+    .macIn_2_payload    (peCores_0_2_macOut_payload[31:0]), //i
+    .macIn_3_valid      (peCores_0_3_macOut_valid        ), //i
+    .macIn_3_payload    (peCores_0_3_macOut_payload[31:0]), //i
+    .macIn_4_valid      (peCores_0_4_macOut_valid        ), //i
+    .macIn_4_payload    (peCores_0_4_macOut_payload[31:0]), //i
+    .macIn_5_valid      (peCores_0_5_macOut_valid        ), //i
+    .macIn_5_payload    (peCores_0_5_macOut_payload[31:0]), //i
+    .macIn_6_valid      (peCores_0_6_macOut_valid        ), //i
+    .macIn_6_payload    (peCores_0_6_macOut_payload[31:0]), //i
+    .macIn_7_valid      (peCores_0_7_macOut_valid        ), //i
+    .macIn_7_payload    (peCores_0_7_macOut_payload[31:0]), //i
+    .featureOut_valid   (ppUnit_0_featureOut_valid       ), //o
+    .featureOut_payload (ppUnit_0_featureOut_payload[7:0]), //o
+    .clk                (clk                             ), //i
+    .reset              (reset                           )  //i
   );
   PPUnit ppUnit_1_1 (
-    .clear             (clear                            ), //i
-    .relu              (relu                             ), //i
-    .mode              (ppuMode[1:0]                     ), //i
-    .spLen             (spLen[5:0]                       ), //i
-    .loopLen           (loopLen[5:0]                     ), //i
-    .biasIn_valid      (biasIn_1_valid                   ), //i
-    .biasIn_ready      (ppUnit_1_1_biasIn_ready          ), //o
-    .biasIn_payload    (biasIn_1_payload[31:0]           ), //i
-    .macIn_0_valid     (peCores_1_0_macOut_valid         ), //i
-    .macIn_0_payload   (peCores_1_0_macOut_payload[31:0] ), //i
-    .macIn_1_valid     (peCores_1_1_macOut_valid         ), //i
-    .macIn_1_payload   (peCores_1_1_macOut_payload[31:0] ), //i
-    .macIn_2_valid     (peCores_1_2_macOut_valid         ), //i
-    .macIn_2_payload   (peCores_1_2_macOut_payload[31:0] ), //i
-    .macIn_3_valid     (peCores_1_3_macOut_valid         ), //i
-    .macIn_3_payload   (peCores_1_3_macOut_payload[31:0] ), //i
-    .macIn_4_valid     (peCores_1_4_macOut_valid         ), //i
-    .macIn_4_payload   (peCores_1_4_macOut_payload[31:0] ), //i
-    .macIn_5_valid     (peCores_1_5_macOut_valid         ), //i
-    .macIn_5_payload   (peCores_1_5_macOut_payload[31:0] ), //i
-    .macIn_6_valid     (peCores_1_6_macOut_valid         ), //i
-    .macIn_6_payload   (peCores_1_6_macOut_payload[31:0] ), //i
-    .macIn_7_valid     (peCores_1_7_macOut_valid         ), //i
-    .macIn_7_payload   (peCores_1_7_macOut_payload[31:0] ), //i
-    .resultOut_valid   (ppUnit_1_1_resultOut_valid       ), //o
-    .resultOut_payload (ppUnit_1_1_resultOut_payload[7:0]), //o
-    .clk               (clk                              ), //i
-    .reset             (reset                            )  //i
+    .clear              (clear                             ), //i
+    .parm_mode          (ppuParm_mode[2:0]                 ), //i
+    .parm_reluEn        (ppuParm_reluEn                    ), //i
+    .parm_spLen         (ppuParm_spLen[5:0]                ), //i
+    .parm_loopLen       (ppuParm_loopLen[4:0]              ), //i
+    .parm_multiplier    (ppuParm_multiplier[9:0]           ), //i
+    .parm_shift         (ppuParm_shift[3:0]                ), //i
+    .parm_zeroPoint     (ppuParm_zeroPoint[7:0]            ), //i
+    .macIn_0_valid      (peCores_1_0_macOut_valid          ), //i
+    .macIn_0_payload    (peCores_1_0_macOut_payload[31:0]  ), //i
+    .macIn_1_valid      (peCores_1_1_macOut_valid          ), //i
+    .macIn_1_payload    (peCores_1_1_macOut_payload[31:0]  ), //i
+    .macIn_2_valid      (peCores_1_2_macOut_valid          ), //i
+    .macIn_2_payload    (peCores_1_2_macOut_payload[31:0]  ), //i
+    .macIn_3_valid      (peCores_1_3_macOut_valid          ), //i
+    .macIn_3_payload    (peCores_1_3_macOut_payload[31:0]  ), //i
+    .macIn_4_valid      (peCores_1_4_macOut_valid          ), //i
+    .macIn_4_payload    (peCores_1_4_macOut_payload[31:0]  ), //i
+    .macIn_5_valid      (peCores_1_5_macOut_valid          ), //i
+    .macIn_5_payload    (peCores_1_5_macOut_payload[31:0]  ), //i
+    .macIn_6_valid      (peCores_1_6_macOut_valid          ), //i
+    .macIn_6_payload    (peCores_1_6_macOut_payload[31:0]  ), //i
+    .macIn_7_valid      (peCores_1_7_macOut_valid          ), //i
+    .macIn_7_payload    (peCores_1_7_macOut_payload[31:0]  ), //i
+    .featureOut_valid   (ppUnit_1_1_featureOut_valid       ), //o
+    .featureOut_payload (ppUnit_1_1_featureOut_payload[7:0]), //o
+    .clk                (clk                               ), //i
+    .reset              (reset                             )  //i
   );
   PPUnit ppUnit_2_1 (
-    .clear             (clear                            ), //i
-    .relu              (relu                             ), //i
-    .mode              (ppuMode[1:0]                     ), //i
-    .spLen             (spLen[5:0]                       ), //i
-    .loopLen           (loopLen[5:0]                     ), //i
-    .biasIn_valid      (biasIn_2_valid                   ), //i
-    .biasIn_ready      (ppUnit_2_1_biasIn_ready          ), //o
-    .biasIn_payload    (biasIn_2_payload[31:0]           ), //i
-    .macIn_0_valid     (peCores_2_0_macOut_valid         ), //i
-    .macIn_0_payload   (peCores_2_0_macOut_payload[31:0] ), //i
-    .macIn_1_valid     (peCores_2_1_macOut_valid         ), //i
-    .macIn_1_payload   (peCores_2_1_macOut_payload[31:0] ), //i
-    .macIn_2_valid     (peCores_2_2_macOut_valid         ), //i
-    .macIn_2_payload   (peCores_2_2_macOut_payload[31:0] ), //i
-    .macIn_3_valid     (peCores_2_3_macOut_valid         ), //i
-    .macIn_3_payload   (peCores_2_3_macOut_payload[31:0] ), //i
-    .macIn_4_valid     (peCores_2_4_macOut_valid         ), //i
-    .macIn_4_payload   (peCores_2_4_macOut_payload[31:0] ), //i
-    .macIn_5_valid     (peCores_2_5_macOut_valid         ), //i
-    .macIn_5_payload   (peCores_2_5_macOut_payload[31:0] ), //i
-    .macIn_6_valid     (peCores_2_6_macOut_valid         ), //i
-    .macIn_6_payload   (peCores_2_6_macOut_payload[31:0] ), //i
-    .macIn_7_valid     (peCores_2_7_macOut_valid         ), //i
-    .macIn_7_payload   (peCores_2_7_macOut_payload[31:0] ), //i
-    .resultOut_valid   (ppUnit_2_1_resultOut_valid       ), //o
-    .resultOut_payload (ppUnit_2_1_resultOut_payload[7:0]), //o
-    .clk               (clk                              ), //i
-    .reset             (reset                            )  //i
+    .clear              (clear                             ), //i
+    .parm_mode          (ppuParm_mode[2:0]                 ), //i
+    .parm_reluEn        (ppuParm_reluEn                    ), //i
+    .parm_spLen         (ppuParm_spLen[5:0]                ), //i
+    .parm_loopLen       (ppuParm_loopLen[4:0]              ), //i
+    .parm_multiplier    (ppuParm_multiplier[9:0]           ), //i
+    .parm_shift         (ppuParm_shift[3:0]                ), //i
+    .parm_zeroPoint     (ppuParm_zeroPoint[7:0]            ), //i
+    .macIn_0_valid      (peCores_2_0_macOut_valid          ), //i
+    .macIn_0_payload    (peCores_2_0_macOut_payload[31:0]  ), //i
+    .macIn_1_valid      (peCores_2_1_macOut_valid          ), //i
+    .macIn_1_payload    (peCores_2_1_macOut_payload[31:0]  ), //i
+    .macIn_2_valid      (peCores_2_2_macOut_valid          ), //i
+    .macIn_2_payload    (peCores_2_2_macOut_payload[31:0]  ), //i
+    .macIn_3_valid      (peCores_2_3_macOut_valid          ), //i
+    .macIn_3_payload    (peCores_2_3_macOut_payload[31:0]  ), //i
+    .macIn_4_valid      (peCores_2_4_macOut_valid          ), //i
+    .macIn_4_payload    (peCores_2_4_macOut_payload[31:0]  ), //i
+    .macIn_5_valid      (peCores_2_5_macOut_valid          ), //i
+    .macIn_5_payload    (peCores_2_5_macOut_payload[31:0]  ), //i
+    .macIn_6_valid      (peCores_2_6_macOut_valid          ), //i
+    .macIn_6_payload    (peCores_2_6_macOut_payload[31:0]  ), //i
+    .macIn_7_valid      (peCores_2_7_macOut_valid          ), //i
+    .macIn_7_payload    (peCores_2_7_macOut_payload[31:0]  ), //i
+    .featureOut_valid   (ppUnit_2_1_featureOut_valid       ), //o
+    .featureOut_payload (ppUnit_2_1_featureOut_payload[7:0]), //o
+    .clk                (clk                               ), //i
+    .reset              (reset                             )  //i
   );
   PPUnit ppUnit_3_1 (
-    .clear             (clear                            ), //i
-    .relu              (relu                             ), //i
-    .mode              (ppuMode[1:0]                     ), //i
-    .spLen             (spLen[5:0]                       ), //i
-    .loopLen           (loopLen[5:0]                     ), //i
-    .biasIn_valid      (biasIn_3_valid                   ), //i
-    .biasIn_ready      (ppUnit_3_1_biasIn_ready          ), //o
-    .biasIn_payload    (biasIn_3_payload[31:0]           ), //i
-    .macIn_0_valid     (peCores_3_0_macOut_valid         ), //i
-    .macIn_0_payload   (peCores_3_0_macOut_payload[31:0] ), //i
-    .macIn_1_valid     (peCores_3_1_macOut_valid         ), //i
-    .macIn_1_payload   (peCores_3_1_macOut_payload[31:0] ), //i
-    .macIn_2_valid     (peCores_3_2_macOut_valid         ), //i
-    .macIn_2_payload   (peCores_3_2_macOut_payload[31:0] ), //i
-    .macIn_3_valid     (peCores_3_3_macOut_valid         ), //i
-    .macIn_3_payload   (peCores_3_3_macOut_payload[31:0] ), //i
-    .macIn_4_valid     (peCores_3_4_macOut_valid         ), //i
-    .macIn_4_payload   (peCores_3_4_macOut_payload[31:0] ), //i
-    .macIn_5_valid     (peCores_3_5_macOut_valid         ), //i
-    .macIn_5_payload   (peCores_3_5_macOut_payload[31:0] ), //i
-    .macIn_6_valid     (peCores_3_6_macOut_valid         ), //i
-    .macIn_6_payload   (peCores_3_6_macOut_payload[31:0] ), //i
-    .macIn_7_valid     (peCores_3_7_macOut_valid         ), //i
-    .macIn_7_payload   (peCores_3_7_macOut_payload[31:0] ), //i
-    .resultOut_valid   (ppUnit_3_1_resultOut_valid       ), //o
-    .resultOut_payload (ppUnit_3_1_resultOut_payload[7:0]), //o
-    .clk               (clk                              ), //i
-    .reset             (reset                            )  //i
+    .clear              (clear                             ), //i
+    .parm_mode          (ppuParm_mode[2:0]                 ), //i
+    .parm_reluEn        (ppuParm_reluEn                    ), //i
+    .parm_spLen         (ppuParm_spLen[5:0]                ), //i
+    .parm_loopLen       (ppuParm_loopLen[4:0]              ), //i
+    .parm_multiplier    (ppuParm_multiplier[9:0]           ), //i
+    .parm_shift         (ppuParm_shift[3:0]                ), //i
+    .parm_zeroPoint     (ppuParm_zeroPoint[7:0]            ), //i
+    .macIn_0_valid      (peCores_3_0_macOut_valid          ), //i
+    .macIn_0_payload    (peCores_3_0_macOut_payload[31:0]  ), //i
+    .macIn_1_valid      (peCores_3_1_macOut_valid          ), //i
+    .macIn_1_payload    (peCores_3_1_macOut_payload[31:0]  ), //i
+    .macIn_2_valid      (peCores_3_2_macOut_valid          ), //i
+    .macIn_2_payload    (peCores_3_2_macOut_payload[31:0]  ), //i
+    .macIn_3_valid      (peCores_3_3_macOut_valid          ), //i
+    .macIn_3_payload    (peCores_3_3_macOut_payload[31:0]  ), //i
+    .macIn_4_valid      (peCores_3_4_macOut_valid          ), //i
+    .macIn_4_payload    (peCores_3_4_macOut_payload[31:0]  ), //i
+    .macIn_5_valid      (peCores_3_5_macOut_valid          ), //i
+    .macIn_5_payload    (peCores_3_5_macOut_payload[31:0]  ), //i
+    .macIn_6_valid      (peCores_3_6_macOut_valid          ), //i
+    .macIn_6_payload    (peCores_3_6_macOut_payload[31:0]  ), //i
+    .macIn_7_valid      (peCores_3_7_macOut_valid          ), //i
+    .macIn_7_payload    (peCores_3_7_macOut_payload[31:0]  ), //i
+    .featureOut_valid   (ppUnit_3_1_featureOut_valid       ), //o
+    .featureOut_payload (ppUnit_3_1_featureOut_payload[7:0]), //o
+    .clk                (clk                               ), //i
+    .reset              (reset                             )  //i
   );
   PPUnit ppUnit_4_1 (
-    .clear             (clear                            ), //i
-    .relu              (relu                             ), //i
-    .mode              (ppuMode[1:0]                     ), //i
-    .spLen             (spLen[5:0]                       ), //i
-    .loopLen           (loopLen[5:0]                     ), //i
-    .biasIn_valid      (biasIn_4_valid                   ), //i
-    .biasIn_ready      (ppUnit_4_1_biasIn_ready          ), //o
-    .biasIn_payload    (biasIn_4_payload[31:0]           ), //i
-    .macIn_0_valid     (peCores_4_0_macOut_valid         ), //i
-    .macIn_0_payload   (peCores_4_0_macOut_payload[31:0] ), //i
-    .macIn_1_valid     (peCores_4_1_macOut_valid         ), //i
-    .macIn_1_payload   (peCores_4_1_macOut_payload[31:0] ), //i
-    .macIn_2_valid     (peCores_4_2_macOut_valid         ), //i
-    .macIn_2_payload   (peCores_4_2_macOut_payload[31:0] ), //i
-    .macIn_3_valid     (peCores_4_3_macOut_valid         ), //i
-    .macIn_3_payload   (peCores_4_3_macOut_payload[31:0] ), //i
-    .macIn_4_valid     (peCores_4_4_macOut_valid         ), //i
-    .macIn_4_payload   (peCores_4_4_macOut_payload[31:0] ), //i
-    .macIn_5_valid     (peCores_4_5_macOut_valid         ), //i
-    .macIn_5_payload   (peCores_4_5_macOut_payload[31:0] ), //i
-    .macIn_6_valid     (peCores_4_6_macOut_valid         ), //i
-    .macIn_6_payload   (peCores_4_6_macOut_payload[31:0] ), //i
-    .macIn_7_valid     (peCores_4_7_macOut_valid         ), //i
-    .macIn_7_payload   (peCores_4_7_macOut_payload[31:0] ), //i
-    .resultOut_valid   (ppUnit_4_1_resultOut_valid       ), //o
-    .resultOut_payload (ppUnit_4_1_resultOut_payload[7:0]), //o
-    .clk               (clk                              ), //i
-    .reset             (reset                            )  //i
+    .clear              (clear                             ), //i
+    .parm_mode          (ppuParm_mode[2:0]                 ), //i
+    .parm_reluEn        (ppuParm_reluEn                    ), //i
+    .parm_spLen         (ppuParm_spLen[5:0]                ), //i
+    .parm_loopLen       (ppuParm_loopLen[4:0]              ), //i
+    .parm_multiplier    (ppuParm_multiplier[9:0]           ), //i
+    .parm_shift         (ppuParm_shift[3:0]                ), //i
+    .parm_zeroPoint     (ppuParm_zeroPoint[7:0]            ), //i
+    .macIn_0_valid      (peCores_4_0_macOut_valid          ), //i
+    .macIn_0_payload    (peCores_4_0_macOut_payload[31:0]  ), //i
+    .macIn_1_valid      (peCores_4_1_macOut_valid          ), //i
+    .macIn_1_payload    (peCores_4_1_macOut_payload[31:0]  ), //i
+    .macIn_2_valid      (peCores_4_2_macOut_valid          ), //i
+    .macIn_2_payload    (peCores_4_2_macOut_payload[31:0]  ), //i
+    .macIn_3_valid      (peCores_4_3_macOut_valid          ), //i
+    .macIn_3_payload    (peCores_4_3_macOut_payload[31:0]  ), //i
+    .macIn_4_valid      (peCores_4_4_macOut_valid          ), //i
+    .macIn_4_payload    (peCores_4_4_macOut_payload[31:0]  ), //i
+    .macIn_5_valid      (peCores_4_5_macOut_valid          ), //i
+    .macIn_5_payload    (peCores_4_5_macOut_payload[31:0]  ), //i
+    .macIn_6_valid      (peCores_4_6_macOut_valid          ), //i
+    .macIn_6_payload    (peCores_4_6_macOut_payload[31:0]  ), //i
+    .macIn_7_valid      (peCores_4_7_macOut_valid          ), //i
+    .macIn_7_payload    (peCores_4_7_macOut_payload[31:0]  ), //i
+    .featureOut_valid   (ppUnit_4_1_featureOut_valid       ), //o
+    .featureOut_payload (ppUnit_4_1_featureOut_payload[7:0]), //o
+    .clk                (clk                               ), //i
+    .reset              (reset                             )  //i
   );
   PPUnit ppUnit_5_1 (
-    .clear             (clear                            ), //i
-    .relu              (relu                             ), //i
-    .mode              (ppuMode[1:0]                     ), //i
-    .spLen             (spLen[5:0]                       ), //i
-    .loopLen           (loopLen[5:0]                     ), //i
-    .biasIn_valid      (biasIn_5_valid                   ), //i
-    .biasIn_ready      (ppUnit_5_1_biasIn_ready          ), //o
-    .biasIn_payload    (biasIn_5_payload[31:0]           ), //i
-    .macIn_0_valid     (peCores_5_0_macOut_valid         ), //i
-    .macIn_0_payload   (peCores_5_0_macOut_payload[31:0] ), //i
-    .macIn_1_valid     (peCores_5_1_macOut_valid         ), //i
-    .macIn_1_payload   (peCores_5_1_macOut_payload[31:0] ), //i
-    .macIn_2_valid     (peCores_5_2_macOut_valid         ), //i
-    .macIn_2_payload   (peCores_5_2_macOut_payload[31:0] ), //i
-    .macIn_3_valid     (peCores_5_3_macOut_valid         ), //i
-    .macIn_3_payload   (peCores_5_3_macOut_payload[31:0] ), //i
-    .macIn_4_valid     (peCores_5_4_macOut_valid         ), //i
-    .macIn_4_payload   (peCores_5_4_macOut_payload[31:0] ), //i
-    .macIn_5_valid     (peCores_5_5_macOut_valid         ), //i
-    .macIn_5_payload   (peCores_5_5_macOut_payload[31:0] ), //i
-    .macIn_6_valid     (peCores_5_6_macOut_valid         ), //i
-    .macIn_6_payload   (peCores_5_6_macOut_payload[31:0] ), //i
-    .macIn_7_valid     (peCores_5_7_macOut_valid         ), //i
-    .macIn_7_payload   (peCores_5_7_macOut_payload[31:0] ), //i
-    .resultOut_valid   (ppUnit_5_1_resultOut_valid       ), //o
-    .resultOut_payload (ppUnit_5_1_resultOut_payload[7:0]), //o
-    .clk               (clk                              ), //i
-    .reset             (reset                            )  //i
+    .clear              (clear                             ), //i
+    .parm_mode          (ppuParm_mode[2:0]                 ), //i
+    .parm_reluEn        (ppuParm_reluEn                    ), //i
+    .parm_spLen         (ppuParm_spLen[5:0]                ), //i
+    .parm_loopLen       (ppuParm_loopLen[4:0]              ), //i
+    .parm_multiplier    (ppuParm_multiplier[9:0]           ), //i
+    .parm_shift         (ppuParm_shift[3:0]                ), //i
+    .parm_zeroPoint     (ppuParm_zeroPoint[7:0]            ), //i
+    .macIn_0_valid      (peCores_5_0_macOut_valid          ), //i
+    .macIn_0_payload    (peCores_5_0_macOut_payload[31:0]  ), //i
+    .macIn_1_valid      (peCores_5_1_macOut_valid          ), //i
+    .macIn_1_payload    (peCores_5_1_macOut_payload[31:0]  ), //i
+    .macIn_2_valid      (peCores_5_2_macOut_valid          ), //i
+    .macIn_2_payload    (peCores_5_2_macOut_payload[31:0]  ), //i
+    .macIn_3_valid      (peCores_5_3_macOut_valid          ), //i
+    .macIn_3_payload    (peCores_5_3_macOut_payload[31:0]  ), //i
+    .macIn_4_valid      (peCores_5_4_macOut_valid          ), //i
+    .macIn_4_payload    (peCores_5_4_macOut_payload[31:0]  ), //i
+    .macIn_5_valid      (peCores_5_5_macOut_valid          ), //i
+    .macIn_5_payload    (peCores_5_5_macOut_payload[31:0]  ), //i
+    .macIn_6_valid      (peCores_5_6_macOut_valid          ), //i
+    .macIn_6_payload    (peCores_5_6_macOut_payload[31:0]  ), //i
+    .macIn_7_valid      (peCores_5_7_macOut_valid          ), //i
+    .macIn_7_payload    (peCores_5_7_macOut_payload[31:0]  ), //i
+    .featureOut_valid   (ppUnit_5_1_featureOut_valid       ), //o
+    .featureOut_payload (ppUnit_5_1_featureOut_payload[7:0]), //o
+    .clk                (clk                               ), //i
+    .reset              (reset                             )  //i
   );
   PPUnit ppUnit_6_1 (
-    .clear             (clear                            ), //i
-    .relu              (relu                             ), //i
-    .mode              (ppuMode[1:0]                     ), //i
-    .spLen             (spLen[5:0]                       ), //i
-    .loopLen           (loopLen[5:0]                     ), //i
-    .biasIn_valid      (biasIn_6_valid                   ), //i
-    .biasIn_ready      (ppUnit_6_1_biasIn_ready          ), //o
-    .biasIn_payload    (biasIn_6_payload[31:0]           ), //i
-    .macIn_0_valid     (peCores_6_0_macOut_valid         ), //i
-    .macIn_0_payload   (peCores_6_0_macOut_payload[31:0] ), //i
-    .macIn_1_valid     (peCores_6_1_macOut_valid         ), //i
-    .macIn_1_payload   (peCores_6_1_macOut_payload[31:0] ), //i
-    .macIn_2_valid     (peCores_6_2_macOut_valid         ), //i
-    .macIn_2_payload   (peCores_6_2_macOut_payload[31:0] ), //i
-    .macIn_3_valid     (peCores_6_3_macOut_valid         ), //i
-    .macIn_3_payload   (peCores_6_3_macOut_payload[31:0] ), //i
-    .macIn_4_valid     (peCores_6_4_macOut_valid         ), //i
-    .macIn_4_payload   (peCores_6_4_macOut_payload[31:0] ), //i
-    .macIn_5_valid     (peCores_6_5_macOut_valid         ), //i
-    .macIn_5_payload   (peCores_6_5_macOut_payload[31:0] ), //i
-    .macIn_6_valid     (peCores_6_6_macOut_valid         ), //i
-    .macIn_6_payload   (peCores_6_6_macOut_payload[31:0] ), //i
-    .macIn_7_valid     (peCores_6_7_macOut_valid         ), //i
-    .macIn_7_payload   (peCores_6_7_macOut_payload[31:0] ), //i
-    .resultOut_valid   (ppUnit_6_1_resultOut_valid       ), //o
-    .resultOut_payload (ppUnit_6_1_resultOut_payload[7:0]), //o
-    .clk               (clk                              ), //i
-    .reset             (reset                            )  //i
+    .clear              (clear                             ), //i
+    .parm_mode          (ppuParm_mode[2:0]                 ), //i
+    .parm_reluEn        (ppuParm_reluEn                    ), //i
+    .parm_spLen         (ppuParm_spLen[5:0]                ), //i
+    .parm_loopLen       (ppuParm_loopLen[4:0]              ), //i
+    .parm_multiplier    (ppuParm_multiplier[9:0]           ), //i
+    .parm_shift         (ppuParm_shift[3:0]                ), //i
+    .parm_zeroPoint     (ppuParm_zeroPoint[7:0]            ), //i
+    .macIn_0_valid      (peCores_6_0_macOut_valid          ), //i
+    .macIn_0_payload    (peCores_6_0_macOut_payload[31:0]  ), //i
+    .macIn_1_valid      (peCores_6_1_macOut_valid          ), //i
+    .macIn_1_payload    (peCores_6_1_macOut_payload[31:0]  ), //i
+    .macIn_2_valid      (peCores_6_2_macOut_valid          ), //i
+    .macIn_2_payload    (peCores_6_2_macOut_payload[31:0]  ), //i
+    .macIn_3_valid      (peCores_6_3_macOut_valid          ), //i
+    .macIn_3_payload    (peCores_6_3_macOut_payload[31:0]  ), //i
+    .macIn_4_valid      (peCores_6_4_macOut_valid          ), //i
+    .macIn_4_payload    (peCores_6_4_macOut_payload[31:0]  ), //i
+    .macIn_5_valid      (peCores_6_5_macOut_valid          ), //i
+    .macIn_5_payload    (peCores_6_5_macOut_payload[31:0]  ), //i
+    .macIn_6_valid      (peCores_6_6_macOut_valid          ), //i
+    .macIn_6_payload    (peCores_6_6_macOut_payload[31:0]  ), //i
+    .macIn_7_valid      (peCores_6_7_macOut_valid          ), //i
+    .macIn_7_payload    (peCores_6_7_macOut_payload[31:0]  ), //i
+    .featureOut_valid   (ppUnit_6_1_featureOut_valid       ), //o
+    .featureOut_payload (ppUnit_6_1_featureOut_payload[7:0]), //o
+    .clk                (clk                               ), //i
+    .reset              (reset                             )  //i
   );
   PPUnit ppUnit_7_1 (
-    .clear             (clear                            ), //i
-    .relu              (relu                             ), //i
-    .mode              (ppuMode[1:0]                     ), //i
-    .spLen             (spLen[5:0]                       ), //i
-    .loopLen           (loopLen[5:0]                     ), //i
-    .biasIn_valid      (biasIn_7_valid                   ), //i
-    .biasIn_ready      (ppUnit_7_1_biasIn_ready          ), //o
-    .biasIn_payload    (biasIn_7_payload[31:0]           ), //i
-    .macIn_0_valid     (peCores_7_0_macOut_valid         ), //i
-    .macIn_0_payload   (peCores_7_0_macOut_payload[31:0] ), //i
-    .macIn_1_valid     (peCores_7_1_macOut_valid         ), //i
-    .macIn_1_payload   (peCores_7_1_macOut_payload[31:0] ), //i
-    .macIn_2_valid     (peCores_7_2_macOut_valid         ), //i
-    .macIn_2_payload   (peCores_7_2_macOut_payload[31:0] ), //i
-    .macIn_3_valid     (peCores_7_3_macOut_valid         ), //i
-    .macIn_3_payload   (peCores_7_3_macOut_payload[31:0] ), //i
-    .macIn_4_valid     (peCores_7_4_macOut_valid         ), //i
-    .macIn_4_payload   (peCores_7_4_macOut_payload[31:0] ), //i
-    .macIn_5_valid     (peCores_7_5_macOut_valid         ), //i
-    .macIn_5_payload   (peCores_7_5_macOut_payload[31:0] ), //i
-    .macIn_6_valid     (peCores_7_6_macOut_valid         ), //i
-    .macIn_6_payload   (peCores_7_6_macOut_payload[31:0] ), //i
-    .macIn_7_valid     (peCores_7_7_macOut_valid         ), //i
-    .macIn_7_payload   (peCores_7_7_macOut_payload[31:0] ), //i
-    .resultOut_valid   (ppUnit_7_1_resultOut_valid       ), //o
-    .resultOut_payload (ppUnit_7_1_resultOut_payload[7:0]), //o
-    .clk               (clk                              ), //i
-    .reset             (reset                            )  //i
+    .clear              (clear                             ), //i
+    .parm_mode          (ppuParm_mode[2:0]                 ), //i
+    .parm_reluEn        (ppuParm_reluEn                    ), //i
+    .parm_spLen         (ppuParm_spLen[5:0]                ), //i
+    .parm_loopLen       (ppuParm_loopLen[4:0]              ), //i
+    .parm_multiplier    (ppuParm_multiplier[9:0]           ), //i
+    .parm_shift         (ppuParm_shift[3:0]                ), //i
+    .parm_zeroPoint     (ppuParm_zeroPoint[7:0]            ), //i
+    .macIn_0_valid      (peCores_7_0_macOut_valid          ), //i
+    .macIn_0_payload    (peCores_7_0_macOut_payload[31:0]  ), //i
+    .macIn_1_valid      (peCores_7_1_macOut_valid          ), //i
+    .macIn_1_payload    (peCores_7_1_macOut_payload[31:0]  ), //i
+    .macIn_2_valid      (peCores_7_2_macOut_valid          ), //i
+    .macIn_2_payload    (peCores_7_2_macOut_payload[31:0]  ), //i
+    .macIn_3_valid      (peCores_7_3_macOut_valid          ), //i
+    .macIn_3_payload    (peCores_7_3_macOut_payload[31:0]  ), //i
+    .macIn_4_valid      (peCores_7_4_macOut_valid          ), //i
+    .macIn_4_payload    (peCores_7_4_macOut_payload[31:0]  ), //i
+    .macIn_5_valid      (peCores_7_5_macOut_valid          ), //i
+    .macIn_5_payload    (peCores_7_5_macOut_payload[31:0]  ), //i
+    .macIn_6_valid      (peCores_7_6_macOut_valid          ), //i
+    .macIn_6_payload    (peCores_7_6_macOut_payload[31:0]  ), //i
+    .macIn_7_valid      (peCores_7_7_macOut_valid          ), //i
+    .macIn_7_payload    (peCores_7_7_macOut_payload[31:0]  ), //i
+    .featureOut_valid   (ppUnit_7_1_featureOut_valid       ), //o
+    .featureOut_payload (ppUnit_7_1_featureOut_payload[7:0]), //o
+    .clk                (clk                               ), //i
+    .reset              (reset                             )  //i
   );
   LWBuffer lwBuffer_0_0 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_0_0_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_0_0_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_0_0_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_0_0_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_0_0_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_0_0_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_0_0_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_0_0_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_0_0_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_0_1 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_0_1_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_0_1_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_0_1_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_0_1_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_0_1_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_0_1_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_0_1_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_0_1_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_0_1_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_0_2 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_0_2_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_0_2_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_0_2_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_0_2_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_0_2_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_0_2_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_0_2_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_0_2_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_0_2_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_0_3 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_0_3_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_0_3_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_0_3_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_0_3_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_0_3_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_0_3_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_0_3_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_0_3_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_0_3_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_0_4 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_0_4_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_0_4_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_0_4_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_0_4_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_0_4_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_0_4_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_0_4_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_0_4_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_0_4_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_0_5 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_0_5_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_0_5_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_0_5_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_0_5_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_0_5_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_0_5_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_0_5_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_0_5_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_0_5_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_0_6 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_0_6_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_0_6_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_0_6_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_0_6_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_0_6_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_0_6_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_0_6_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_0_6_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_0_6_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_0_7 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_0_7_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_0_7_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_0_7_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_0_7_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_0_7_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_0_7_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_0_7_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_0_7_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_0_7_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_1_0 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_1_0_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_1_0_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_1_0_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_1_0_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_1_0_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_1_0_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_1_0_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_1_0_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_1_0_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_1_1 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_1_1_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_1_1_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_1_1_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_1_1_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_1_1_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_1_1_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_1_1_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_1_1_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_1_1_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_1_2 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_1_2_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_1_2_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_1_2_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_1_2_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_1_2_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_1_2_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_1_2_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_1_2_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_1_2_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_1_3 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_1_3_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_1_3_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_1_3_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_1_3_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_1_3_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_1_3_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_1_3_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_1_3_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_1_3_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_1_4 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_1_4_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_1_4_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_1_4_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_1_4_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_1_4_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_1_4_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_1_4_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_1_4_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_1_4_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_1_5 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_1_5_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_1_5_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_1_5_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_1_5_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_1_5_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_1_5_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_1_5_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_1_5_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_1_5_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_1_6 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_1_6_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_1_6_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_1_6_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_1_6_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_1_6_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_1_6_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_1_6_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_1_6_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_1_6_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_1_7 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_1_7_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_1_7_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_1_7_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_1_7_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_1_7_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_1_7_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_1_7_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_1_7_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_1_7_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_2_0 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_2_0_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_2_0_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_2_0_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_2_0_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_2_0_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_2_0_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_2_0_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_2_0_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_2_0_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_2_1 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_2_1_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_2_1_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_2_1_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_2_1_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_2_1_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_2_1_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_2_1_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_2_1_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_2_1_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_2_2 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_2_2_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_2_2_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_2_2_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_2_2_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_2_2_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_2_2_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_2_2_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_2_2_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_2_2_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_2_3 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_2_3_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_2_3_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_2_3_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_2_3_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_2_3_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_2_3_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_2_3_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_2_3_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_2_3_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_2_4 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_2_4_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_2_4_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_2_4_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_2_4_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_2_4_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_2_4_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_2_4_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_2_4_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_2_4_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_2_5 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_2_5_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_2_5_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_2_5_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_2_5_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_2_5_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_2_5_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_2_5_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_2_5_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_2_5_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_2_6 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_2_6_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_2_6_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_2_6_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_2_6_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_2_6_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_2_6_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_2_6_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_2_6_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_2_6_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_2_7 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_2_7_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_2_7_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_2_7_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_2_7_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_2_7_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_2_7_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_2_7_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_2_7_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_2_7_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_3_0 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_3_0_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_3_0_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_3_0_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_3_0_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_3_0_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_3_0_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_3_0_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_3_0_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_3_0_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_3_1 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_3_1_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_3_1_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_3_1_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_3_1_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_3_1_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_3_1_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_3_1_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_3_1_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_3_1_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_3_2 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_3_2_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_3_2_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_3_2_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_3_2_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_3_2_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_3_2_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_3_2_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_3_2_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_3_2_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_3_3 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_3_3_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_3_3_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_3_3_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_3_3_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_3_3_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_3_3_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_3_3_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_3_3_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_3_3_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_3_4 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_3_4_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_3_4_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_3_4_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_3_4_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_3_4_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_3_4_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_3_4_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_3_4_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_3_4_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_3_5 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_3_5_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_3_5_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_3_5_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_3_5_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_3_5_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_3_5_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_3_5_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_3_5_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_3_5_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_3_6 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_3_6_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_3_6_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_3_6_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_3_6_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_3_6_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_3_6_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_3_6_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_3_6_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_3_6_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_3_7 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_3_7_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_3_7_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_3_7_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_3_7_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_3_7_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_3_7_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_3_7_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_3_7_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_3_7_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_4_0 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_4_0_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_4_0_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_4_0_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_4_0_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_4_0_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_4_0_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_4_0_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_4_0_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_4_0_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_4_1 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_4_1_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_4_1_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_4_1_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_4_1_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_4_1_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_4_1_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_4_1_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_4_1_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_4_1_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_4_2 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_4_2_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_4_2_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_4_2_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_4_2_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_4_2_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_4_2_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_4_2_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_4_2_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_4_2_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_4_3 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_4_3_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_4_3_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_4_3_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_4_3_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_4_3_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_4_3_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_4_3_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_4_3_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_4_3_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_4_4 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_4_4_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_4_4_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_4_4_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_4_4_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_4_4_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_4_4_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_4_4_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_4_4_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_4_4_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_4_5 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_4_5_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_4_5_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_4_5_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_4_5_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_4_5_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_4_5_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_4_5_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_4_5_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_4_5_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_4_6 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_4_6_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_4_6_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_4_6_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_4_6_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_4_6_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_4_6_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_4_6_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_4_6_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_4_6_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_4_7 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_4_7_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_4_7_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_4_7_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_4_7_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_4_7_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_4_7_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_4_7_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_4_7_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_4_7_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_5_0 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_5_0_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_5_0_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_5_0_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_5_0_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_5_0_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_5_0_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_5_0_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_5_0_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_5_0_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_5_1 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_5_1_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_5_1_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_5_1_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_5_1_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_5_1_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_5_1_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_5_1_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_5_1_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_5_1_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_5_2 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_5_2_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_5_2_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_5_2_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_5_2_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_5_2_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_5_2_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_5_2_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_5_2_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_5_2_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_5_3 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_5_3_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_5_3_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_5_3_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_5_3_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_5_3_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_5_3_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_5_3_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_5_3_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_5_3_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_5_4 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_5_4_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_5_4_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_5_4_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_5_4_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_5_4_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_5_4_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_5_4_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_5_4_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_5_4_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_5_5 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_5_5_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_5_5_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_5_5_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_5_5_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_5_5_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_5_5_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_5_5_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_5_5_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_5_5_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_5_6 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_5_6_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_5_6_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_5_6_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_5_6_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_5_6_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_5_6_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_5_6_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_5_6_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_5_6_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_5_7 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_5_7_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_5_7_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_5_7_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_5_7_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_5_7_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_5_7_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_5_7_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_5_7_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_5_7_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_6_0 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_6_0_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_6_0_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_6_0_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_6_0_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_6_0_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_6_0_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_6_0_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_6_0_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_6_0_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_6_1 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_6_1_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_6_1_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_6_1_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_6_1_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_6_1_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_6_1_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_6_1_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_6_1_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_6_1_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_6_2 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_6_2_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_6_2_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_6_2_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_6_2_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_6_2_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_6_2_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_6_2_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_6_2_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_6_2_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_6_3 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_6_3_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_6_3_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_6_3_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_6_3_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_6_3_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_6_3_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_6_3_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_6_3_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_6_3_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_6_4 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_6_4_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_6_4_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_6_4_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_6_4_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_6_4_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_6_4_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_6_4_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_6_4_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_6_4_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_6_5 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_6_5_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_6_5_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_6_5_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_6_5_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_6_5_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_6_5_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_6_5_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_6_5_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_6_5_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_6_6 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_6_6_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_6_6_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_6_6_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_6_6_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_6_6_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_6_6_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_6_6_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_6_6_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_6_6_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_6_7 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_6_7_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_6_7_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_6_7_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_6_7_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_6_7_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_6_7_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_6_7_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_6_7_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_6_7_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_7_0 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_7_0_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_7_0_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_7_0_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_7_0_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_7_0_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_7_0_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_7_0_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_7_0_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_7_0_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_7_1 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_7_1_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_7_1_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_7_1_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_7_1_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_7_1_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_7_1_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_7_1_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_7_1_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_7_1_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_7_2 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_7_2_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_7_2_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_7_2_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_7_2_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_7_2_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_7_2_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_7_2_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_7_2_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_7_2_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_7_3 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_7_3_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_7_3_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_7_3_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_7_3_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_7_3_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_7_3_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_7_3_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_7_3_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_7_3_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_7_4 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_7_4_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_7_4_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_7_4_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_7_4_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_7_4_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_7_4_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_7_4_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_7_4_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_7_4_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_7_5 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_7_5_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_7_5_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_7_5_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_7_5_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_7_5_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_7_5_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_7_5_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_7_5_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_7_5_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_7_6 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_7_6_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_7_6_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_7_6_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_7_6_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_7_6_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_7_6_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_7_6_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_7_6_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_7_6_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
   LWBuffer lwBuffer_7_7 (
     .io_clear             (clear                                 ), //i
-    .io_wLen              (wLen[5:0]                             ), //i
-    .io_spLen             (spLen[5:0]                            ), //i
-    .io_weightIn_valid    (weightIn_7_7_valid                    ), //i
+    .io_spLen             (spLen[9:0]                            ), //i
+    .io_kChDim            (kChDim[5:0]                           ), //i
+    .io_weightIn_valid    (weight_7_7_valid                      ), //i
     .io_weightIn_ready    (lwBuffer_7_7_io_weightIn_ready        ), //o
-    .io_weightIn_payload  (weightIn_7_7_payload[7:0]             ), //i
+    .io_weightIn_payload  (weight_7_7_payload[7:0]               ), //i
     .io_weightOut_valid   (lwBuffer_7_7_io_weightOut_valid       ), //o
-    .io_weightOut_ready   (peCores_7_7_weightIn_ready            ), //i
+    .io_weightOut_ready   (peCores_7_7_weight_ready              ), //i
     .io_weightOut_payload (lwBuffer_7_7_io_weightOut_payload[7:0]), //o
     .clk                  (clk                                   ), //i
     .reset                (reset                                 )  //i
   );
-  assign biasIn_0_ready = ppUnit_0_biasIn_ready;
-  assign resultOut_0_valid = ppUnit_0_resultOut_valid;
-  assign resultOut_0_payload = ppUnit_0_resultOut_payload;
-  assign weightIn_0_0_ready = lwBuffer_0_0_io_weightIn_ready;
-  assign weightIn_0_1_ready = lwBuffer_0_1_io_weightIn_ready;
-  assign weightIn_0_2_ready = lwBuffer_0_2_io_weightIn_ready;
-  assign weightIn_0_3_ready = lwBuffer_0_3_io_weightIn_ready;
-  assign weightIn_0_4_ready = lwBuffer_0_4_io_weightIn_ready;
-  assign weightIn_0_5_ready = lwBuffer_0_5_io_weightIn_ready;
-  assign weightIn_0_6_ready = lwBuffer_0_6_io_weightIn_ready;
-  assign weightIn_0_7_ready = lwBuffer_0_7_io_weightIn_ready;
-  assign biasIn_1_ready = ppUnit_1_1_biasIn_ready;
-  assign resultOut_1_valid = ppUnit_1_1_resultOut_valid;
-  assign resultOut_1_payload = ppUnit_1_1_resultOut_payload;
-  assign weightIn_1_0_ready = lwBuffer_1_0_io_weightIn_ready;
-  assign weightIn_1_1_ready = lwBuffer_1_1_io_weightIn_ready;
-  assign weightIn_1_2_ready = lwBuffer_1_2_io_weightIn_ready;
-  assign weightIn_1_3_ready = lwBuffer_1_3_io_weightIn_ready;
-  assign weightIn_1_4_ready = lwBuffer_1_4_io_weightIn_ready;
-  assign weightIn_1_5_ready = lwBuffer_1_5_io_weightIn_ready;
-  assign weightIn_1_6_ready = lwBuffer_1_6_io_weightIn_ready;
-  assign weightIn_1_7_ready = lwBuffer_1_7_io_weightIn_ready;
-  assign biasIn_2_ready = ppUnit_2_1_biasIn_ready;
-  assign resultOut_2_valid = ppUnit_2_1_resultOut_valid;
-  assign resultOut_2_payload = ppUnit_2_1_resultOut_payload;
-  assign weightIn_2_0_ready = lwBuffer_2_0_io_weightIn_ready;
-  assign weightIn_2_1_ready = lwBuffer_2_1_io_weightIn_ready;
-  assign weightIn_2_2_ready = lwBuffer_2_2_io_weightIn_ready;
-  assign weightIn_2_3_ready = lwBuffer_2_3_io_weightIn_ready;
-  assign weightIn_2_4_ready = lwBuffer_2_4_io_weightIn_ready;
-  assign weightIn_2_5_ready = lwBuffer_2_5_io_weightIn_ready;
-  assign weightIn_2_6_ready = lwBuffer_2_6_io_weightIn_ready;
-  assign weightIn_2_7_ready = lwBuffer_2_7_io_weightIn_ready;
-  assign biasIn_3_ready = ppUnit_3_1_biasIn_ready;
-  assign resultOut_3_valid = ppUnit_3_1_resultOut_valid;
-  assign resultOut_3_payload = ppUnit_3_1_resultOut_payload;
-  assign weightIn_3_0_ready = lwBuffer_3_0_io_weightIn_ready;
-  assign weightIn_3_1_ready = lwBuffer_3_1_io_weightIn_ready;
-  assign weightIn_3_2_ready = lwBuffer_3_2_io_weightIn_ready;
-  assign weightIn_3_3_ready = lwBuffer_3_3_io_weightIn_ready;
-  assign weightIn_3_4_ready = lwBuffer_3_4_io_weightIn_ready;
-  assign weightIn_3_5_ready = lwBuffer_3_5_io_weightIn_ready;
-  assign weightIn_3_6_ready = lwBuffer_3_6_io_weightIn_ready;
-  assign weightIn_3_7_ready = lwBuffer_3_7_io_weightIn_ready;
-  assign biasIn_4_ready = ppUnit_4_1_biasIn_ready;
-  assign resultOut_4_valid = ppUnit_4_1_resultOut_valid;
-  assign resultOut_4_payload = ppUnit_4_1_resultOut_payload;
-  assign weightIn_4_0_ready = lwBuffer_4_0_io_weightIn_ready;
-  assign weightIn_4_1_ready = lwBuffer_4_1_io_weightIn_ready;
-  assign weightIn_4_2_ready = lwBuffer_4_2_io_weightIn_ready;
-  assign weightIn_4_3_ready = lwBuffer_4_3_io_weightIn_ready;
-  assign weightIn_4_4_ready = lwBuffer_4_4_io_weightIn_ready;
-  assign weightIn_4_5_ready = lwBuffer_4_5_io_weightIn_ready;
-  assign weightIn_4_6_ready = lwBuffer_4_6_io_weightIn_ready;
-  assign weightIn_4_7_ready = lwBuffer_4_7_io_weightIn_ready;
-  assign biasIn_5_ready = ppUnit_5_1_biasIn_ready;
-  assign resultOut_5_valid = ppUnit_5_1_resultOut_valid;
-  assign resultOut_5_payload = ppUnit_5_1_resultOut_payload;
-  assign weightIn_5_0_ready = lwBuffer_5_0_io_weightIn_ready;
-  assign weightIn_5_1_ready = lwBuffer_5_1_io_weightIn_ready;
-  assign weightIn_5_2_ready = lwBuffer_5_2_io_weightIn_ready;
-  assign weightIn_5_3_ready = lwBuffer_5_3_io_weightIn_ready;
-  assign weightIn_5_4_ready = lwBuffer_5_4_io_weightIn_ready;
-  assign weightIn_5_5_ready = lwBuffer_5_5_io_weightIn_ready;
-  assign weightIn_5_6_ready = lwBuffer_5_6_io_weightIn_ready;
-  assign weightIn_5_7_ready = lwBuffer_5_7_io_weightIn_ready;
-  assign biasIn_6_ready = ppUnit_6_1_biasIn_ready;
-  assign resultOut_6_valid = ppUnit_6_1_resultOut_valid;
-  assign resultOut_6_payload = ppUnit_6_1_resultOut_payload;
-  assign weightIn_6_0_ready = lwBuffer_6_0_io_weightIn_ready;
-  assign weightIn_6_1_ready = lwBuffer_6_1_io_weightIn_ready;
-  assign weightIn_6_2_ready = lwBuffer_6_2_io_weightIn_ready;
-  assign weightIn_6_3_ready = lwBuffer_6_3_io_weightIn_ready;
-  assign weightIn_6_4_ready = lwBuffer_6_4_io_weightIn_ready;
-  assign weightIn_6_5_ready = lwBuffer_6_5_io_weightIn_ready;
-  assign weightIn_6_6_ready = lwBuffer_6_6_io_weightIn_ready;
-  assign weightIn_6_7_ready = lwBuffer_6_7_io_weightIn_ready;
-  assign biasIn_7_ready = ppUnit_7_1_biasIn_ready;
-  assign resultOut_7_valid = ppUnit_7_1_resultOut_valid;
-  assign resultOut_7_payload = ppUnit_7_1_resultOut_payload;
-  assign weightIn_7_0_ready = lwBuffer_7_0_io_weightIn_ready;
-  assign weightIn_7_1_ready = lwBuffer_7_1_io_weightIn_ready;
-  assign weightIn_7_2_ready = lwBuffer_7_2_io_weightIn_ready;
-  assign weightIn_7_3_ready = lwBuffer_7_3_io_weightIn_ready;
-  assign weightIn_7_4_ready = lwBuffer_7_4_io_weightIn_ready;
-  assign weightIn_7_5_ready = lwBuffer_7_5_io_weightIn_ready;
-  assign weightIn_7_6_ready = lwBuffer_7_6_io_weightIn_ready;
-  assign weightIn_7_7_ready = lwBuffer_7_7_io_weightIn_ready;
+  `ifndef SYNTHESIS
+  always @(*) begin
+    case(peMode_1)
+      MAC : peMode_1_string = "MAC   ";
+      MUL : peMode_1_string = "MUL   ";
+      BYPASS : peMode_1_string = "BYPASS";
+      default : peMode_1_string = "??????";
+    endcase
+  end
+  always @(*) begin
+    case(ppuParm_mode)
+      CONV2D : ppuParm_mode_string = "CONV2D    ";
+      DEEPCONV : ppuParm_mode_string = "DEEPCONV  ";
+      POINTCONV : ppuParm_mode_string = "POINTCONV ";
+      FC : ppuParm_mode_string = "FC        ";
+      MAXPOOL : ppuParm_mode_string = "MAXPOOL   ";
+      AVERAGPOOL : ppuParm_mode_string = "AVERAGPOOL";
+      default : ppuParm_mode_string = "??????????";
+    endcase
+  end
+  `endif
+
+  assign featureOut_0_valid = ppUnit_0_featureOut_valid;
+  assign featureOut_0_payload = ppUnit_0_featureOut_payload;
+  assign weight_0_0_ready = lwBuffer_0_0_io_weightIn_ready;
+  assign weight_0_1_ready = lwBuffer_0_1_io_weightIn_ready;
+  assign weight_0_2_ready = lwBuffer_0_2_io_weightIn_ready;
+  assign weight_0_3_ready = lwBuffer_0_3_io_weightIn_ready;
+  assign weight_0_4_ready = lwBuffer_0_4_io_weightIn_ready;
+  assign weight_0_5_ready = lwBuffer_0_5_io_weightIn_ready;
+  assign weight_0_6_ready = lwBuffer_0_6_io_weightIn_ready;
+  assign weight_0_7_ready = lwBuffer_0_7_io_weightIn_ready;
+  assign featureOut_1_valid = ppUnit_1_1_featureOut_valid;
+  assign featureOut_1_payload = ppUnit_1_1_featureOut_payload;
+  assign weight_1_0_ready = lwBuffer_1_0_io_weightIn_ready;
+  assign weight_1_1_ready = lwBuffer_1_1_io_weightIn_ready;
+  assign weight_1_2_ready = lwBuffer_1_2_io_weightIn_ready;
+  assign weight_1_3_ready = lwBuffer_1_3_io_weightIn_ready;
+  assign weight_1_4_ready = lwBuffer_1_4_io_weightIn_ready;
+  assign weight_1_5_ready = lwBuffer_1_5_io_weightIn_ready;
+  assign weight_1_6_ready = lwBuffer_1_6_io_weightIn_ready;
+  assign weight_1_7_ready = lwBuffer_1_7_io_weightIn_ready;
+  assign featureOut_2_valid = ppUnit_2_1_featureOut_valid;
+  assign featureOut_2_payload = ppUnit_2_1_featureOut_payload;
+  assign weight_2_0_ready = lwBuffer_2_0_io_weightIn_ready;
+  assign weight_2_1_ready = lwBuffer_2_1_io_weightIn_ready;
+  assign weight_2_2_ready = lwBuffer_2_2_io_weightIn_ready;
+  assign weight_2_3_ready = lwBuffer_2_3_io_weightIn_ready;
+  assign weight_2_4_ready = lwBuffer_2_4_io_weightIn_ready;
+  assign weight_2_5_ready = lwBuffer_2_5_io_weightIn_ready;
+  assign weight_2_6_ready = lwBuffer_2_6_io_weightIn_ready;
+  assign weight_2_7_ready = lwBuffer_2_7_io_weightIn_ready;
+  assign featureOut_3_valid = ppUnit_3_1_featureOut_valid;
+  assign featureOut_3_payload = ppUnit_3_1_featureOut_payload;
+  assign weight_3_0_ready = lwBuffer_3_0_io_weightIn_ready;
+  assign weight_3_1_ready = lwBuffer_3_1_io_weightIn_ready;
+  assign weight_3_2_ready = lwBuffer_3_2_io_weightIn_ready;
+  assign weight_3_3_ready = lwBuffer_3_3_io_weightIn_ready;
+  assign weight_3_4_ready = lwBuffer_3_4_io_weightIn_ready;
+  assign weight_3_5_ready = lwBuffer_3_5_io_weightIn_ready;
+  assign weight_3_6_ready = lwBuffer_3_6_io_weightIn_ready;
+  assign weight_3_7_ready = lwBuffer_3_7_io_weightIn_ready;
+  assign featureOut_4_valid = ppUnit_4_1_featureOut_valid;
+  assign featureOut_4_payload = ppUnit_4_1_featureOut_payload;
+  assign weight_4_0_ready = lwBuffer_4_0_io_weightIn_ready;
+  assign weight_4_1_ready = lwBuffer_4_1_io_weightIn_ready;
+  assign weight_4_2_ready = lwBuffer_4_2_io_weightIn_ready;
+  assign weight_4_3_ready = lwBuffer_4_3_io_weightIn_ready;
+  assign weight_4_4_ready = lwBuffer_4_4_io_weightIn_ready;
+  assign weight_4_5_ready = lwBuffer_4_5_io_weightIn_ready;
+  assign weight_4_6_ready = lwBuffer_4_6_io_weightIn_ready;
+  assign weight_4_7_ready = lwBuffer_4_7_io_weightIn_ready;
+  assign featureOut_5_valid = ppUnit_5_1_featureOut_valid;
+  assign featureOut_5_payload = ppUnit_5_1_featureOut_payload;
+  assign weight_5_0_ready = lwBuffer_5_0_io_weightIn_ready;
+  assign weight_5_1_ready = lwBuffer_5_1_io_weightIn_ready;
+  assign weight_5_2_ready = lwBuffer_5_2_io_weightIn_ready;
+  assign weight_5_3_ready = lwBuffer_5_3_io_weightIn_ready;
+  assign weight_5_4_ready = lwBuffer_5_4_io_weightIn_ready;
+  assign weight_5_5_ready = lwBuffer_5_5_io_weightIn_ready;
+  assign weight_5_6_ready = lwBuffer_5_6_io_weightIn_ready;
+  assign weight_5_7_ready = lwBuffer_5_7_io_weightIn_ready;
+  assign featureOut_6_valid = ppUnit_6_1_featureOut_valid;
+  assign featureOut_6_payload = ppUnit_6_1_featureOut_payload;
+  assign weight_6_0_ready = lwBuffer_6_0_io_weightIn_ready;
+  assign weight_6_1_ready = lwBuffer_6_1_io_weightIn_ready;
+  assign weight_6_2_ready = lwBuffer_6_2_io_weightIn_ready;
+  assign weight_6_3_ready = lwBuffer_6_3_io_weightIn_ready;
+  assign weight_6_4_ready = lwBuffer_6_4_io_weightIn_ready;
+  assign weight_6_5_ready = lwBuffer_6_5_io_weightIn_ready;
+  assign weight_6_6_ready = lwBuffer_6_6_io_weightIn_ready;
+  assign weight_6_7_ready = lwBuffer_6_7_io_weightIn_ready;
+  assign featureOut_7_valid = ppUnit_7_1_featureOut_valid;
+  assign featureOut_7_payload = ppUnit_7_1_featureOut_payload;
+  assign weight_7_0_ready = lwBuffer_7_0_io_weightIn_ready;
+  assign weight_7_1_ready = lwBuffer_7_1_io_weightIn_ready;
+  assign weight_7_2_ready = lwBuffer_7_2_io_weightIn_ready;
+  assign weight_7_3_ready = lwBuffer_7_3_io_weightIn_ready;
+  assign weight_7_4_ready = lwBuffer_7_4_io_weightIn_ready;
+  assign weight_7_5_ready = lwBuffer_7_5_io_weightIn_ready;
+  assign weight_7_6_ready = lwBuffer_7_6_io_weightIn_ready;
+  assign weight_7_7_ready = lwBuffer_7_7_io_weightIn_ready;
+  assign featureIn_0_ready = (((((((peCores_0_0_featureIn_ready && peCores_0_1_featureIn_ready) && peCores_0_2_featureIn_ready) && peCores_0_3_featureIn_ready) && peCores_0_4_featureIn_ready) && peCores_0_5_featureIn_ready) && peCores_0_6_featureIn_ready) && peCores_0_7_featureIn_ready);
+  assign featureIn_1_ready = (((((((peCores_1_0_featureIn_ready && peCores_1_1_featureIn_ready) && peCores_1_2_featureIn_ready) && peCores_1_3_featureIn_ready) && peCores_1_4_featureIn_ready) && peCores_1_5_featureIn_ready) && peCores_1_6_featureIn_ready) && peCores_1_7_featureIn_ready);
+  assign featureIn_2_ready = (((((((peCores_2_0_featureIn_ready && peCores_2_1_featureIn_ready) && peCores_2_2_featureIn_ready) && peCores_2_3_featureIn_ready) && peCores_2_4_featureIn_ready) && peCores_2_5_featureIn_ready) && peCores_2_6_featureIn_ready) && peCores_2_7_featureIn_ready);
+  assign featureIn_3_ready = (((((((peCores_3_0_featureIn_ready && peCores_3_1_featureIn_ready) && peCores_3_2_featureIn_ready) && peCores_3_3_featureIn_ready) && peCores_3_4_featureIn_ready) && peCores_3_5_featureIn_ready) && peCores_3_6_featureIn_ready) && peCores_3_7_featureIn_ready);
+  assign featureIn_4_ready = (((((((peCores_4_0_featureIn_ready && peCores_4_1_featureIn_ready) && peCores_4_2_featureIn_ready) && peCores_4_3_featureIn_ready) && peCores_4_4_featureIn_ready) && peCores_4_5_featureIn_ready) && peCores_4_6_featureIn_ready) && peCores_4_7_featureIn_ready);
+  assign featureIn_5_ready = (((((((peCores_5_0_featureIn_ready && peCores_5_1_featureIn_ready) && peCores_5_2_featureIn_ready) && peCores_5_3_featureIn_ready) && peCores_5_4_featureIn_ready) && peCores_5_5_featureIn_ready) && peCores_5_6_featureIn_ready) && peCores_5_7_featureIn_ready);
+  assign featureIn_6_ready = (((((((peCores_6_0_featureIn_ready && peCores_6_1_featureIn_ready) && peCores_6_2_featureIn_ready) && peCores_6_3_featureIn_ready) && peCores_6_4_featureIn_ready) && peCores_6_5_featureIn_ready) && peCores_6_6_featureIn_ready) && peCores_6_7_featureIn_ready);
+  assign featureIn_7_ready = (((((((peCores_7_0_featureIn_ready && peCores_7_1_featureIn_ready) && peCores_7_2_featureIn_ready) && peCores_7_3_featureIn_ready) && peCores_7_4_featureIn_ready) && peCores_7_5_featureIn_ready) && peCores_7_6_featureIn_ready) && peCores_7_7_featureIn_ready);
 
 endmodule
 
@@ -2796,8 +2940,8 @@ endmodule
 
 module LWBuffer (
   input  wire          io_clear,
-  input  wire [5:0]    io_wLen,
-  input  wire [5:0]    io_spLen,
+  input  wire [9:0]    io_spLen,
+  input  wire [5:0]    io_kChDim,
   input  wire          io_weightIn_valid,
   output wire          io_weightIn_ready,
   input  wire [7:0]    io_weightIn_payload,
@@ -2808,10 +2952,10 @@ module LWBuffer (
   input  wire          reset
 );
 
-  wire       [5:0]    tmp_spLenValid;
-  wire       [5:0]    tmp_wLenValid;
-  wire       [6:0]    tmp_io_weightOut_valid;
-  wire       [6:0]    tmp_io_weightOut_valid_1;
+  wire       [9:0]    tmp_spLenValid;
+  wire       [9:0]    tmp_kChDimValid;
+  wire       [9:0]    tmp_kChDimValid_1;
+  wire       [5:0]    tmp_io_weightIn_ready;
   reg        [7:0]    tmp_io_weightOut_payload;
   wire       [5:0]    tmp_validWeight;
   wire       [5:0]    tmp_rdPointer;
@@ -2864,40 +3008,25 @@ module LWBuffer (
   reg        [7:0]    Buffer_46;
   reg        [7:0]    Buffer_47;
   reg        [7:0]    Buffer_48;
-  reg        [7:0]    Buffer_49;
-  reg        [7:0]    Buffer_50;
-  reg        [7:0]    Buffer_51;
-  reg        [7:0]    Buffer_52;
-  reg        [7:0]    Buffer_53;
-  reg        [7:0]    Buffer_54;
-  reg        [7:0]    Buffer_55;
-  reg        [7:0]    Buffer_56;
-  reg        [7:0]    Buffer_57;
-  reg        [7:0]    Buffer_58;
-  reg        [7:0]    Buffer_59;
-  reg        [7:0]    Buffer_60;
-  reg        [7:0]    Buffer_61;
-  reg        [7:0]    Buffer_62;
-  reg        [7:0]    Buffer_63;
   reg        [5:0]    validWeight;
   reg        [5:0]    rdPointer;
   reg        [5:0]    wrPointer;
-  reg        [5:0]    spLenCnt;
-  reg        [5:0]    wLenCnt;
+  reg        [9:0]    spLenCnt;
+  reg        [5:0]    kChDimCnt;
   wire                spLenValid;
-  wire                wLenValid;
+  wire                kChDimValid;
   wire                io_weightOut_fire;
   wire                when_LWBuffer_l47;
   wire                io_weightIn_fire;
   wire       [63:0]   tmp_1;
   wire                when_LWBuffer_l93;
 
-  assign tmp_spLenValid = (io_spLen - 6'h01);
-  assign tmp_wLenValid = (io_spLen - 6'h01);
-  assign tmp_io_weightOut_valid = (7'h40 - tmp_io_weightOut_valid_1);
-  assign tmp_io_weightOut_valid_1 = {1'd0, validWeight};
-  assign tmp_validWeight = (validWeight - io_wLen);
-  assign tmp_rdPointer = (rdPointer - io_wLen);
+  assign tmp_spLenValid = (io_spLen - 10'h001);
+  assign tmp_kChDimValid = {4'd0, kChDimCnt};
+  assign tmp_kChDimValid_1 = (io_spLen - 10'h001);
+  assign tmp_io_weightIn_ready = (6'h31 - validWeight);
+  assign tmp_validWeight = (validWeight - io_kChDim);
+  assign tmp_rdPointer = (rdPointer - io_kChDim);
   always @(*) begin
     case(rdPointer)
       6'b000000 : tmp_io_weightOut_payload = Buffer_0;
@@ -2948,35 +3077,20 @@ module LWBuffer (
       6'b101101 : tmp_io_weightOut_payload = Buffer_45;
       6'b101110 : tmp_io_weightOut_payload = Buffer_46;
       6'b101111 : tmp_io_weightOut_payload = Buffer_47;
-      6'b110000 : tmp_io_weightOut_payload = Buffer_48;
-      6'b110001 : tmp_io_weightOut_payload = Buffer_49;
-      6'b110010 : tmp_io_weightOut_payload = Buffer_50;
-      6'b110011 : tmp_io_weightOut_payload = Buffer_51;
-      6'b110100 : tmp_io_weightOut_payload = Buffer_52;
-      6'b110101 : tmp_io_weightOut_payload = Buffer_53;
-      6'b110110 : tmp_io_weightOut_payload = Buffer_54;
-      6'b110111 : tmp_io_weightOut_payload = Buffer_55;
-      6'b111000 : tmp_io_weightOut_payload = Buffer_56;
-      6'b111001 : tmp_io_weightOut_payload = Buffer_57;
-      6'b111010 : tmp_io_weightOut_payload = Buffer_58;
-      6'b111011 : tmp_io_weightOut_payload = Buffer_59;
-      6'b111100 : tmp_io_weightOut_payload = Buffer_60;
-      6'b111101 : tmp_io_weightOut_payload = Buffer_61;
-      6'b111110 : tmp_io_weightOut_payload = Buffer_62;
-      default : tmp_io_weightOut_payload = Buffer_63;
+      default : tmp_io_weightOut_payload = Buffer_48;
     endcase
   end
 
   assign spLenValid = (spLenCnt == tmp_spLenValid);
-  assign wLenValid = (wLenCnt == tmp_wLenValid);
-  assign io_weightIn_ready = (io_wLen <= validWeight);
-  assign io_weightOut_valid = (tmp_io_weightOut_valid != 7'h0);
+  assign kChDimValid = (tmp_kChDimValid == tmp_kChDimValid_1);
+  assign io_weightOut_valid = (io_kChDim <= validWeight);
+  assign io_weightIn_ready = (tmp_io_weightIn_ready != 6'h0);
   assign io_weightOut_payload = tmp_io_weightOut_payload;
   assign io_weightOut_fire = (io_weightOut_valid && io_weightOut_ready);
-  assign when_LWBuffer_l47 = (spLenValid && wLenValid);
+  assign when_LWBuffer_l47 = (spLenValid && kChDimValid);
   assign io_weightIn_fire = (io_weightIn_valid && io_weightIn_ready);
   assign tmp_1 = ({63'd0,1'b1} <<< wrPointer);
-  assign when_LWBuffer_l93 = (wLenValid && (! spLenValid));
+  assign when_LWBuffer_l93 = (kChDimValid && (! spLenValid));
   always @(posedge clk or posedge reset) begin
     if(reset) begin
       Buffer_0 <= 8'h0;
@@ -3028,26 +3142,11 @@ module LWBuffer (
       Buffer_46 <= 8'h0;
       Buffer_47 <= 8'h0;
       Buffer_48 <= 8'h0;
-      Buffer_49 <= 8'h0;
-      Buffer_50 <= 8'h0;
-      Buffer_51 <= 8'h0;
-      Buffer_52 <= 8'h0;
-      Buffer_53 <= 8'h0;
-      Buffer_54 <= 8'h0;
-      Buffer_55 <= 8'h0;
-      Buffer_56 <= 8'h0;
-      Buffer_57 <= 8'h0;
-      Buffer_58 <= 8'h0;
-      Buffer_59 <= 8'h0;
-      Buffer_60 <= 8'h0;
-      Buffer_61 <= 8'h0;
-      Buffer_62 <= 8'h0;
-      Buffer_63 <= 8'h0;
       validWeight <= 6'h0;
       rdPointer <= 6'h0;
       wrPointer <= 6'h0;
-      spLenCnt <= 6'h0;
-      wLenCnt <= 6'h0;
+      spLenCnt <= 10'h0;
+      kChDimCnt <= 6'h0;
     end else begin
       if(io_clear) begin
         validWeight <= 6'h0;
@@ -3057,7 +3156,7 @@ module LWBuffer (
             if(io_weightIn_fire) begin
               validWeight <= (tmp_validWeight + 6'h01);
             end else begin
-              validWeight <= (validWeight - io_wLen);
+              validWeight <= (validWeight - io_kChDim);
             end
           end
         end else begin
@@ -3217,68 +3316,23 @@ module LWBuffer (
           if(tmp_1[48]) begin
             Buffer_48 <= io_weightIn_payload;
           end
-          if(tmp_1[49]) begin
-            Buffer_49 <= io_weightIn_payload;
-          end
-          if(tmp_1[50]) begin
-            Buffer_50 <= io_weightIn_payload;
-          end
-          if(tmp_1[51]) begin
-            Buffer_51 <= io_weightIn_payload;
-          end
-          if(tmp_1[52]) begin
-            Buffer_52 <= io_weightIn_payload;
-          end
-          if(tmp_1[53]) begin
-            Buffer_53 <= io_weightIn_payload;
-          end
-          if(tmp_1[54]) begin
-            Buffer_54 <= io_weightIn_payload;
-          end
-          if(tmp_1[55]) begin
-            Buffer_55 <= io_weightIn_payload;
-          end
-          if(tmp_1[56]) begin
-            Buffer_56 <= io_weightIn_payload;
-          end
-          if(tmp_1[57]) begin
-            Buffer_57 <= io_weightIn_payload;
-          end
-          if(tmp_1[58]) begin
-            Buffer_58 <= io_weightIn_payload;
-          end
-          if(tmp_1[59]) begin
-            Buffer_59 <= io_weightIn_payload;
-          end
-          if(tmp_1[60]) begin
-            Buffer_60 <= io_weightIn_payload;
-          end
-          if(tmp_1[61]) begin
-            Buffer_61 <= io_weightIn_payload;
-          end
-          if(tmp_1[62]) begin
-            Buffer_62 <= io_weightIn_payload;
-          end
-          if(tmp_1[63]) begin
-            Buffer_63 <= io_weightIn_payload;
-          end
           wrPointer <= (wrPointer + 6'h01);
         end
       end
       if(io_clear) begin
-        spLenCnt <= 6'h0;
-        wLenCnt <= 6'h0;
+        spLenCnt <= 10'h0;
+        kChDimCnt <= 6'h0;
       end else begin
         if(io_weightOut_fire) begin
-          if(wLenValid) begin
-            wLenCnt <= 6'h0;
+          if(kChDimValid) begin
+            kChDimCnt <= 6'h0;
             if(spLenValid) begin
-              spLenCnt <= 6'h0;
+              spLenCnt <= 10'h0;
             end else begin
-              spLenCnt <= (spLenCnt + 6'h01);
+              spLenCnt <= (spLenCnt + 10'h001);
             end
           end else begin
-            wLenCnt <= (wLenCnt + 6'h01);
+            kChDimCnt <= (kChDimCnt + 6'h01);
           end
         end
       end
@@ -3315,13 +3369,13 @@ endmodule
 
 module PPUnit (
   input  wire          clear,
-  input  wire          relu,
-  input  wire [1:0]    mode,
-  input  wire [5:0]    spLen,
-  input  wire [5:0]    loopLen,
-  input  wire          biasIn_valid,
-  output reg           biasIn_ready,
-  input  wire [31:0]   biasIn_payload,
+  input  wire [2:0]    parm_mode,
+  input  wire          parm_reluEn,
+  input  wire [5:0]    parm_spLen,
+  input  wire [4:0]    parm_loopLen,
+  input  wire [9:0]    parm_multiplier,
+  input  wire [3:0]    parm_shift,
+  input  wire [7:0]    parm_zeroPoint,
   input  wire          macIn_0_valid,
   input  wire [31:0]   macIn_0_payload,
   input  wire          macIn_1_valid,
@@ -3338,18 +3392,42 @@ module PPUnit (
   input  wire [31:0]   macIn_6_payload,
   input  wire          macIn_7_valid,
   input  wire [31:0]   macIn_7_payload,
-  output wire          resultOut_valid,
-  output wire [7:0]    resultOut_payload,
+  output wire          featureOut_valid,
+  output wire [7:0]    featureOut_payload,
   input  wire          clk,
   input  wire          reset
 );
+  localparam CONV2D = 3'd0;
+  localparam DEEPCONV = 3'd1;
+  localparam POINTCONV = 3'd2;
+  localparam FC = 3'd3;
+  localparam MAXPOOL = 3'd4;
+  localparam AVERAGPOOL = 3'd5;
 
+  reg        [31:0]   macSumArea_adderTree_dataIn_0;
+  reg        [31:0]   macSumArea_adderTree_dataIn_1;
+  reg        [31:0]   macSumArea_adderTree_dataIn_2;
+  reg        [31:0]   macSumArea_adderTree_dataIn_3;
+  reg        [31:0]   macSumArea_adderTree_dataIn_4;
+  reg        [31:0]   macSumArea_adderTree_dataIn_5;
+  reg        [31:0]   macSumArea_adderTree_dataIn_6;
+  reg        [31:0]   macSumArea_adderTree_dataIn_7;
   wire       [34:0]   macSumArea_adderTree_dataOut;
-  wire       [5:0]    tmp_pSumArea_last;
-  wire       [5:0]    tmp_when_PPUnit_l69;
-  wire       [5:0]    tmp_when_PPUnit_l73;
-  reg        [31:0]   tmp_tmp_pSumArea_pAddData;
-  wire       [23:0]   tmp_quantArea_quantReg;
+  wire       [4:0]    tmp_pSumArea_last;
+  wire       [5:0]    tmp_when_PPUnit_l75;
+  wire       [4:0]    tmp_when_PPUnit_l79;
+  reg        [31:0]   tmp_pSumArea_pAddData;
+  reg        [31:0]   tmp_bufArea_bufReg;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l170;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l170_1;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l170_2;
+  wire       [41:0]   tmp_tmp_when_PPUnit_l170_3;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l170_4;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l170_5;
+  wire       [41:0]   tmp_tmp_when_PPUnit_l170_6;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l170_7;
+  wire       [3:0]    tmp_tmp_when_PPUnit_l170_8;
+  wire       [56:0]   tmp_tmp_when_PPUnit_l170_9;
   reg        [31:0]   lfBuffer_0;
   reg        [31:0]   lfBuffer_1;
   reg        [31:0]   lfBuffer_2;
@@ -3399,21 +3477,6 @@ module PPUnit (
   reg        [31:0]   lfBuffer_46;
   reg        [31:0]   lfBuffer_47;
   reg        [31:0]   lfBuffer_48;
-  reg        [31:0]   lfBuffer_49;
-  reg        [31:0]   lfBuffer_50;
-  reg        [31:0]   lfBuffer_51;
-  reg        [31:0]   lfBuffer_52;
-  reg        [31:0]   lfBuffer_53;
-  reg        [31:0]   lfBuffer_54;
-  reg        [31:0]   lfBuffer_55;
-  reg        [31:0]   lfBuffer_56;
-  reg        [31:0]   lfBuffer_57;
-  reg        [31:0]   lfBuffer_58;
-  reg        [31:0]   lfBuffer_59;
-  reg        [31:0]   lfBuffer_60;
-  reg        [31:0]   lfBuffer_61;
-  reg        [31:0]   lfBuffer_62;
-  reg        [31:0]   lfBuffer_63;
   reg        [31:0]   macSumArea_macSumReg;
   wire                macSumArea_macSumEn;
   reg                 macSumArea_macSumValid;
@@ -3422,158 +3485,270 @@ module PPUnit (
   wire                pSumArea_pSumEn;
   reg                 pSumArea_pSumValid;
   reg        [5:0]    pSumArea_spLenCnt;
-  reg        [5:0]    pSumArea_loopCnt;
+  reg        [4:0]    pSumArea_loopCnt;
   wire                pSumArea_last;
-  wire                when_PPUnit_l69;
-  wire                when_PPUnit_l73;
-  wire       [31:0]   tmp_pSumArea_pAddData;
+  wire                when_PPUnit_l75;
+  wire                when_PPUnit_l79;
+  wire                bufArea_bufEn;
+  reg        [31:0]   bufArea_macInReg_0;
+  reg        [31:0]   bufArea_macInReg_1;
+  reg        [31:0]   bufArea_macInReg_2;
+  reg        [31:0]   bufArea_macInReg_3;
+  reg        [31:0]   bufArea_macInReg_4;
+  reg        [31:0]   bufArea_macInReg_5;
+  reg        [31:0]   bufArea_macInReg_6;
+  reg        [31:0]   bufArea_macInReg_7;
+  reg        [2:0]    bufArea_cnt;
+  wire       [31:0]   bufArea_bufReg;
+  wire                bufArea_bufValid;
+  wire                when_PPUnit_l122;
   reg        [7:0]    quantArea_quantReg;
-  wire                quantArea_quantEn;
+  reg                 quantArea_quantEn;
+  reg        [31:0]   quantArea_rawData;
   reg                 quantArea_quantValid;
+  wire       [56:0]   tmp_when_PPUnit_l170;
+  reg        [7:0]    tmp_quantArea_quantReg;
+  wire                when_PPUnit_l170;
+  wire                when_PPUnit_l172;
   reg        [7:0]    reluArea_reluReg;
   wire                reluArea_reluEn;
   reg                 reluArea_reluValid;
-  wire                when_PPUnit_l128;
+  wire                when_PPUnit_l193;
+  `ifndef SYNTHESIS
+  reg [79:0] parm_mode_string;
+  `endif
 
-  assign tmp_pSumArea_last = (loopLen - 6'h01);
-  assign tmp_when_PPUnit_l69 = (spLen - 6'h01);
-  assign tmp_when_PPUnit_l73 = (loopLen - 6'h01);
-  assign tmp_quantArea_quantReg = (pSumArea_pSumReg >>> 4'd8);
+
+  assign tmp_pSumArea_last = (parm_loopLen - 5'h01);
+  assign tmp_when_PPUnit_l75 = (parm_spLen - 6'h01);
+  assign tmp_when_PPUnit_l79 = (parm_loopLen - 5'h01);
+  assign tmp_tmp_when_PPUnit_l170 = ($signed(tmp_tmp_when_PPUnit_l170_1) >>> parm_shift);
+  assign tmp_tmp_when_PPUnit_l170_1 = ($signed(tmp_tmp_when_PPUnit_l170_2) + $signed(tmp_tmp_when_PPUnit_l170_4));
+  assign tmp_tmp_when_PPUnit_l170_3 = ($signed(quantArea_rawData) * $signed(parm_multiplier));
+  assign tmp_tmp_when_PPUnit_l170_2 = {{15{tmp_tmp_when_PPUnit_l170_3[41]}}, tmp_tmp_when_PPUnit_l170_3};
+  assign tmp_tmp_when_PPUnit_l170_4 = ((parm_shift == 4'b0000) ? tmp_tmp_when_PPUnit_l170_5 : tmp_tmp_when_PPUnit_l170_7);
+  assign tmp_tmp_when_PPUnit_l170_6 = 42'h0;
+  assign tmp_tmp_when_PPUnit_l170_5 = {{15{tmp_tmp_when_PPUnit_l170_6[41]}}, tmp_tmp_when_PPUnit_l170_6};
+  assign tmp_tmp_when_PPUnit_l170_7 = ({{15{42'h00000000001[41]}},42'h00000000001} <<< tmp_tmp_when_PPUnit_l170_8);
+  assign tmp_tmp_when_PPUnit_l170_8 = (parm_shift - 4'b0001);
+  assign tmp_tmp_when_PPUnit_l170_9 = {{49{parm_zeroPoint[7]}}, parm_zeroPoint};
   AdderTree_7 macSumArea_adderTree (
-    .dataIn_0 (macIn_0_payload[31:0]             ), //i
-    .dataIn_1 (macIn_1_payload[31:0]             ), //i
-    .dataIn_2 (macIn_2_payload[31:0]             ), //i
-    .dataIn_3 (macIn_3_payload[31:0]             ), //i
-    .dataIn_4 (macIn_4_payload[31:0]             ), //i
-    .dataIn_5 (macIn_5_payload[31:0]             ), //i
-    .dataIn_6 (macIn_6_payload[31:0]             ), //i
-    .dataIn_7 (macIn_7_payload[31:0]             ), //i
-    .dataOut  (macSumArea_adderTree_dataOut[34:0])  //o
+    .dataIn_0 (macSumArea_adderTree_dataIn_0[31:0]), //i
+    .dataIn_1 (macSumArea_adderTree_dataIn_1[31:0]), //i
+    .dataIn_2 (macSumArea_adderTree_dataIn_2[31:0]), //i
+    .dataIn_3 (macSumArea_adderTree_dataIn_3[31:0]), //i
+    .dataIn_4 (macSumArea_adderTree_dataIn_4[31:0]), //i
+    .dataIn_5 (macSumArea_adderTree_dataIn_5[31:0]), //i
+    .dataIn_6 (macSumArea_adderTree_dataIn_6[31:0]), //i
+    .dataIn_7 (macSumArea_adderTree_dataIn_7[31:0]), //i
+    .dataOut  (macSumArea_adderTree_dataOut[34:0] )  //o
   );
   always @(*) begin
     case(pSumArea_spLenCnt)
-      6'b000000 : tmp_tmp_pSumArea_pAddData = lfBuffer_0;
-      6'b000001 : tmp_tmp_pSumArea_pAddData = lfBuffer_1;
-      6'b000010 : tmp_tmp_pSumArea_pAddData = lfBuffer_2;
-      6'b000011 : tmp_tmp_pSumArea_pAddData = lfBuffer_3;
-      6'b000100 : tmp_tmp_pSumArea_pAddData = lfBuffer_4;
-      6'b000101 : tmp_tmp_pSumArea_pAddData = lfBuffer_5;
-      6'b000110 : tmp_tmp_pSumArea_pAddData = lfBuffer_6;
-      6'b000111 : tmp_tmp_pSumArea_pAddData = lfBuffer_7;
-      6'b001000 : tmp_tmp_pSumArea_pAddData = lfBuffer_8;
-      6'b001001 : tmp_tmp_pSumArea_pAddData = lfBuffer_9;
-      6'b001010 : tmp_tmp_pSumArea_pAddData = lfBuffer_10;
-      6'b001011 : tmp_tmp_pSumArea_pAddData = lfBuffer_11;
-      6'b001100 : tmp_tmp_pSumArea_pAddData = lfBuffer_12;
-      6'b001101 : tmp_tmp_pSumArea_pAddData = lfBuffer_13;
-      6'b001110 : tmp_tmp_pSumArea_pAddData = lfBuffer_14;
-      6'b001111 : tmp_tmp_pSumArea_pAddData = lfBuffer_15;
-      6'b010000 : tmp_tmp_pSumArea_pAddData = lfBuffer_16;
-      6'b010001 : tmp_tmp_pSumArea_pAddData = lfBuffer_17;
-      6'b010010 : tmp_tmp_pSumArea_pAddData = lfBuffer_18;
-      6'b010011 : tmp_tmp_pSumArea_pAddData = lfBuffer_19;
-      6'b010100 : tmp_tmp_pSumArea_pAddData = lfBuffer_20;
-      6'b010101 : tmp_tmp_pSumArea_pAddData = lfBuffer_21;
-      6'b010110 : tmp_tmp_pSumArea_pAddData = lfBuffer_22;
-      6'b010111 : tmp_tmp_pSumArea_pAddData = lfBuffer_23;
-      6'b011000 : tmp_tmp_pSumArea_pAddData = lfBuffer_24;
-      6'b011001 : tmp_tmp_pSumArea_pAddData = lfBuffer_25;
-      6'b011010 : tmp_tmp_pSumArea_pAddData = lfBuffer_26;
-      6'b011011 : tmp_tmp_pSumArea_pAddData = lfBuffer_27;
-      6'b011100 : tmp_tmp_pSumArea_pAddData = lfBuffer_28;
-      6'b011101 : tmp_tmp_pSumArea_pAddData = lfBuffer_29;
-      6'b011110 : tmp_tmp_pSumArea_pAddData = lfBuffer_30;
-      6'b011111 : tmp_tmp_pSumArea_pAddData = lfBuffer_31;
-      6'b100000 : tmp_tmp_pSumArea_pAddData = lfBuffer_32;
-      6'b100001 : tmp_tmp_pSumArea_pAddData = lfBuffer_33;
-      6'b100010 : tmp_tmp_pSumArea_pAddData = lfBuffer_34;
-      6'b100011 : tmp_tmp_pSumArea_pAddData = lfBuffer_35;
-      6'b100100 : tmp_tmp_pSumArea_pAddData = lfBuffer_36;
-      6'b100101 : tmp_tmp_pSumArea_pAddData = lfBuffer_37;
-      6'b100110 : tmp_tmp_pSumArea_pAddData = lfBuffer_38;
-      6'b100111 : tmp_tmp_pSumArea_pAddData = lfBuffer_39;
-      6'b101000 : tmp_tmp_pSumArea_pAddData = lfBuffer_40;
-      6'b101001 : tmp_tmp_pSumArea_pAddData = lfBuffer_41;
-      6'b101010 : tmp_tmp_pSumArea_pAddData = lfBuffer_42;
-      6'b101011 : tmp_tmp_pSumArea_pAddData = lfBuffer_43;
-      6'b101100 : tmp_tmp_pSumArea_pAddData = lfBuffer_44;
-      6'b101101 : tmp_tmp_pSumArea_pAddData = lfBuffer_45;
-      6'b101110 : tmp_tmp_pSumArea_pAddData = lfBuffer_46;
-      6'b101111 : tmp_tmp_pSumArea_pAddData = lfBuffer_47;
-      6'b110000 : tmp_tmp_pSumArea_pAddData = lfBuffer_48;
-      6'b110001 : tmp_tmp_pSumArea_pAddData = lfBuffer_49;
-      6'b110010 : tmp_tmp_pSumArea_pAddData = lfBuffer_50;
-      6'b110011 : tmp_tmp_pSumArea_pAddData = lfBuffer_51;
-      6'b110100 : tmp_tmp_pSumArea_pAddData = lfBuffer_52;
-      6'b110101 : tmp_tmp_pSumArea_pAddData = lfBuffer_53;
-      6'b110110 : tmp_tmp_pSumArea_pAddData = lfBuffer_54;
-      6'b110111 : tmp_tmp_pSumArea_pAddData = lfBuffer_55;
-      6'b111000 : tmp_tmp_pSumArea_pAddData = lfBuffer_56;
-      6'b111001 : tmp_tmp_pSumArea_pAddData = lfBuffer_57;
-      6'b111010 : tmp_tmp_pSumArea_pAddData = lfBuffer_58;
-      6'b111011 : tmp_tmp_pSumArea_pAddData = lfBuffer_59;
-      6'b111100 : tmp_tmp_pSumArea_pAddData = lfBuffer_60;
-      6'b111101 : tmp_tmp_pSumArea_pAddData = lfBuffer_61;
-      6'b111110 : tmp_tmp_pSumArea_pAddData = lfBuffer_62;
-      default : tmp_tmp_pSumArea_pAddData = lfBuffer_63;
+      6'b000000 : tmp_pSumArea_pAddData = lfBuffer_0;
+      6'b000001 : tmp_pSumArea_pAddData = lfBuffer_1;
+      6'b000010 : tmp_pSumArea_pAddData = lfBuffer_2;
+      6'b000011 : tmp_pSumArea_pAddData = lfBuffer_3;
+      6'b000100 : tmp_pSumArea_pAddData = lfBuffer_4;
+      6'b000101 : tmp_pSumArea_pAddData = lfBuffer_5;
+      6'b000110 : tmp_pSumArea_pAddData = lfBuffer_6;
+      6'b000111 : tmp_pSumArea_pAddData = lfBuffer_7;
+      6'b001000 : tmp_pSumArea_pAddData = lfBuffer_8;
+      6'b001001 : tmp_pSumArea_pAddData = lfBuffer_9;
+      6'b001010 : tmp_pSumArea_pAddData = lfBuffer_10;
+      6'b001011 : tmp_pSumArea_pAddData = lfBuffer_11;
+      6'b001100 : tmp_pSumArea_pAddData = lfBuffer_12;
+      6'b001101 : tmp_pSumArea_pAddData = lfBuffer_13;
+      6'b001110 : tmp_pSumArea_pAddData = lfBuffer_14;
+      6'b001111 : tmp_pSumArea_pAddData = lfBuffer_15;
+      6'b010000 : tmp_pSumArea_pAddData = lfBuffer_16;
+      6'b010001 : tmp_pSumArea_pAddData = lfBuffer_17;
+      6'b010010 : tmp_pSumArea_pAddData = lfBuffer_18;
+      6'b010011 : tmp_pSumArea_pAddData = lfBuffer_19;
+      6'b010100 : tmp_pSumArea_pAddData = lfBuffer_20;
+      6'b010101 : tmp_pSumArea_pAddData = lfBuffer_21;
+      6'b010110 : tmp_pSumArea_pAddData = lfBuffer_22;
+      6'b010111 : tmp_pSumArea_pAddData = lfBuffer_23;
+      6'b011000 : tmp_pSumArea_pAddData = lfBuffer_24;
+      6'b011001 : tmp_pSumArea_pAddData = lfBuffer_25;
+      6'b011010 : tmp_pSumArea_pAddData = lfBuffer_26;
+      6'b011011 : tmp_pSumArea_pAddData = lfBuffer_27;
+      6'b011100 : tmp_pSumArea_pAddData = lfBuffer_28;
+      6'b011101 : tmp_pSumArea_pAddData = lfBuffer_29;
+      6'b011110 : tmp_pSumArea_pAddData = lfBuffer_30;
+      6'b011111 : tmp_pSumArea_pAddData = lfBuffer_31;
+      6'b100000 : tmp_pSumArea_pAddData = lfBuffer_32;
+      6'b100001 : tmp_pSumArea_pAddData = lfBuffer_33;
+      6'b100010 : tmp_pSumArea_pAddData = lfBuffer_34;
+      6'b100011 : tmp_pSumArea_pAddData = lfBuffer_35;
+      6'b100100 : tmp_pSumArea_pAddData = lfBuffer_36;
+      6'b100101 : tmp_pSumArea_pAddData = lfBuffer_37;
+      6'b100110 : tmp_pSumArea_pAddData = lfBuffer_38;
+      6'b100111 : tmp_pSumArea_pAddData = lfBuffer_39;
+      6'b101000 : tmp_pSumArea_pAddData = lfBuffer_40;
+      6'b101001 : tmp_pSumArea_pAddData = lfBuffer_41;
+      6'b101010 : tmp_pSumArea_pAddData = lfBuffer_42;
+      6'b101011 : tmp_pSumArea_pAddData = lfBuffer_43;
+      6'b101100 : tmp_pSumArea_pAddData = lfBuffer_44;
+      6'b101101 : tmp_pSumArea_pAddData = lfBuffer_45;
+      6'b101110 : tmp_pSumArea_pAddData = lfBuffer_46;
+      6'b101111 : tmp_pSumArea_pAddData = lfBuffer_47;
+      default : tmp_pSumArea_pAddData = lfBuffer_48;
     endcase
   end
 
-  assign macSumArea_macSumEn = ((((((((macIn_0_valid || macIn_1_valid) || macIn_2_valid) || macIn_3_valid) || macIn_4_valid) || macIn_5_valid) || macIn_6_valid) || macIn_7_valid) && (! clear));
+  always @(*) begin
+    case(bufArea_cnt)
+      3'b000 : tmp_bufArea_bufReg = bufArea_macInReg_0;
+      3'b001 : tmp_bufArea_bufReg = bufArea_macInReg_1;
+      3'b010 : tmp_bufArea_bufReg = bufArea_macInReg_2;
+      3'b011 : tmp_bufArea_bufReg = bufArea_macInReg_3;
+      3'b100 : tmp_bufArea_bufReg = bufArea_macInReg_4;
+      3'b101 : tmp_bufArea_bufReg = bufArea_macInReg_5;
+      3'b110 : tmp_bufArea_bufReg = bufArea_macInReg_6;
+      default : tmp_bufArea_bufReg = bufArea_macInReg_7;
+    endcase
+  end
+
+  `ifndef SYNTHESIS
+  always @(*) begin
+    case(parm_mode)
+      CONV2D : parm_mode_string = "CONV2D    ";
+      DEEPCONV : parm_mode_string = "DEEPCONV  ";
+      POINTCONV : parm_mode_string = "POINTCONV ";
+      FC : parm_mode_string = "FC        ";
+      MAXPOOL : parm_mode_string = "MAXPOOL   ";
+      AVERAGPOOL : parm_mode_string = "AVERAGPOOL";
+      default : parm_mode_string = "??????????";
+    endcase
+  end
+  `endif
+
+  assign macSumArea_macSumEn = (((((((((macIn_0_valid || macIn_1_valid) || macIn_2_valid) || macIn_3_valid) || macIn_4_valid) || macIn_5_valid) || macIn_6_valid) || macIn_7_valid) && (! clear)) && (parm_mode == CONV2D));
+  always @(*) begin
+    macSumArea_adderTree_dataIn_0 = 32'h0;
+    if(macSumArea_macSumEn) begin
+      macSumArea_adderTree_dataIn_0 = macIn_0_payload;
+    end
+  end
+
+  always @(*) begin
+    macSumArea_adderTree_dataIn_1 = 32'h0;
+    if(macSumArea_macSumEn) begin
+      macSumArea_adderTree_dataIn_1 = macIn_1_payload;
+    end
+  end
+
+  always @(*) begin
+    macSumArea_adderTree_dataIn_2 = 32'h0;
+    if(macSumArea_macSumEn) begin
+      macSumArea_adderTree_dataIn_2 = macIn_2_payload;
+    end
+  end
+
+  always @(*) begin
+    macSumArea_adderTree_dataIn_3 = 32'h0;
+    if(macSumArea_macSumEn) begin
+      macSumArea_adderTree_dataIn_3 = macIn_3_payload;
+    end
+  end
+
+  always @(*) begin
+    macSumArea_adderTree_dataIn_4 = 32'h0;
+    if(macSumArea_macSumEn) begin
+      macSumArea_adderTree_dataIn_4 = macIn_4_payload;
+    end
+  end
+
+  always @(*) begin
+    macSumArea_adderTree_dataIn_5 = 32'h0;
+    if(macSumArea_macSumEn) begin
+      macSumArea_adderTree_dataIn_5 = macIn_5_payload;
+    end
+  end
+
+  always @(*) begin
+    macSumArea_adderTree_dataIn_6 = 32'h0;
+    if(macSumArea_macSumEn) begin
+      macSumArea_adderTree_dataIn_6 = macIn_6_payload;
+    end
+  end
+
+  always @(*) begin
+    macSumArea_adderTree_dataIn_7 = 32'h0;
+    if(macSumArea_macSumEn) begin
+      macSumArea_adderTree_dataIn_7 = macIn_7_payload;
+    end
+  end
+
   assign pSumArea_pSumEn = (macSumArea_macSumValid && (! clear));
   assign pSumArea_last = (pSumArea_loopCnt == tmp_pSumArea_last);
   always @(*) begin
     pSumArea_pAddData = 32'h0;
     if(!clear) begin
       if(pSumArea_pSumEn) begin
-        case(mode)
-          2'b00 : begin
+        case(parm_mode)
+          FC : begin
             pSumArea_pAddData = 32'h0;
           end
-          2'b01 : begin
+          CONV2D : begin
             pSumArea_pAddData = tmp_pSumArea_pAddData;
           end
-          2'b10 : begin
-            pSumArea_pAddData = biasIn_payload;
-          end
           default : begin
-            pSumArea_pAddData = ($signed(tmp_pSumArea_pAddData) + $signed(biasIn_payload));
+            pSumArea_pAddData = 32'h0;
           end
         endcase
       end
     end
+  end
+
+  assign when_PPUnit_l75 = (pSumArea_spLenCnt < tmp_when_PPUnit_l75);
+  assign when_PPUnit_l79 = (pSumArea_loopCnt < tmp_when_PPUnit_l79);
+  assign bufArea_bufEn = (((parm_mode != CONV2D) && (((((((macIn_0_valid || macIn_1_valid) || macIn_2_valid) || macIn_3_valid) || macIn_4_valid) || macIn_5_valid) || macIn_6_valid) || macIn_7_valid)) && (! clear));
+  assign bufArea_bufReg = tmp_bufArea_bufReg;
+  assign bufArea_bufValid = (bufArea_cnt != 3'b111);
+  assign when_PPUnit_l122 = (bufArea_cnt != 3'b111);
+  always @(*) begin
+    case(parm_mode)
+      CONV2D : begin
+        quantArea_quantEn = ((pSumArea_pSumValid && pSumArea_last) && (! clear));
+      end
+      default : begin
+        quantArea_quantEn = (bufArea_bufValid && (! clear));
+      end
+    endcase
   end
 
   always @(*) begin
-    biasIn_ready = 1'b0;
-    if(!clear) begin
-      if(pSumArea_pSumEn) begin
-        case(mode)
-          2'b00 : begin
-            biasIn_ready = 1'b0;
-          end
-          2'b01 : begin
-            biasIn_ready = 1'b0;
-          end
-          2'b10 : begin
-            biasIn_ready = 1'b1;
-          end
-          default : begin
-            biasIn_ready = 1'b1;
-          end
-        endcase
+    case(parm_mode)
+      CONV2D : begin
+        quantArea_rawData = pSumArea_pSumReg;
+      end
+      default : begin
+        quantArea_rawData = bufArea_bufReg;
+      end
+    endcase
+  end
+
+  assign tmp_when_PPUnit_l170 = ($signed(tmp_tmp_when_PPUnit_l170) + $signed(tmp_tmp_when_PPUnit_l170_9));
+  assign when_PPUnit_l170 = ($signed(57'h1ffffffffffff80) < $signed(tmp_when_PPUnit_l170));
+  always @(*) begin
+    if(when_PPUnit_l170) begin
+      tmp_quantArea_quantReg = 8'h80;
+    end else begin
+      if(when_PPUnit_l172) begin
+        tmp_quantArea_quantReg = 8'h7f;
+      end else begin
+        tmp_quantArea_quantReg = tmp_when_PPUnit_l170[7:0];
       end
     end
   end
 
-  assign when_PPUnit_l69 = (pSumArea_spLenCnt < tmp_when_PPUnit_l69);
-  assign when_PPUnit_l73 = (pSumArea_loopCnt < tmp_when_PPUnit_l73);
-  assign tmp_pSumArea_pAddData = tmp_tmp_pSumArea_pAddData;
-  assign quantArea_quantEn = ((pSumArea_pSumValid && pSumArea_last) && (! clear));
+  assign when_PPUnit_l172 = ($signed(tmp_when_PPUnit_l170) < $signed(57'h00000000000007f));
   assign reluArea_reluEn = (quantArea_quantValid && (! clear));
-  assign when_PPUnit_l128 = (($signed(quantArea_quantReg) < $signed(8'h0)) && relu);
-  assign resultOut_payload = reluArea_reluReg;
-  assign resultOut_valid = reluArea_reluValid;
+  assign when_PPUnit_l193 = (($signed(quantArea_quantReg) < $signed(8'h0)) && reluArea_reluEn);
+  assign featureOut_payload = reluArea_reluReg;
+  assign featureOut_valid = reluArea_reluValid;
   always @(posedge clk or posedge reset) begin
     if(reset) begin
       macSumArea_macSumReg <= 32'h0;
@@ -3581,7 +3756,8 @@ module PPUnit (
       pSumArea_pSumReg <= 32'h0;
       pSumArea_pSumValid <= 1'b0;
       pSumArea_spLenCnt <= 6'h0;
-      pSumArea_loopCnt <= 6'h0;
+      pSumArea_loopCnt <= 5'h0;
+      bufArea_cnt <= 3'b111;
       quantArea_quantReg <= 8'h0;
       quantArea_quantValid <= 1'b0;
       reluArea_reluReg <= 8'h0;
@@ -3594,29 +3770,36 @@ module PPUnit (
       pSumArea_pSumValid <= pSumArea_pSumEn;
       if(clear) begin
         pSumArea_spLenCnt <= 6'h0;
-        pSumArea_loopCnt <= 6'h0;
+        pSumArea_loopCnt <= 5'h0;
       end else begin
         if(pSumArea_pSumEn) begin
-          if(when_PPUnit_l69) begin
+          if(when_PPUnit_l75) begin
             pSumArea_spLenCnt <= (pSumArea_spLenCnt + 6'h01);
           end else begin
             pSumArea_spLenCnt <= 6'h0;
-            if(when_PPUnit_l73) begin
-              pSumArea_loopCnt <= (pSumArea_loopCnt + 6'h01);
+            if(when_PPUnit_l79) begin
+              pSumArea_loopCnt <= (pSumArea_loopCnt + 5'h01);
             end else begin
-              pSumArea_loopCnt <= 6'h0;
+              pSumArea_loopCnt <= 5'h0;
             end
           end
           pSumArea_pSumReg <= ($signed(macSumArea_macSumReg) + $signed(pSumArea_pAddData));
         end
       end
+      if(bufArea_bufEn) begin
+        bufArea_cnt <= 3'b000;
+      end else begin
+        if(when_PPUnit_l122) begin
+          bufArea_cnt <= (bufArea_cnt + 3'b001);
+        end
+      end
       quantArea_quantValid <= quantArea_quantEn;
       if(quantArea_quantEn) begin
-        quantArea_quantReg <= tmp_quantArea_quantReg[7:0];
+        quantArea_quantReg <= tmp_quantArea_quantReg;
       end
       reluArea_reluValid <= reluArea_reluEn;
       if(reluArea_reluEn) begin
-        if(when_PPUnit_l128) begin
+        if(when_PPUnit_l193) begin
           reluArea_reluReg <= 8'h0;
         end else begin
           reluArea_reluReg <= quantArea_quantReg;
@@ -3676,21 +3859,16 @@ module PPUnit (
       lfBuffer_46 <= 32'h0;
       lfBuffer_47 <= 32'h0;
       lfBuffer_48 <= 32'h0;
-      lfBuffer_49 <= 32'h0;
-      lfBuffer_50 <= 32'h0;
-      lfBuffer_51 <= 32'h0;
-      lfBuffer_52 <= 32'h0;
-      lfBuffer_53 <= 32'h0;
-      lfBuffer_54 <= 32'h0;
-      lfBuffer_55 <= 32'h0;
-      lfBuffer_56 <= 32'h0;
-      lfBuffer_57 <= 32'h0;
-      lfBuffer_58 <= 32'h0;
-      lfBuffer_59 <= 32'h0;
-      lfBuffer_60 <= 32'h0;
-      lfBuffer_61 <= 32'h0;
-      lfBuffer_62 <= 32'h0;
-      lfBuffer_63 <= 32'h0;
+    end
+    if(bufArea_bufEn) begin
+      bufArea_macInReg_0 <= macIn_0_payload;
+      bufArea_macInReg_1 <= macIn_1_payload;
+      bufArea_macInReg_2 <= macIn_2_payload;
+      bufArea_macInReg_3 <= macIn_3_payload;
+      bufArea_macInReg_4 <= macIn_4_payload;
+      bufArea_macInReg_5 <= macIn_5_payload;
+      bufArea_macInReg_6 <= macIn_6_payload;
+      bufArea_macInReg_7 <= macIn_7_payload;
     end
   end
 
@@ -3825,54 +4003,68 @@ endmodule
 
 module PECore (
   input  wire          clear,
-  input  wire [2:0]    mode,
+  input  wire [1:0]    mode,
   input  wire          featureIn_valid,
+  output wire          featureIn_ready,
   input  wire [7:0]    featureIn_payload,
-  input  wire          weightIn_valid,
-  output wire          weightIn_ready,
-  input  wire [7:0]    weightIn_payload,
+  input  wire          weight_valid,
+  output wire          weight_ready,
+  input  wire [7:0]    weight_payload,
   output wire          macOut_valid,
   output reg  [31:0]   macOut_payload,
   input  wire          clk,
   input  wire          reset
 );
+  localparam MAC = 2'd0;
+  localparam MUL = 2'd1;
+  localparam BYPASS = 2'd2;
 
-  wire       [31:0]   tmp_macReg;
+  wire       [31:0]   tmp_macData;
+  wire       [31:0]   tmp_macData_1;
+  wire       [15:0]   tmp_macData_2;
   reg        [31:0]   macReg;
-  reg        [15:0]   mulData;
   reg        [15:0]   macData;
-  wire                weightIn_fire;
+  wire                weight_fire;
+  wire                featureIn_fire;
   wire                macEn;
   reg                 macEn_regNext;
-  wire                when_PECore_l55;
-  wire                when_PECore_l60;
-  wire                when_PECore_l65;
+  `ifndef SYNTHESIS
+  reg [47:0] mode_string;
+  `endif
 
-  assign tmp_macReg = {{16{macData[15]}}, macData};
-  assign weightIn_fire = (weightIn_valid && weightIn_ready);
-  assign macEn = (weightIn_fire && featureIn_valid);
+
+  assign tmp_macData = ($signed(macReg) + $signed(tmp_macData_1));
+  assign tmp_macData_2 = ($signed(featureIn_payload) * $signed(weight_payload));
+  assign tmp_macData_1 = {{16{tmp_macData_2[15]}}, tmp_macData_2};
+  `ifndef SYNTHESIS
   always @(*) begin
-    mulData = 16'h0;
-    if(!clear) begin
-      if(macEn) begin
-        if(when_PECore_l55) begin
-          mulData = ($signed(featureIn_payload) * $signed(weightIn_payload));
-        end else begin
-          mulData = 16'h0;
-        end
-      end
-    end
+    case(mode)
+      MAC : mode_string = "MAC   ";
+      MUL : mode_string = "MUL   ";
+      BYPASS : mode_string = "BYPASS";
+      default : mode_string = "??????";
+    endcase
   end
+  `endif
 
+  assign weight_fire = (weight_valid && weight_ready);
+  assign featureIn_fire = (featureIn_valid && featureIn_ready);
+  assign macEn = (weight_fire && featureIn_fire);
   always @(*) begin
     macData = 16'h0;
     if(!clear) begin
       if(macEn) begin
-        if(when_PECore_l60) begin
-          macData = {{8{featureIn_payload[7]}}, featureIn_payload};
-        end else begin
-          macData = mulData;
-        end
+        case(mode)
+          MAC : begin
+            macData = tmp_macData[15:0];
+          end
+          MUL : begin
+            macData = ($signed(featureIn_payload) * $signed(weight_payload));
+          end
+          default : begin
+            macData = {{8{featureIn_payload[7]}}, featureIn_payload};
+          end
+        endcase
       end
     end
   end
@@ -3886,11 +4078,9 @@ module PECore (
     end
   end
 
-  assign weightIn_ready = featureIn_valid;
+  assign weight_ready = featureIn_valid;
+  assign featureIn_ready = weight_valid;
   assign macOut_valid = macEn_regNext;
-  assign when_PECore_l55 = mode[0];
-  assign when_PECore_l60 = mode[1];
-  assign when_PECore_l65 = mode[2];
   always @(posedge clk or posedge reset) begin
     if(reset) begin
       macReg <= 32'h0;
@@ -3901,11 +4091,7 @@ module PECore (
         macReg <= 32'h0;
       end else begin
         if(macEn) begin
-          if(when_PECore_l65) begin
-            macReg <= ($signed(tmp_macReg) + $signed(macReg));
-          end else begin
-            macReg <= {{16{macData[15]}}, macData};
-          end
+          macReg <= {{16{macData[15]}}, macData};
         end
       end
     end

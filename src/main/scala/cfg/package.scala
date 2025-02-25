@@ -6,15 +6,24 @@ import spinal.lib.bus.amba3.apb._
 package object cfg {
 
   trait Config {
-    val ramDepth = 32768
+    val ramDepth = 65536
     val ramWidth = 64
     val ramAW = log2Up(ramDepth)
     val ramDW = ramWidth
-    val fMaxSizeW = 5
-    val fMaxChW = 10
-    val kMaxSizeW = 3
-    val pMaxW = 3
-    val sMaxW = 3
+    val fMaxSize = 256
+    val fMaxCh = 256
+    val kMaxSize = 7
+    val pMax = 3
+    val sMax = 3
+
+
+    val fMaxSizeW = log2Up(fMaxSize)
+    val fMaxChW = log2Up(fMaxCh)
+    val kMaxSizeW = log2Up(kMaxSize)
+    val pMaxW = log2Up(pMax)
+    val sMaxW = log2Up(sMax)
+
+
     val busConfig: Axi4Config = Axi4Config(
       addressWidth = 32,
       dataWidth = 64,
@@ -47,10 +56,23 @@ package object cfg {
     val cAutomic = 8
     val inputWidth = 8
     val accWidth = 32
-    val spLenMax = 1024
+    val lfbDepth = 1024
     val lwbDepth = 49
-    val spLenMaxW = log2Up(spLenMax)
+    val multWidth = 10
+    val shiftWidth = 4
   }
+
+  case class MacCfg() extends Config {
+    val kAutomic = 8
+    val cAutomic = 8
+    val inputWidth = 8
+    val accWidth = 32
+    val lfbDepth = 1024
+    val lwbDepth = 49
+    val multWidth = 10
+    val shiftWidth = 4
+  }
+
 
   case class CtrlCfg() extends Config {
 

@@ -13,6 +13,7 @@ case class PETop(cfg: ConvCfg) extends Component {
 
     // Core Signal
     val convParm = slave(Stream(ConvParm(cfg)))
+    val scaleParm = slave(Flow(ScaleParm(cfg)))
 
     // MemArray Signal
     val wPort0 = master(RdPort(ramWidth, ramDepth))
@@ -36,11 +37,17 @@ case class PETop(cfg: ConvCfg) extends Component {
   peArray.io.spLen := peCtrl.io.spLen
   peArray.io.loopLen := peCtrl.io.loopLen
   peArray.io.kChDim := peCtrl.io.kChDim
+  peArray.io.multiplier := peCtrl.io.multiplier
+  peArray.io.zeroPoint := peCtrl.io.zeroPoint
+  peArray.io.shift := peCtrl.io.shift
+
+
   peArray.io.featureIn <> peCtrl.io.featureIn
   peArray.io.weight <> peCtrl.io.weight
   peArray.io.featureOut <> peCtrl.io.featureOut
 
   peCtrl.io.convParm <> io.convParm
+  peCtrl.io.ppuParm <> io.ppuParm
 
   peCtrl.io.wAddr <> addrGen.io.wAddr
   peCtrl.io.finAddr <> addrGen.io.finAddr

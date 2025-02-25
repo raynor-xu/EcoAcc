@@ -13,15 +13,13 @@ case class PECtrl(cfg: ConvCfg) extends Component {
 
     // Core Signal
     val convParm = slave(Stream(ConvParm(cfg)))
-
+    val scaleParm = slave(Stream(ScaleParm(cfg)))
     // PEArray Signal
-    val clear = out Bool()
-    val relu = out Bool()
-    val peMode = out Bits (3 bits)
-    val ppuMode = out Bits (2 bits)
-    val spLen = out UInt (spLenMaxW bits)
-    val loopLen = out UInt (fMaxChW - log2Up(kAutomic) bits)
-    val kChDim = out UInt (kMaxSizeW + kMaxSizeW bits)
+
+    val peMode = out(PEMode())
+    val ppuParm = out(PPUParm(cfg))
+
+
     val featureIn = Vec(master Stream SInt(inputWidth bits), cAutomic)
     val weight = Vec(Vec(master Stream SInt(inputWidth bits), cAutomic), kAutomic)
     val featureOut = Vec(slave Flow SInt(inputWidth bits), kAutomic)
@@ -40,16 +38,13 @@ case class PECtrl(cfg: ConvCfg) extends Component {
 
   noIoPrefix()
 
+
   val convParm = RegNextWhen(io.convParm.payload, io.convParm.fire)
 
-  io.spLen := convParm.fWidth * convParm.fHeight
-  io.loopLen := CeilDiv(convParm.chIn, cAutomic)
-  io.kChDim := convParm.kSize * convParm.kSize
+  io.ppuParm.scaleParm := RegNextWhen(io.scaleParm.payload, io.scaleParm.fire)
+  io.ppuParm.loopLen := CeilDiv(convParm.chIn, cAutomic)
+  io.ppuParm.spLen :=
 
-  io.relu := False
-  io.peMode := 0
-  io.ppuMode := 0
-  io.clear := io.convParm.fire
 
   val wCtrl = new Area {
     val wCtrlState = RegInit(False)
@@ -151,8 +146,6 @@ case class PECtrl(cfg: ConvCfg) extends Component {
       }
     }
   }
-
-
 }
 
 object PECtrl extends App {

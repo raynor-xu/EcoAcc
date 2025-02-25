@@ -146,7 +146,6 @@ case class DmaCtrl(cfg: DmaCfg) extends Component {
       }
     }
   }
-
 }
 
 
