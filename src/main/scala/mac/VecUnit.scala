@@ -1,5 +1,0 @@
-package mac
-
-class VecUnit {
-
-}

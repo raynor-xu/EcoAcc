@@ -11,28 +11,34 @@ case class MacArray(cfg: MacCfg) extends Component {
 
   val io = new Bundle {
     val macParm = slave(Stream(MacParm(cfg)))
+    val scaleParm = slave(Stream(ScaleParm(cfg)))
 
-    val wPort0 = master(RdPort(ramWidth, ramDepth))
-    val fPort0 = master(RdPort(ramWidth, ramDepth))
-    val fPort1 = master(WrPort(ramWidth, ramDepth))
+
+    val wPort = master(RdPort(ramWidth, ramDepth))
+    val fPort = master(RdPort(ramWidth, ramDepth))
+    val rPort = master(WrPort(ramWidth, ramDepth))
   }
 
   noIoPrefix()
 
-  val wReg = Reg(Vec(Vec(Vec(SInt(2 * inputWidth bits), cAutomic), kAutomic), 2))
-  val finReg = Reg(Vec(SInt(2 * inputWidth bits), kAutomic))
-
-  val wGroupSel = Bool()
-  val weightIdexSel = Bits(log2Up(kAutomic) bits)
-
-  val weightGroupSel = Bool()
-
 
   val macCells = Array.fill(kAutomic)(MacCell(cfg))
+  val macCtrl = MacCtrl(cfg)
+
+  macCtrl.io.macParm <> io.macParm
+  macCtrl.io.scaleParm <> io.scaleParm
+  macCtrl.io.wPort <> io.wPort
+  macCtrl.io.fPort <> io.fPort
+  macCtrl.io.rPort <> io.rPort
+
 
   for (k <- 0 until kAutomic) {
-    macCells(k).io.weight := wReg(wGroupSel.asUInt)(k)
-    macCells(k).io.featureIn := finReg
+    macCells(k).io.clear := macCtrl.io.clear
+    macCells(k).io.parm := macCtrl.io.macCellparm
+    macCells(k).io.weight := macCtrl.io.weight(k)
+    macCells(k).io.result <> macCtrl.io.result(k)
+    macCells(k).io.feature := macCtrl.io.feature
+
   }
 
 }
@@ -46,6 +52,6 @@ object MacArray extends App {
     enumPrefixEnable = false, // 不在枚举类型前面添加前缀
     headerWithDate = false, // 不在头文件中添加日期信息
     anonymSignalPrefix = "tmp" // 移除匿名信号的前缀
-  ).generateVerilog(new MacCell(MacCfg()))
+  ).generateVerilog(new MacArray(MacCfg()))
 }
 

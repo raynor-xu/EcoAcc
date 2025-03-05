@@ -2,7 +2,7 @@
 
 import spinal.core._
 import cfg._
-import conv._
+import mac._
 import dma._
 
 package object ctrl {
@@ -16,17 +16,16 @@ package object ctrl {
     // 操作码
     val opcode = Opcode()
     // 参数字段
-    val convPram = ConvParm(ConvCfg())
+    val macPram = MacParm(MacCfg())
     // 保留字段
-    val usedWdith = opcode.getBitsWidth +
-      convPram.getBitsWidth
+    val usedWdith = opcode.getBitsWidth + macPram.getBitsWidth
 
     val reserved = UInt(instrWidth - usedWdith bits)
 
   }
 
   // 2. 配置类指令
-  case class CTypeInstr(cfg: CtrlCfg) extends Bundle {
+  case class PTypeInstr(cfg: CtrlCfg) extends Bundle {
 
     import cfg._
 
@@ -35,12 +34,10 @@ package object ctrl {
 
     // 配置信息字段
     val mode = Bits(1 bits) // 适用于全部PPE
-    val configData0 = UInt(32 bits)
-    val configData1 = UInt(32 bits)
+    val configData = Vec(UInt(32 bits), 3)
 
-
-    // 保留字段（50 bit）
-    val usedWdith = opcode.getBitsWidth + configData0.getBitsWidth + configData1.getBitsWidth
+    // 保留字段
+    val usedWdith = opcode.getBitsWidth + mode.getBitsWidth + configData.getBitsWidth
 
     val reserved = UInt(instrWidth - usedWdith bits)
   }
@@ -64,23 +61,38 @@ package object ctrl {
 
   }
 
+  case class CTypeInstr(cfg: CtrlCfg) extends Bundle {
+
+    import cfg._
+
+
+    // Header
+    val opcode = Opcode()
+
+
+    val usedWdith = opcode.getBitsWidth
+
+    val reserved = UInt(instrWidth - usedWdith bits)
+
+  }
+
+
   object MTypeInstr {
     def default(): MTypeInstr = {
-      val convInstr = new MTypeInstr(CtrlCfg())
-      convInstr.opcode := Opcode.CONV
-      convInstr.convPram := ConvParm.default
-      convInstr.reserved := 0
-      convInstr
+      val macInstr = new MTypeInstr(CtrlCfg())
+      macInstr.opcode := Opcode.CONV
+      macInstr.macPram := MacParm.default
+      macInstr.reserved := 0
+      macInstr
     }
   }
 
-  object CTypeInstr {
-    def default(): CTypeInstr = {
-      val cfgInstr = new CTypeInstr(CtrlCfg())
-      cfgInstr.opcode := Opcode.CONFIG
+  object PTypeInstr {
+    def default(): PTypeInstr = {
+      val cfgInstr = new PTypeInstr(CtrlCfg())
+      cfgInstr.opcode := Opcode.PARM_SCALE
       cfgInstr.mode := 0
-      cfgInstr.configData0 := 0
-      cfgInstr.configData1 := 0
+      cfgInstr.configData.map(_ := 0)
       cfgInstr.reserved := 0
       cfgInstr
     }
@@ -96,9 +108,18 @@ package object ctrl {
     }
   }
 
+  object CTypeInstr {
+    def default(): CTypeInstr = {
+      val dmaInstr = new CTypeInstr(CtrlCfg())
+      dmaInstr.opcode := Opcode.STOP
+      dmaInstr.reserved := 0
+      dmaInstr
+    }
+  }
+
 
   object Opcode extends SpinalEnum(binarySequential) {
-    val CONV, FC, POOL, CONFIG, DMA = newElement()
+    val CONV, FC, POOL, PARM_SCALE, DMA, STOP = newElement()
   }
 
 

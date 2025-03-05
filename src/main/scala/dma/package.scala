@@ -2,7 +2,6 @@ import spinal.core._
 import spinal.core._
 import spinal.lib._
 import cfg._
-import conv.ConvParm
 
 package object dma {
 

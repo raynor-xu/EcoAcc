@@ -7,7 +7,7 @@ package object cfg {
 
   trait Config {
     val ramDepth = 65536
-    val ramWidth = 64
+    val ramWidth = 32
     val ramAW = log2Up(ramDepth)
     val ramDW = ramWidth
     val fMaxSize = 256
@@ -52,8 +52,8 @@ package object cfg {
 
 
   case class ConvCfg() extends Config {
-    val kAutomic = 8
-    val cAutomic = 8
+    val kAutomic = 2
+    val cAutomic = 2
     val inputWidth = 8
     val accWidth = 32
     val lfbDepth = 1024
@@ -63,14 +63,16 @@ package object cfg {
   }
 
   case class MacCfg() extends Config {
-    val kAutomic = 8
-    val cAutomic = 8
+    val kAutomic = 4
+    val cAutomic = 4
     val inputWidth = 8
     val accWidth = 32
     val lfbDepth = 1024
-    val lwbDepth = 49
     val multWidth = 10
     val shiftWidth = 4
+    val kLenW = kMaxSizeW * 2
+    val spLenW = log2Up(lfbDepth)
+    val loopLenW = kMaxSizeW * 2 + fMaxChW - log2Up(kAutomic)
   }
 
 
