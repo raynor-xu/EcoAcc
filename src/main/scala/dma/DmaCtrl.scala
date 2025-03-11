@@ -2,6 +2,7 @@ package dma
 
 import spinal.core._
 import spinal.lib._
+import spinal.lib.fsm._
 import cfg.DmaCfg
 import mem._
 
@@ -19,14 +20,6 @@ case class DmaCtrl(cfg: DmaCfg) extends Component {
   val dmaParmPorts = Vec(Stream(DmaParm(cfg)), chNum)
 
 
-  object State extends SpinalEnum {
-    val idle,
-    mem2glbAddr, mem2glbData,
-    glb2memAddr, glb2memData = newElement()
-  }
-
-  import State._
-
   dmaParmPorts <> StreamDemux(io.dmaParm, io.dmaParm.payload.sel.asUInt, chNum)
 
 
@@ -36,7 +29,6 @@ case class DmaCtrl(cfg: DmaCfg) extends Component {
 
     val dmaParmReg = Reg(DmaParm(cfg))
 
-    val state = RegInit(idle)
 
     val dmaParmPort = dmaParmPorts(i)
 
@@ -68,11 +60,18 @@ case class DmaCtrl(cfg: DmaCfg) extends Component {
     dmaPort.dmaWDate.valid := False
     dmaPort.dmaWDate.payload := 0
 
-    io.dmaBusy(i) := ~(state === idle && (dmaParmPort.valid && False))
+    io.dmaBusy(i) := True
 
     // 状态机实现
-    switch(state) {
-      is(idle) {
+    val fsm = new StateMachine {
+      val idle = new State with EntryPoint
+      val mem2glbAddr = new State
+      val mem2glbData = new State
+      val glb2memAddr = new State
+      val glb2memData = new State
+
+      idle.whenIsActive {
+        io.dmaBusy(i) := False
         dmaParmPort.ready := True
         // 空闲状态：等待接收 dmaParm 任务
         when(dmaParmPort.fire) {
@@ -82,29 +81,29 @@ case class DmaCtrl(cfg: DmaCfg) extends Component {
           // 根据传输方向进入不同状态
           switch(dmaParmPort.mode) {
             is(DmaTaskMode.mem2glb) {
-              state := mem2glbAddr
+              goto(mem2glbAddr)
             }
             is(DmaTaskMode.glb2mem) {
-              state := glb2memAddr
+              goto(glb2memAddr)
             }
             default {
-              state := idle
+              goto(idle)
             }
           }
         }
       }
       // ===== mem2glb: 内存到外设 =====
-      is(mem2glbAddr) {
+      mem2glbAddr.whenIsActive {
         dmaPort.dmaRTask.valid := True
         dmaPort.dmaRTask.len := dmaParmReg.len
         dmaPort.dmaRTask.addr := dmaParmReg.busAddr
         taskLen := dmaParmReg.len
         ramAddr := dmaParmReg.periAddr
         when(dmaPort.dmaRTask.fire) {
-          state := mem2glbData
+          goto(mem2glbData)
         }
       }
-      is(mem2glbData) {
+      mem2glbData.whenIsActive {
         dmaPort.dmaRDate.ready := True
         ramPort.en := dmaPort.dmaRDate.fire
         ramPort.addr := ramAddr
@@ -114,37 +113,40 @@ case class DmaCtrl(cfg: DmaCfg) extends Component {
           taskLen := taskLen - 1
           ramAddr := ramAddr + 1
           when(taskLen === 1) {
-            state := idle
+            goto(idle)
           }
         }
       }
       // ===== glb2mem: 内存到外设 =====
-      is(glb2memAddr) {
+      glb2memAddr.whenIsActive {
         dmaPort.dmaWTask.valid := True
         dmaPort.dmaWTask.len := dmaParmReg.len
         dmaPort.dmaWTask.addr := dmaParmReg.busAddr
         taskLen := dmaParmReg.len
         ramAddr := dmaParmReg.periAddr
         when(dmaPort.dmaWTask.fire) {
-          state := glb2memData
+          ramPort.en := True
+          ramPort.addr := ramAddr
+          ramPort.wr := False
+          ramAddr := dmaParmReg.periAddr + 1
+          goto(glb2memData)
         }
       }
-      is(glb2memData) {
-        dmaPort.dmaWDate.valid := RegNext(ramPort.en)
-        dmaPort.dmaWDate.fire
+      glb2memData.whenIsActive {
+        dmaPort.dmaWDate.valid := True
         dmaPort.dmaWDate.payload := ramPort.rData
-        ramPort.en := dmaPort.dmaWDate.ready
+        ramPort.en := dmaPort.dmaWDate.fire
         ramPort.addr := ramAddr
         ramPort.wr := False
         when(dmaPort.dmaWDate.fire) {
           taskLen := taskLen - 1
           ramAddr := ramAddr + 1
           when(taskLen === 1) {
-            state := idle
+            goto(idle)
           }
         }
       }
-    }
+    }.setName(s"fsm_$i")
   }
 }
 

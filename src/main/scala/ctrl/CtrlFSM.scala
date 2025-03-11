@@ -30,9 +30,7 @@ case class CtrlFSM(cfg: CtrlCfg) extends Component {
 
   noIoPrefix()
   // 状态机当前状态寄存器，复位后进入 idle 状态
-  val state = RegInit(idle)
 
-  import State._
 
   val mTypeInstrReg = Reg(MTypeInstr(cfg)) init MTypeInstr.default()
   val pTypeInstrReg = Reg(PTypeInstr(cfg)) init PTypeInstr.default()
@@ -44,6 +42,9 @@ case class CtrlFSM(cfg: CtrlCfg) extends Component {
     val idle, macInit, macExecute, paraExecute, dmaInit, dmaExecute, ctrlExecute, finish = newElement()
   }
 
+  import State._
+
+  val state = RegInit(idle)
   io.dmaParm.payload := DmaParm.default
   io.macParm.payload := MacParm.default
   io.scaleParm.payload := ScaleParm.default
@@ -100,7 +101,7 @@ case class CtrlFSM(cfg: CtrlCfg) extends Component {
 
     is(paraExecute) {
       switch(pTypeInstrReg.opcode) {
-        is(Opcode.PARM_SCALE) {
+        is(Opcode.PARM_SCALE_OP) {
           io.scaleParm.payload.zeroPoint := pTypeInstrReg.configData(0).asSInt.resized
           io.scaleParm.payload.shift := pTypeInstrReg.configData(1).resized
           io.scaleParm.payload.multiplier := pTypeInstrReg.configData(2).asSInt.resized

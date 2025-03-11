@@ -28,11 +28,11 @@ object MacCtrlSim {
       val wBaseAddr = 0
       val fHeight = 4
       val fWidth = 4
-      val kSize = 3
+      val kSize = 2
       val chIn = 8
       val chOut = 8
       val pad = 0
-      val stride = 1
+      val stride = 2
 
       // --- 在仿真里，用三个数组来模拟 3 个端口的内存 ---
 

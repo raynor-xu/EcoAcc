@@ -70,6 +70,7 @@ case class MacCtrl(cfg: MacCfg) extends Component {
   val wAddrGenArea = new Area {
     val spLenH = Reg(UInt(fMaxSizeW bits)) init (0)
     val wBaseAddr = macParmReg.wBaseAddr
+    val wAddrEn = Bool()
     val wAddrDone = Reg(Bool()) init (True)
 
     val nCounter = Reg(UInt(fMaxChW - log2Up(kAutomic) bits)) init (0)
@@ -88,30 +89,40 @@ case class MacCtrl(cfg: MacCfg) extends Component {
     switch(macParmReg.macMode) {
       is(CONV2D) {
         nCounterReload := chOutBlock - 1
+        kaCounterReload := kAutomic - 1
         spLenH := (rHeight - hCounter < hLen) ? (rHeight - hCounter) | hLen
       }
       is(FC) {
         nCounterReload := chOutBlock - 1
+        kaCounterReload := kAutomic - 1
         spLenH := rHeight
       }
-      is(DWCONV, PWCONV, AVERAGPOOL) {
+      is(DWCONV) {
         nCounterReload := 0
+        kaCounterReload := 0
         spLenH := (rHeight - hCounter < hLen) ? (rHeight - hCounter) | hLen
       }
       default {
         nCounterReload := 0
+        kaCounterReload := 0
         spLenH := 0
       }
     }
+
+    wAddrEn := io.macParm.fire && (
+      (io.macCellparm.macMode === CONV2D) ||
+        (io.macCellparm.macMode === DWCONV) ||
+        (io.macCellparm.macMode === FC))
+
+
     hCounterReload := rHeight - spLenH
     csrCounterReload := chInBlock * macParmReg.kSize * macParmReg.kSize - 1
-    kaCounterReload := kAutomic - 1
 
     wAddrReg := (wBaseAddr + csrCounter +
       (nCounter * kAutomic + kaCounter) * chInBlock * macParmReg.kSize * macParmReg.kSize).resized
 
     // 计数器更新逻辑采用 elsewhen 链式结构
-    when(io.macParm.fire) {
+    when(wAddrEn) {
       nCounter := 0
       csrCounter := 0
       kaCounter := 0
@@ -145,51 +156,50 @@ case class MacCtrl(cfg: MacCfg) extends Component {
     val weightReg = Vec(Vec(Vec(Reg(SInt(inputWidth bits)) init (0), cAutomic), kAutomic), 2) // 权重寄存器
     val wCalGrop = Reg(Bool()) init (False) // 当前计算组
     val wLoadGrop = Reg(Bool()) init (False) // 当前更新组
-    val wReadIdex = Reg(UInt(log2Up(kAutomic) bits)) init (0)
-    val wLoadIdex = RegNext(wReadIdex) init (0)
+    val wLoadIdex = Reg(UInt(log2Up(kAutomic) bits)) init (0)
     val wGropValidNum = Reg(UInt(2 bits)) // 有效的权重块数
-    val wReadDone = wReadIdex === kAutomic - 1 // 一帧权重加载完成
-    val wLoadDone = RegNext(wReadDone) init (False)
-    val wPortEn = Reg(Bool()) init (False)
+    val wLoadReload = Reg(UInt(log2Up(kAutomic) bits)) init (0)
+    val wLoadDone = wLoadIdex === wLoadReload
+    val wPortEn = Bool()
     val wPortEnD1 = RegNext(wPortEn) init (False)
+    val calDone = RegNext(RegNext(frameDone)) init (False)
 
     io.wPort.en := wPortEn
     io.wPort.addr := wAddrGenArea.wAddrReg
     io.weight := weightReg(wCalGrop.asUInt)
-
+    wPortEn := False
     wValid := wGropValidNum > 0
 
-    when(io.macParm.fire) {
-      wGropValidNum := 0
-    } elsewhen (frameDone && wLoadDone) {
-      wGropValidNum := wGropValidNum
-    } elsewhen (frameDone) {
-      wGropValidNum := wGropValidNum - 1
-    } elsewhen (wLoadDone) {
-      wGropValidNum := wGropValidNum + 1
-    }
-
-    // 当更新组满时，切换更新组并清零写入计数
-    when(wLoadDone) {
-      wLoadGrop := ~wLoadGrop
-    }
-    // frameDone 信号有效时，切换计算组
-    when(RegNext(RegNext(frameDone))) {
-      wCalGrop := ~wCalGrop
-    }
 
     val fsm = new StateMachine {
       val idle = new State with EntryPoint
       val read = new State
       val update = new State
+      val done = new State
 
       idle.whenIsActive {
         when(io.macParm.fire) {
-          wPortEn := False
-          wCalGrop := False
           wLoadGrop := False
-          wReadIdex := 0
-          goto(read)
+          wCalGrop := False
+          weightReg.clearAll()
+          switch(io.macParm.payload.macMode) {
+            is(CONV2D, FC) {
+              wLoadReload := kAutomic - 1
+              wGropValidNum := 0
+              goto(read)
+            }
+            is(DWCONV) {
+              wLoadReload := 0
+              wGropValidNum := 0
+              goto(read)
+            }
+            is(AVERAGPOOL, MAXPOOL) {
+              wGropValidNum := 1
+            }
+            default {
+              goto(idle)
+            }
+          }
         }
       }
 
@@ -198,30 +208,72 @@ case class MacCtrl(cfg: MacCfg) extends Component {
           wPortEn := True
           goto(update)
         }
+        when(frameDone) {
+          wGropValidNum := wGropValidNum - 1
+        }
+        when(calDone) {
+          wCalGrop := ~wCalGrop
+        }
       }
 
       update.whenIsActive {
-        when(wPortEn) {
-          when(~wReadDone) {
-            wReadIdex := wReadIdex + 1
+
+        when(wLoadDone) {
+          wPortEn := False
+          when(wAddrGenArea.wAddrDone) {
+            goto(done)
           } otherwise {
-            wPortEn := False
-            wReadIdex := 0
+            goto(read)
+          }
+        } otherwise {
+          wPortEn := True
+        }
+
+        when(calDone) {
+          wCalGrop := ~wCalGrop
+        }
+        when(wLoadDone) {
+          wLoadGrop := ~wLoadGrop
+        }
+
+        when(frameDone && wLoadDone) {
+          wGropValidNum := wGropValidNum
+        } elsewhen (frameDone) {
+          wGropValidNum := wGropValidNum - 1
+        } elsewhen (wLoadDone) {
+          wGropValidNum := wGropValidNum + 1
+        }
+
+        when(wPortEnD1) {
+          when(~wLoadDone) {
+            wLoadIdex := wLoadIdex + 1
+          } otherwise {
+            wLoadIdex := 0
+          }
+          switch(macParmReg.macMode) {
+            is(CONV2D, FC) {
+              weightReg(wLoadGrop.asUInt)(wLoadIdex) := io.wPort.rData.asSInt.subdivideIn(inputWidth bits)
+            }
+            is(DWCONV) {
+              for (i <- 0 until kAutomic) {
+                weightReg(wLoadGrop.asUInt)(i)(i) := io.wPort.rData.asSInt.subdivideIn(inputWidth bits)(i)
+              }
+            }
           }
         }
-        // 更新写入权重寄存器
-        when(wPortEnD1) {
-          weightReg(wLoadGrop.asUInt)(wLoadIdex) := io.wPort.rData.asSInt.subdivideIn(inputWidth bits)
-          when(wLoadDone) {
-            when(wAddrGenArea.wAddrDone) {
-              goto(idle)
-            } otherwise {
-              goto(read)
-            }
+
+      }
+      done.whenIsActive {
+        when(calDone) {
+          wCalGrop := ~wCalGrop
+          wGropValidNum := wGropValidNum - 1
+          when(wGropValidNum === 1) {
+            goto(idle)
           }
         }
       }
     }
+
   }
 
   // ----------------------------
@@ -254,22 +306,18 @@ case class MacCtrl(cfg: MacCfg) extends Component {
       is(CONV2D) {
         nCounterReload := chOutBlock - 1
         spLenH := (rHeight - pCounter < hLen) ? (rHeight - pCounter) | hLen
-        wCounterReload := rWidth - 1
       }
       is(FC) {
         nCounterReload := chOutBlock - 1
         spLenH := rHeight
-        wCounterReload := 0
       }
-      is(DWCONV, PWCONV, AVERAGPOOL) {
+      is(DWCONV, MAXPOOL, AVERAGPOOL) {
         nCounterReload := 0
-        spLenH := (rHeight - hCounter < hLen) ? (rHeight - hCounter) | hLen
-        wCounterReload := rWidth - 1
+        spLenH := (rHeight - pCounter < hLen) ? (rHeight - pCounter) | hLen
       }
       default {
         nCounterReload := 0
         spLenH := 0
-        wCounterReload := 0
       }
     }
     pCounterReload := rHeight - spLenH
@@ -277,9 +325,7 @@ case class MacCtrl(cfg: MacCfg) extends Component {
     sCounterReload := macParmReg.kSize - 1
     rCounterReload := macParmReg.kSize - 1
     hCounterReload := spLenH - 1
-
-    io.macCellparm.spLen := (spLenH * rWidth).resized
-    io.macCellparm.loopLen := macParmReg.kSize * macParmReg.kSize * chInBlock
+    wCounterReload := rWidth - 1
 
     frameDone := False
 
@@ -403,7 +449,11 @@ case class MacCtrl(cfg: MacCfg) extends Component {
         when(fPort0EnD1) {
           featureReg := io.fPort.rData.asSInt.subdivideIn(inputWidth bits)
           when(fPort0En === False) {
-            goto(read)
+            when(fAddrArea.fAddrDone) {
+              goto(idle)
+            } otherwise {
+              goto(read)
+            }
           }
         }
       }
@@ -414,26 +464,81 @@ case class MacCtrl(cfg: MacCfg) extends Component {
   // Result Address Area
   // ----------------------------
   val rAddrArea = new Area {
+    val spLenH = Reg(UInt(fMaxSizeW bits)) init (0)
     val rBaseAddr = macParmReg.rBaseAddr
     val rAddrDone = Reg(Bool()) init (True)
 
-    val nhwCounter = Reg(UInt(fMaxSizeW * 2 + fMaxChW - log2Up(kAutomic) bits)) init (0)
-    val nhwCounterReload = UInt(fMaxSizeW * 2 + fMaxChW - log2Up(kAutomic) bits)
+    val nCounter = Reg(UInt(fMaxChW - log2Up(kAutomic) bits)) init (0)
+    val pCounter = Reg(UInt(fMaxSizeW bits)) init (0)
+    val hCounter = Reg(UInt(fMaxSizeW bits)) init (0)
+    val wCounter = Reg(UInt(fMaxSizeW bits)) init (0)
+
+    val nCounterReload = UInt(fMaxChW - log2Up(kAutomic) bits)
+    val pCounterReload = UInt(fMaxSizeW bits)
+    val hCounterReload = UInt(fMaxSizeW bits)
+    val wCounterReload = UInt(fMaxSizeW bits)
 
     //    val rAddrReg = Reg(UInt(ramAW bits))
     val rAddrReg = UInt(ramAW bits)
-    nhwCounterReload := chOutBlock * rHeight * rWidth - 1
 
-    rAddrReg := (rBaseAddr + nhwCounter).resized
+    io.macCellparm.spLen := (spLenH * rWidth).resized
+
+    io.macCellparm.loopLen := macParmReg.kSize * macParmReg.kSize * chInBlock
+
+
+    switch(macParmReg.macMode) {
+      is(CONV2D) {
+        io.macCellparm.loopLen := macParmReg.kSize * macParmReg.kSize * chInBlock
+        spLenH := (rHeight - pCounter < hLen) ? (rHeight - pCounter) | hLen
+      }
+      is(FC) {
+        io.macCellparm.loopLen := macParmReg.kSize * macParmReg.kSize * chInBlock
+        spLenH := rHeight
+      }
+      is(DWCONV, MAXPOOL, AVERAGPOOL) {
+        io.macCellparm.loopLen := (macParmReg.kSize * macParmReg.kSize).resized
+        spLenH := (rHeight - pCounter < hLen) ? (rHeight - pCounter) | hLen
+      }
+      default {
+        spLenH := 0
+      }
+    }
+
+    nCounterReload := chOutBlock - 1
+    pCounterReload := rHeight - spLenH
+    hCounterReload := spLenH - 1
+    wCounterReload := rWidth - 1
+
+    rAddrReg := (rBaseAddr + wCounter +
+      (hCounter + pCounter) * rWidth +
+      nCounter * rHeight * rWidth).resized
 
     when(io.macParm.fire) {
-      nhwCounter := 0
+      nCounter := 0
+      pCounter := 0
+      hCounter := 0
+      wCounter := 0
       rAddrDone := False
     } elsewhen (io.rPort.en) {
-      when(nhwCounter < nhwCounterReload) {
-        nhwCounter := nhwCounter + 1
+      when(wCounter < wCounterReload) {
+        wCounter := wCounter + 1
+      } elsewhen (hCounter < hCounterReload) {
+        wCounter := 0
+        hCounter := hCounter + 1
+      } elsewhen (pCounter < pCounterReload) {
+        wCounter := 0
+        hCounter := 0
+        pCounter := pCounter + spLenH
+      } elsewhen (nCounter < nCounterReload) {
+        wCounter := 0
+        hCounter := 0
+        pCounter := 0
+        nCounter := nCounter + 1
       } otherwise {
-        nhwCounter := 0
+        wCounter := 0
+        hCounter := 0
+        pCounter := 0
+        nCounter := 0
         rAddrDone := True
       }
     }

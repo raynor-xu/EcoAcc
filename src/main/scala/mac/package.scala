@@ -62,7 +62,7 @@ package object mac {
 
       // Create a default PWMConfig instance
       val scaleParm = new ScaleParm(MacCfg())
-      scaleParm.multiplier := 0
+      scaleParm.multiplier := 1
       scaleParm.shift := 0
       scaleParm.zeroPoint := 0
       // Return the default configuration
@@ -80,13 +80,13 @@ package object mac {
       macParm.fBaseAddr := 0
       macParm.rBaseAddr := 0
       macParm.wBaseAddr := 0
-      macParm.fHeight := 0
-      macParm.fWidth := 0
-      macParm.kSize := 0
-      macParm.chIn := 0
-      macParm.chOut := 0
+      macParm.fHeight := 1
+      macParm.fWidth := 1
+      macParm.kSize := 1
+      macParm.chIn := 8
+      macParm.chOut := 8
       macParm.pad := 0
-      macParm.stride := 0
+      macParm.stride := 1
       // Return the default configuration
       macParm
     }

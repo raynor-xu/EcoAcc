@@ -31,15 +31,15 @@ case class CtrlDecoder(cfg: CtrlCfg) extends Component {
   opcodeDecoded.assignFromBits(opcodeField)
 
   // 2. 判断指令类型
-  val isConv = (opcodeDecoded === Opcode.CONV) ||
-    (opcodeDecoded === Opcode.FC) ||
-    (opcodeDecoded === Opcode.POOL)
+  val isConv = (opcodeDecoded === Opcode.CONV_OP) ||
+    (opcodeDecoded === Opcode.FC_OP) ||
+    (opcodeDecoded === Opcode.POOL_OP)
 
-  val isParm = opcodeDecoded === Opcode.PARM_SCALE
+  val isParm = opcodeDecoded === Opcode.PARM_SCALE_OP
 
-  val isDma = opcodeDecoded === Opcode.DMA
+  val isDma = opcodeDecoded === Opcode.DMA_OP
 
-  val isCtrl = opcodeDecoded === Opcode.STOP
+  val isCtrl = opcodeDecoded === Opcode.STOP_OP
 
   // 3. 指令路由与流控  instrQueen.io.pop.ready := (isConv && io.convInstr.ready) ||
 

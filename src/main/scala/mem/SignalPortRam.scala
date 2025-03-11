@@ -3,7 +3,7 @@ package mem
 
 import spinal.core._
 import spinal.lib._
-
+import spinal.core.sim._
 
 case class SignalPortRam(width: Int, depth: Int, useWe: Boolean = false) extends Component {
   val io = new Bundle {
@@ -13,7 +13,7 @@ case class SignalPortRam(width: Int, depth: Int, useWe: Boolean = false) extends
   noIoPrefix()
 
   // 定义内存
-  val ram = Mem(Bits(width bits), wordCount = depth)
+  val ram = Mem(Bits(width bits), wordCount = depth).simPublic()
 
   // 写操作
   when(io.port.en && io.port.wr) {

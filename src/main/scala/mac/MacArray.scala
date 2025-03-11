@@ -22,7 +22,7 @@ case class MacArray(cfg: MacCfg) extends Component {
   noIoPrefix()
 
 
-  val macCells = Array.fill(kAutomic)(MacCell(cfg))
+  val macCells = Array.tabulate(kAutomic)(i => MacCell(cfg, i))
   val macCtrl = MacCtrl(cfg)
 
   macCtrl.io.macParm <> io.macParm

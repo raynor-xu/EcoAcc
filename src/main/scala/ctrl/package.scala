@@ -80,7 +80,7 @@ package object ctrl {
   object MTypeInstr {
     def default(): MTypeInstr = {
       val macInstr = new MTypeInstr(CtrlCfg())
-      macInstr.opcode := Opcode.CONV
+      macInstr.opcode := Opcode.CONV_OP
       macInstr.macPram := MacParm.default
       macInstr.reserved := 0
       macInstr
@@ -90,7 +90,7 @@ package object ctrl {
   object PTypeInstr {
     def default(): PTypeInstr = {
       val cfgInstr = new PTypeInstr(CtrlCfg())
-      cfgInstr.opcode := Opcode.PARM_SCALE
+      cfgInstr.opcode := Opcode.PARM_SCALE_OP
       cfgInstr.mode := 0
       cfgInstr.configData.map(_ := 0)
       cfgInstr.reserved := 0
@@ -101,7 +101,7 @@ package object ctrl {
   object DTypeInstr {
     def default(): DTypeInstr = {
       val dmaInstr = new DTypeInstr(CtrlCfg())
-      dmaInstr.opcode := Opcode.DMA
+      dmaInstr.opcode := Opcode.DMA_OP
       dmaInstr.dmaPram := DmaParm.default
       dmaInstr.reserved := 0
       dmaInstr
@@ -111,7 +111,7 @@ package object ctrl {
   object CTypeInstr {
     def default(): CTypeInstr = {
       val dmaInstr = new CTypeInstr(CtrlCfg())
-      dmaInstr.opcode := Opcode.STOP
+      dmaInstr.opcode := Opcode.STOP_OP
       dmaInstr.reserved := 0
       dmaInstr
     }
@@ -119,7 +119,7 @@ package object ctrl {
 
 
   object Opcode extends SpinalEnum(binarySequential) {
-    val CONV, FC, POOL, PARM_SCALE, DMA, STOP = newElement()
+    val CONV_OP, FC_OP, POOL_OP, PARM_SCALE_OP, DMA_OP, STOP_OP = newElement()
   }
 
 

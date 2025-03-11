@@ -6,7 +6,7 @@ import spinal.lib.fsm._
 import cfg._
 import mac.MacMode._
 
-case class MacCell(cfg: MacCfg) extends Component {
+case class MacCell(cfg: MacCfg, index: Int) extends Component {
 
   import cfg._
 
@@ -58,14 +58,25 @@ case class MacCell(cfg: MacCfg) extends Component {
           is(CONV2D, FC) {
             mulReg.zipWithIndex.foreach { case (reg, idex) => reg := io.weight(idex) * io.feature.payload(idex) }
           }
-          is(DWCONV, AVERAGPOOL) {
-            mulReg(0) := io.weight(0) * io.feature.payload(0)
+          is(DWCONV) {
+            for (i <- 0 until cAutomic) {
+              if (i == index) {
+                mulReg(i) := io.weight(i) * io.feature.payload(i)
+              } else {
+                mulReg(i) := 0
+              }
+            }
           }
-          is(MAXPOOL) {
-            mulReg(0) := io.feature.payload(0).resized
+          is(MAXPOOL, AVERAGPOOL) {
+            for (i <- 0 until cAutomic) {
+              if (i == index) {
+                mulReg(i) := io.feature.payload(i).resized
+              } else {
+                mulReg(i) := 0
+              }
+            }
           }
           default {
-
           }
         }
       }
@@ -121,8 +132,8 @@ case class MacCell(cfg: MacCfg) extends Component {
             adderTree.io.dataIn := mulArea.mulReg
             pSumReg := adderTree.io.dataOut.resized
           }
-          is(AVERAGPOOL, DWCONV) {
-            pSumReg := mulArea.mulReg(0).resized
+          is(AVERAGPOOL, DWCONV, MAXPOOL) {
+            pSumReg := mulArea.mulReg(index).resized
           }
           default {
             pSumReg := 0
@@ -243,43 +254,50 @@ case class MacCell(cfg: MacCfg) extends Component {
     quantValid := RegNext(quantEn) init (False)
 
     when(quantEn) {
-      // 1. 乘法
-      val multResult = rawData * scaleParm.multiplier
-      // 2. 舍入偏置
-      val oneLiteral = S(1, multResult.getWidth bits)
-      val oneBits = oneLiteral.asBits
-      val shiftedBits = oneBits << (scaleParm.shift - 1)
-      val offset = Mux(scaleParm.shift === 0,
-        S(0, multResult.getWidth bits),
-        shiftedBits.asSInt
-      )
-      offset.setName("offset")
-      // 3. 加上舍入偏置
-      val adjusted = multResult + offset
-      adjusted.setName("adjusted")
-      // 4. 右移：执行算术右移
-      val shifted = adjusted >> scaleParm.shift
-      shifted.setName("shifted")
-      // 5. 加上零点
-      val withZero = shifted + scaleParm.zeroPoint.resize(shifted.getWidth)
-      withZero.setName("withZero")
-      // 6. 饱和截断到 int8 范围 [-128, 127]
-      val minVal = SInt(inputWidth bits)
-      val maxVal = SInt(inputWidth bits)
+      switch(macMode) {
+        is(CONV2D, DWCONV, FC, AVERAGPOOL) {
+          // 1. 乘法
+          val multResult = rawData * scaleParm.multiplier
+          // 2. 舍入偏置
+          val oneLiteral = S(1, multResult.getWidth bits)
+          val oneBits = oneLiteral.asBits
+          val shiftedBits = oneBits << (scaleParm.shift - 1)
+          val offset = Mux(scaleParm.shift === 0,
+            S(0, multResult.getWidth bits),
+            shiftedBits.asSInt
+          )
+          offset.setName("offset")
+          // 3. 加上舍入偏置
+          val adjusted = multResult + offset
+          adjusted.setName("adjusted")
+          // 4. 右移：执行算术右移
+          val shifted = adjusted >> scaleParm.shift
+          shifted.setName("shifted")
+          // 5. 加上零点
+          val withZero = shifted + scaleParm.zeroPoint.resize(shifted.getWidth)
+          withZero.setName("withZero")
+          // 6. 饱和截断到 int8 范围 [-128, 127]
+          val minVal = SInt(inputWidth bits)
+          val maxVal = SInt(inputWidth bits)
 
-      minVal := minVal.minValue
-      maxVal := maxVal.maxValue
+          minVal := minVal.minValue
+          maxVal := maxVal.maxValue
 
-      val saturated = SInt(inputWidth bits)
-      saturated.setName("saturated")
-      when(withZero > maxVal) {
-        saturated := maxVal
-      } elsewhen (withZero < minVal) {
-        saturated := minVal
-      } otherwise {
-        saturated := withZero.resized
+          val saturated = SInt(inputWidth bits)
+          saturated.setName("saturated")
+          when(withZero > maxVal) {
+            saturated := maxVal
+          } elsewhen (withZero < minVal) {
+            saturated := minVal
+          } otherwise {
+            saturated := withZero.resized
+          }
+          quantReg := saturated
+        }
+        is(MAXPOOL) {
+          quantReg := rawData.resized
+        }
       }
-      quantReg := saturated
     }
   }
 
@@ -343,6 +361,6 @@ object MacCell extends App {
     enumPrefixEnable = false, // 不在枚举类型前面添加前缀
     headerWithDate = false, // 不在头文件中添加日期信息
     anonymSignalPrefix = "" // 移除匿名信号的前缀
-  ).generateVerilog(new MacCell(MacCfg()))
+  ).generateVerilog(new MacCell(MacCfg(), 0))
 }
 
